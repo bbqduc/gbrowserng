@@ -16,7 +16,7 @@ import static com.soulaim.tech.gles.TextureID.*;
 
 public class DesktopTextureManager extends TextureManager {
 
-    String path = "resources/images/";
+    String path = "images/";
 
     private Map<TextureID, Texture> textures;
     protected boolean ready;
