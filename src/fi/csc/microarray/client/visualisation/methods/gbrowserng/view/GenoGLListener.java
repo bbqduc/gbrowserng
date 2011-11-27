@@ -27,6 +27,7 @@ public class GenoGLListener implements GLEventListener {
 		SoulGL2 gl = new DesktopGL2(drawable.getGL().getGL2());
 		gl.glClear(GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_COLOR_BUFFER_BIT);
         PrimitiveRenderer.drawCircle(0, 0, 0.7f, gl, Color.MAGENTA);
+        TextRenderer.getInstance().drawText(gl, "WTF", 0, 0, 1.0f);
 	}
 
 	public void dispose(GLAutoDrawable drawable) {
