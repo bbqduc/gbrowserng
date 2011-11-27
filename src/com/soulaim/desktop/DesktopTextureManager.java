@@ -4,6 +4,7 @@ import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import com.soulaim.tech.gles.SoulGL2;
 import com.soulaim.tech.gles.TextureID;
+import com.soulaim.tech.managers.AssetManager;
 import com.soulaim.tech.managers.TextureManager;
 
 import java.io.File;
@@ -40,8 +41,7 @@ public class DesktopTextureManager extends TextureManager {
 
     protected void makeTexture(SoulGL2 gl, String filename, TextureID index) {
         try {
-            // URL url = getClass().getClassLoader().getResource(path + filename);
-            Texture texture = TextureIO.newTexture(new File(path + filename), false);
+            Texture texture = TextureIO.newTexture(AssetManager.get(path + filename), false, "png");
             textures.put(index, texture);
         } catch (IOException e) {
             e.printStackTrace();

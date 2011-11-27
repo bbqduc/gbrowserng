@@ -3,7 +3,6 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
-import javax.media.opengl.glu.gl2.GLUgl2;
 
 import com.soulaim.desktop.DesktopAssetManager;
 import com.soulaim.desktop.DesktopGL2;
@@ -14,7 +13,6 @@ import com.soulaim.tech.gles.SoulGL2;
 import com.soulaim.tech.gles.primitives.PrimitiveBuffers;
 import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import com.soulaim.tech.gles.renderer.TextRenderer;
-import com.soulaim.tech.gles.view.Camera;
 import com.soulaim.tech.managers.AssetManager;
 import com.soulaim.tech.managers.ShaderManager;
 import com.soulaim.tech.managers.TextureManager;
@@ -50,9 +48,7 @@ public class GenoGLListener implements GLEventListener {
 	}
 
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-
         SoulGL2 gl = new DesktopGL2(drawable.getGL().getGL2());
-
         gl.glViewport(0, 0, width, height);
 
         gl.glEnable(SoulGL2.GL_CULL_FACE);
@@ -63,6 +59,5 @@ public class GenoGLListener implements GLEventListener {
 
         float aspectRatio = width * 1.0f / height;
         GlobalVariables.aspectRatio = aspectRatio;
-
 	}
 }
