@@ -86,12 +86,30 @@ public class OverView implements GenosideVisualComponent, GenosideHudComponent {
             return result;
         }
 
+        public void updateForce(SessionDescriptor sd) {
+            float x_diff = this.screenPositionX - sd.screenPositionX;
+            float y_diff = this.screenPositionY - sd.screenPositionY;
+            float dist = x_diff * x_diff + y_diff * y_diff;
+
+            this.screenForceX += x_diff / (dist + 1.2f) * 0.1f;
+            this.screenForceY += y_diff / (dist + 1.2f) * 0.1f;
+            sd.screenForceX   -= x_diff / (dist + 1.2f) * 0.1f;
+            sd.screenForceY   -= y_diff / (dist + 1.2f) * 0.1f;
+        }
+
         long genePosition;
         float zoom;
 
+        float screenForceX;
+        float screenForceY;
         float screenPositionX;
         float screenPositionY;
         float screenScale;
+
+        public void tick(float dt) {
+            screenPositionX += screenForceX * dt;
+            screenPositionY += screenForceY * dt;
+        }
     }
 
     ConcurrentLinkedQueue<SessionDescriptor> sessions = new ConcurrentLinkedQueue<SessionDescriptor>();
@@ -112,7 +130,22 @@ public class OverView implements GenosideVisualComponent, GenosideHudComponent {
     }
 
     public void tick(float dt) {
-
+         // update forces
+        for(SessionDescriptor descriptor : sessions) {
+            Vector2 pos = new Vector2(descriptor.screenPositionX, descriptor.screenPositionY);
+            float dist = pos.lengthSquared();
+            pos.normalize();
+            descriptor.screenForceX = descriptor.screenPositionX / dist  - pos.x;
+            descriptor.screenForceY = descriptor.screenPositionY / dist - pos.y;
+        }
+        for(SessionDescriptor descriptor1 : sessions) {
+            for(SessionDescriptor descriptor2 : sessions) {
+                descriptor1.updateForce(descriptor2);
+            }
+        }
+        for(SessionDescriptor descriptor : sessions) {
+            descriptor.tick(dt);
+        }
     }
 
 }

@@ -19,11 +19,13 @@ import com.soulaim.tech.managers.ShaderManager;
 import com.soulaim.tech.managers.TextureManager;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideHudComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GenoSideTimer;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview.OverView;
 
 
 public class GenoGLListener implements GLEventListener, GenosideHudComponent {
 
+    GenoSideTimer timer = new GenoSideTimer();
     OverView overView = new OverView();
 
     public boolean handle(MouseEvent event, float screen_x, float screen_y) {
@@ -40,6 +42,10 @@ public class GenoGLListener implements GLEventListener, GenosideHudComponent {
 	public void display(GLAutoDrawable drawable) {
 		SoulGL2 gl = new DesktopGL2(drawable.getGL().getGL2());
 		gl.glClear(GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_COLOR_BUFFER_BIT);
+
+        float dt = timer.getDT();
+
+        overView.tick(dt);
         overView.draw(gl);
 	}
 
