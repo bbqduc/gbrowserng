@@ -4,10 +4,11 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 
+import com.jogamp.newt.event.KeyEvent;
+import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.desktop.DesktopAssetManager;
 import com.soulaim.desktop.DesktopGL2;
 import com.soulaim.desktop.DesktopTextureManager;
-import com.soulaim.tech.gles.Color;
 import com.soulaim.tech.gles.SoulGL2;
 
 import com.soulaim.tech.gles.primitives.PrimitiveBuffers;
@@ -17,8 +18,21 @@ import com.soulaim.tech.managers.AssetManager;
 import com.soulaim.tech.managers.ShaderManager;
 import com.soulaim.tech.managers.TextureManager;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideHudComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview.OverView;
 
-public class GenoGLListener implements GLEventListener {
+
+public class GenoGLListener implements GLEventListener, GenosideHudComponent {
+
+    OverView overView = new OverView();
+
+    public boolean handle(MouseEvent event, float screen_x, float screen_y) {
+        return overView.handle(event, screen_x, screen_y);
+    }
+
+    public boolean handle(KeyEvent event) {
+        return overView.handle(event);
+    }
 
 	public GenoGLListener() {
 	}
@@ -26,7 +40,8 @@ public class GenoGLListener implements GLEventListener {
 	public void display(GLAutoDrawable drawable) {
 		SoulGL2 gl = new DesktopGL2(drawable.getGL().getGL2());
 		gl.glClear(GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_COLOR_BUFFER_BIT);
-        PrimitiveRenderer.drawCircle(0, 0, 0.7f, gl, Color.MAGENTA);
+
+        overView.draw(gl);
 	}
 
 	public void dispose(GLAutoDrawable drawable) {

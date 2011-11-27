@@ -4,16 +4,22 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import com.jogamp.newt.event.KeyEvent;
+import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.newt.event.WindowEvent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideHudComponent;
 
 public class EventHandler {
 
-	private BlockingQueue<NEWTEvent> eventQueue = new ArrayBlockingQueue<NEWTEvent>(10);
-	private GenoEvent genoEvent;
+	private BlockingQueue<NEWTEvent> eventQueue = null;
+	private GenoEvent genoEvent = new GenoEvent(800, 600);
 
-	public EventHandler() {
-	}
+    private final GenosideHudComponent client;
+
+	public EventHandler(GenosideHudComponent client, BlockingQueue<NEWTEvent> eventQueue) {
+	    this.client = client;
+        this.eventQueue = eventQueue;
+    }
 
 	public void toggleFullscreen() {
 	}
@@ -30,7 +36,9 @@ public class EventHandler {
 				} else if (keyEvent.getKeyChar() == 'f') {
 					toggleFullscreen();
 				}
-			} else if (event instanceof WindowEvent) {
+			} else if(genoEvent.event instanceof MouseEvent)  {
+                client.handle((MouseEvent)(genoEvent.event), genoEvent.getMouseGLX(), genoEvent.getMouseGLY());
+            } else if (event instanceof WindowEvent) {
 			}
 		}
 	}
