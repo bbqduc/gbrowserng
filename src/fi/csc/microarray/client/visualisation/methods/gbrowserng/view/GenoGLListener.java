@@ -5,31 +5,30 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.gl2.GLUgl2;
 
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.hud.Hud;
+import com.soulaim.desktop.DesktopAssetManager;
+import com.soulaim.desktop.DesktopGL2;
+import com.soulaim.desktop.DesktopTextureManager;
+import com.soulaim.tech.gles.Color;
+import com.soulaim.tech.gles.SoulGL2;
+
+import com.soulaim.tech.gles.primitives.PrimitiveBuffers;
+import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
+import com.soulaim.tech.gles.renderer.TextRenderer;
+import com.soulaim.tech.gles.view.Camera;
+import com.soulaim.tech.managers.AssetManager;
+import com.soulaim.tech.managers.ShaderManager;
+import com.soulaim.tech.managers.TextureManager;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
 
 public class GenoGLListener implements GLEventListener {
 
-	private Camera camera;
-	private Hud hud;
-	private SessionView sessionView;
-
-	long current_time = 0;
-	long last_time = 0;
-
-	public GenoGLListener(Camera camera, Hud hud, SessionView sessionView) {
-		this.camera = camera;
-		this.hud = hud;
-		this.sessionView = sessionView;
+	public GenoGLListener() {
 	}
 
 	public void display(GLAutoDrawable drawable) {
-		GL2 gl = drawable.getGL().getGL2();
+		SoulGL2 gl = new DesktopGL2(drawable.getGL().getGL2());
 		gl.glClear(GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_COLOR_BUFFER_BIT);
-		gl.glLoadIdentity();
-
-		this.camera.draw(gl);
-		this.sessionView.draw(gl);
-		this.hud.draw(gl);
+        PrimitiveRenderer.drawCircle(0, 0, 0.7f, gl, Color.MAGENTA);
 	}
 
 	public void dispose(GLAutoDrawable drawable) {
@@ -37,23 +36,33 @@ public class GenoGLListener implements GLEventListener {
 
 	public void init(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
-		gl.glBlendFunc(GL2.GL_ONE, GL2.GL_ONE);
+
+        TextRenderer.createInstance();
+        PrimitiveBuffers.createBuffers();
+        AssetManager.setInstance(new DesktopAssetManager());
+        TextureManager.setInstance(new DesktopTextureManager());
+        TextureManager.init(new DesktopGL2(gl));
+        ShaderManager.createPrograms(new DesktopGL2(gl));
+
+		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		gl.glClearDepth(1.0f);
 	}
 
-	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
-			int height) {
-		GL2 gl = drawable.getGL().getGL2();
-		
-		gl.glViewport(0, 0, width, height);
-		
-		gl.glMatrixMode(GL2.GL_PROJECTION);
-		gl.glLoadIdentity();
-		
-		new GLUgl2().gluPerspective(45.0f, (float)width/(float)height, 0.1f, 10.0f);
-		
-		gl.glMatrixMode(GL2.GL_MODELVIEW);
-		gl.glLoadIdentity();
+	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+
+        SoulGL2 gl = new DesktopGL2(drawable.getGL().getGL2());
+
+        gl.glViewport(0, 0, width, height);
+
+        gl.glEnable(SoulGL2.GL_CULL_FACE);
+        gl.glDisable(SoulGL2.GL_DEPTH_TEST);
+
+        PrimitiveRenderer.onSurfaceChanged(width, height);
+        TextRenderer.getInstance().onSurfaceChanged(width, height);
+
+        float aspectRatio = width * 1.0f / height;
+        GlobalVariables.aspectRatio = aspectRatio;
+
 	}
 }

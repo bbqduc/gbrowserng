@@ -25,7 +25,7 @@ public class ShaderManager {
         TEXTURE_CHANNELS
     }
 
-    private static final String path = "shaders/";
+    private static final String path = "resources/shaders/";
 
     /**
      * Loads and compiles all shaders using the shader manager that is given by the setInstance() method.
