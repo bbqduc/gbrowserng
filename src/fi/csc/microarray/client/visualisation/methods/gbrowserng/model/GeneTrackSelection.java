@@ -1,15 +1,15 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.model;
 
-public class Selection {
+public class GeneTrackSelection {
 	public int start;
 	public int end;
 	
-	public Selection()
+	public GeneTrackSelection()
 	{
 		this.start = this.end = -1;
 	}
 	
-	public Selection(int start, int end)
+	public GeneTrackSelection(int start, int end)
 	{
 		this.start = start;
 		this.end = end;
