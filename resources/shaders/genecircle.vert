@@ -15,10 +15,10 @@ varying float power;
 void main()
 {
     power = sin( time + (vertexPosition.x * 3.0 + vertexPosition.y * 3.0) ) * 0.5 + 0.5;
-    float dot = (mouse.x * vertexPosition.x + mouse.y * vertexPosition.y);
-    dot = dot * dot * dot * dot * dot * 0.3f;
+    float dot = mouse.x * vertexPosition.x + mouse.y * vertexPosition.y;
+    dot = dot * dot * dot;
 
-    vec4 vertexPos = modelMatrix * vec4(vertexPosition * max(1.0, 1.0 + dot), 0.0, 1.0);
+    vec4 vertexPos = modelMatrix * vec4(vertexPosition + mouse * max(0.0, dot), 0.0, 1.0);
 
     dist = length(vertexPosition.xy);
     if(dist > 0.001) {
