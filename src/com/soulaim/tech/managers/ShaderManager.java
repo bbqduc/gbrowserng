@@ -22,6 +22,7 @@ public class ShaderManager {
         HILIGHT,
         FALLING_METEOR,
         TORRENT,
+        GENE_CIRCLE,
         TEXTURE_CHANNELS
     }
 
@@ -52,6 +53,8 @@ public class ShaderManager {
         programs.put(ShaderID.FALLING_METEOR, loadProgram(gl, "meteor.vert", "meteor.frag"));
         System.out.println("Torrent");
         programs.put(ShaderID.TORRENT, loadProgram(gl, "torrent.vert", "torrent.frag"));
+        System.out.println("GeneCircle");
+        programs.put(ShaderID.GENE_CIRCLE, loadProgram(gl, "genecircle.vert", "genecircle.frag"));
         System.out.println("ALL OK");
 
         for(Map.Entry<ShaderID, Shader> entry : programs.entrySet()) {

@@ -1,0 +1,43 @@
+package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview;
+
+import com.soulaim.tech.gles.SoulGL2;
+import com.soulaim.tech.gles.primitives.PrimitiveBuffers;
+import com.soulaim.tech.gles.shaders.Shader;
+import com.soulaim.tech.gles.shaders.ShaderMemory;
+import com.soulaim.tech.managers.ShaderManager;
+import com.soulaim.tech.math.Matrix4;
+import com.soulaim.tech.math.Vector2;
+
+public class GeneCircleGFX {
+
+    public float time = 0;
+    private float hilight = 0;
+    private float hilightTarget = 0;
+
+    public void draw(SoulGL2 gl, Matrix4 modelMatrix, Vector2 mousePosition) {
+        Shader shader = ShaderManager.getProgram(ShaderManager.ShaderID.GENE_CIRCLE);
+        shader.start(gl);
+
+        mousePosition.normalize();
+        ShaderMemory.setUniformVec1(gl, shader, "time", time);
+        ShaderMemory.setUniformVec1(gl, shader, "hilight", hilight);
+        ShaderMemory.setUniformVec2(gl, shader, "mouse", mousePosition.x, mousePosition.y);
+        ShaderMemory.setUniformMat4(gl, shader, "modelMatrix", modelMatrix);
+
+        int vertexPositionHandle = shader.getAttribLocation(gl, "vertexPosition");
+        PrimitiveBuffers.circleBuffer.rewind();
+        gl.glEnableVertexAttribArray(vertexPositionHandle);
+        gl.glVertexAttribPointer(vertexPositionHandle, 2, SoulGL2.GL_FLOAT, false, 0, PrimitiveBuffers.circleBuffer);
+        gl.glDrawArrays(SoulGL2.GL_TRIANGLE_FAN, 0, PrimitiveBuffers.circleBuffer.capacity() / 2);
+        gl.glDisableVertexAttribArray(vertexPositionHandle);
+    }
+
+    public void tick(float dt) {
+        time += dt;
+        hilight += (1.0f - Math.pow(0.1f, dt)) * (hilightTarget - hilight);
+    }
+
+    public void setHilight(float value) {
+        hilightTarget = value;
+    }
+}

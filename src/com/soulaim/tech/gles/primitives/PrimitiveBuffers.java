@@ -31,7 +31,7 @@ public class PrimitiveBuffers {
         pointBuffer.put(0);
     }
 
-    private static final int circlePoints = 32;
+    private static final int circlePoints = 128;
 
     private static void createCircleBuffer() {
         circleBuffer = allocateFloats((circlePoints + 2) * 2);

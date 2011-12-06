@@ -26,7 +26,7 @@ public abstract class GenosideComponent {
     public Vector2 getPosition() {
         if(parent == null)
             return currentPosition;
-        return parent.getPosition().plus(new Vector2(parent.getDimensions().x * 0.5f * currentPosition.x, parent.currentDimensions.y * 0.5f * currentPosition.y));
+        return parent.getPosition().plus(new Vector2(parent.getDimensions().x * 0.5f * currentPosition.x, parent.getDimensions().y * 0.5f * currentPosition.y));
     }
 
     public Vector2 getDimensions() {
