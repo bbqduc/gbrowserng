@@ -19,14 +19,11 @@ public class TrackView extends GenosideComponent {
 
 	private Session session;
 	private Camera camera;
-	private float zoom;
 	private float startY;
-	private float sizeY;
-	private float sizeX;
-	private float baseSize;
-	private float borderSizeY;
-	private float baseBorderSizeX;
-	private float borderSizeX;
+	private float halfSize;
+	private float halfSizeX;
+	private float halfSizeY;
+	private float payloadSize;
 	
 	Matrix4 viewMatrix;
 	Matrix4 projectionMatrix;
@@ -39,31 +36,22 @@ public class TrackView extends GenosideComponent {
 		
 		this.session = session;
 		this.startY = -0.6f;
-		this.sizeY = 0.08f;
-		this.baseSize = 0.1f;
-		this.zoom = 1.0f;
-		this.borderSizeY = 0.025f;
-		this.baseBorderSizeX = 0.028f;
-		setZoom(zoom);
+		this.halfSize = 0.05f;
+		this.halfSizeY = this.halfSizeX = this.halfSize;
+		this.payloadSize = 0.8f;
 	}
-		
-	public void setZoom(float zoom) {
-		this.zoom = zoom;
-		this.sizeX = this.zoom * this.baseSize;
-		this.borderSizeX = this.zoom * this.baseBorderSizeX;
-	}
-
+	
 	public void draw(SoulGL2 gl) {
 		
 		for (int i = 0; i < this.session.reads.size(); ++i) {
 			Read read = this.session.reads.get(i);
-			float y = this.startY + (i + 1) * sizeY;
+			float y = this.startY + (i + 1) * this.halfSize*2;
 			drawRead(gl, y, read);
 		}
 		
 		drawRefSeq(gl, this.startY, this.session.referenceSequence);
-		drawHeatMap(gl, this.startY - sizeY, this.session.heatMap);
-		drawCoordinates(gl, this.startY - 2*sizeY, this.session.referenceSequence);
+		drawHeatMap(gl, this.startY - 2*this.halfSize, this.session.heatMap);
+		drawCoordinates(gl, this.startY - 4*this.halfSize, this.session.referenceSequence);
 	}
 	
 	private Color genomeColor(char c)
@@ -79,22 +67,23 @@ public class TrackView extends GenosideComponent {
 	}
 
 	private void drawRead(SoulGL2 gl, float y, Read read) {
-		float x = sizeX * read.position;
+		float x = 2 * this.halfSizeX * read.position;
 		
 		for (int i = 0; i < read.genome.length; ++i) {
 			char c = read.genome[i];
 			if (read.snp[i]) {
-				PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, sizeX, sizeY, gl, Color.RED);
+				PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, this.halfSizeX, this.halfSizeY, gl, Color.RED);
 			}
 			Color genomeColor = genomeColor(c);
-			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, sizeX-2*borderSizeX, sizeY-2*borderSizeY, gl, genomeColor);
-
+			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, this.halfSizeX*payloadSize, this.halfSizeY*payloadSize, gl, genomeColor);
+			/*
 			if (this.sizeX >= this.sizeY)
 			{
-				float fontSize = sizeY - 2*borderSizeY;
+				float fontSize = sizeY*payloadSize;
 				TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), x, y, fontSize, Color.WHITE);
 			}
-			x += sizeX;
+			*/
+			x += 2*this.halfSizeX;
 		}
 	}
 
@@ -106,14 +95,16 @@ public class TrackView extends GenosideComponent {
 
 			char c = refSeq.sequence[i];
 			Color genomeColor = genomeColor(c);
-			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, sizeX - 2*borderSizeX, sizeY - 2*borderSizeY, gl, genomeColor);
-
-			if (this.sizeX >= this.sizeY)
+			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, this.halfSizeX*payloadSize, this.halfSizeY*payloadSize, gl, genomeColor);
+			/*
+ 			if (this.sizeX >= this.sizeY)
 			{
-				float fontSize = sizeY - 2*borderSizeY;
+				float fontSize = sizeY*payloadSize;
 				TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), x, y, fontSize, Color.WHITE);
 			}
-			x += sizeX;
+			*/
+			x += 2*this.halfSizeX;
+			
 		}
 	}
 
@@ -128,9 +119,9 @@ public class TrackView extends GenosideComponent {
 			if (redness > blueness)
 				heatColor = Color.RED;
 			
-			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, sizeX - 2*borderSizeX, sizeY - 2*borderSizeY, gl, heatColor);
+			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, this.halfSizeX*payloadSize, this.halfSizeX*payloadSize, gl, heatColor);
 
-			x += sizeX;
+			x += 2*this.halfSizeX;
 		}
 	}
 	
@@ -141,12 +132,13 @@ public class TrackView extends GenosideComponent {
 		
 		for (int i = 0; i < refSeq.sequence.length; i += step) {
 			String pos = Integer.toString(i);
-			
+			/*
 			TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, pos, x, y, sizeY, Color.WHITE);
 			
 			while (sizeX * step < pos.length()*sizeY)
 				step += 5;
 			x += sizeX * step;
+			*/
 		}
 	}
 
