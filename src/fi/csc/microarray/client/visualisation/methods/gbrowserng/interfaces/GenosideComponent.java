@@ -37,7 +37,8 @@ public abstract class GenosideComponent {
     private void updatePosition() {
         if(parent == null)
             relativePosition.copyFrom(currentPosition);
-        relativePosition.copyFrom( parent.getPosition().plus(new Vector2(parent.getDimensions().x * 0.5f * currentPosition.x, parent.getDimensions().y * 0.5f * currentPosition.y)) );
+        else
+            relativePosition.copyFrom( parent.getPosition().plus(new Vector2(parent.getDimensions().x * 0.5f * currentPosition.x, parent.getDimensions().y * 0.5f * currentPosition.y)) );
     }
 
     private void updateDimensions() {
@@ -45,7 +46,8 @@ public abstract class GenosideComponent {
             relativeDimensions.x = 2;
             relativeDimensions.y = 2;
         }
-        relativeDimensions.copyFrom( parent.getDimensions().scale(0.5f).scale(new Vector2(currentDimensions.x * 0.5f, currentDimensions.y * 0.5f)).scale(2.0f) );
+        else
+            relativeDimensions.copyFrom( parent.getDimensions().scale(0.5f).scale(new Vector2(currentDimensions.x * 0.5f, currentDimensions.y * 0.5f)).scale(2.0f) );
     }
 
     // transforms a float from -1, 1 range to the correct position within this component
