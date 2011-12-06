@@ -1,6 +1,5 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.controller;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import com.jogamp.newt.event.KeyEvent;
