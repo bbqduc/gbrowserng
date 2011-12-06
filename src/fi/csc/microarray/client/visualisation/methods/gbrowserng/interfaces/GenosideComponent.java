@@ -59,6 +59,16 @@ public abstract class GenosideComponent {
     public float gly(float y) {
         return getPosition().y + getDimensions().y * 0.5f * y;
     }
+    
+    public float glySize(float y) 
+    {
+    	return this.getDimensions().y/2 * y;
+    }
+    
+    public float glxSize(float x) 
+    {
+    	return this.getDimensions().x/2 * x;
+    }   
 
     public void setPosition(float x, float y) {
         targetPosition.x = x;

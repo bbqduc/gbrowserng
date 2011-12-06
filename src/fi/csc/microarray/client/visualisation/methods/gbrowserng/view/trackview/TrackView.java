@@ -37,12 +37,11 @@ public class TrackView extends GenosideComponent {
 		this.session = session;
 		this.startY = -0.6f;
 		this.halfSize = 0.05f;
-		this.halfSizeY = this.halfSizeX = this.halfSize;
+		this.halfSizeX = this.halfSizeY = this.halfSize;
 		this.payloadSize = 0.8f;
 	}
 	
 	public void draw(SoulGL2 gl) {
-		
 		for (int i = 0; i < this.session.reads.size(); ++i) {
 			Read read = this.session.reads.get(i);
 			float y = this.startY + (i + 1) * this.halfSize*2;
@@ -69,13 +68,15 @@ public class TrackView extends GenosideComponent {
 	private void drawRead(SoulGL2 gl, float y, Read read) {
 		float x = 2 * this.halfSizeX * read.position;
 		
-		for (int i = 0; i < read.genome.length; ++i) {
+		for (int i = 0; i < read.genome.length; ++i, x += 2*this.halfSizeX) {
+			if (!xWithinScreen(x) || !yWithinScreen(y)) continue;
+			
 			char c = read.genome[i];
 			if (read.snp[i]) {
-				PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, this.halfSizeX, this.halfSizeY, gl, Color.RED);
+				PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, glx(x), gly(y), 0, glxSize(halfSizeX), glySize(halfSizeY), gl, Color.RED);
 			}
 			Color genomeColor = genomeColor(c);
-			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, this.halfSizeX*payloadSize, this.halfSizeY*payloadSize, gl, genomeColor);
+			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, glx(x), gly(y), 0, glxSize(this.halfSizeX*payloadSize), glySize(this.halfSizeY*payloadSize), gl, genomeColor);
 			/*
 			if (this.sizeX >= this.sizeY)
 			{
@@ -83,19 +84,19 @@ public class TrackView extends GenosideComponent {
 				TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), x, y, fontSize, Color.WHITE);
 			}
 			*/
-			x += 2*this.halfSizeX;
 		}
 	}
 
 	private void drawRefSeq(SoulGL2 gl, float y, ReferenceSequence refSeq) {
 
-		float x = 0.0f;
+		float x = 0;
 
-		for (int i = 0; i < refSeq.sequence.length; ++i) {
+		for (int i = 0; i < refSeq.sequence.length; ++i, x += 2*this.halfSizeX) {
+			if (!xWithinScreen(x) || !yWithinScreen(y)) continue;
 
 			char c = refSeq.sequence[i];
 			Color genomeColor = genomeColor(c);
-			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, this.halfSizeX*payloadSize, this.halfSizeY*payloadSize, gl, genomeColor);
+			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, glx(x), gly(y), 0, glxSize(this.halfSizeX*payloadSize), glySize(this.halfSizeY*payloadSize), gl, genomeColor);
 			/*
  			if (this.sizeX >= this.sizeY)
 			{
@@ -103,15 +104,15 @@ public class TrackView extends GenosideComponent {
 				TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), x, y, fontSize, Color.WHITE);
 			}
 			*/
-			x += 2*this.halfSizeX;
-			
 		}
 	}
 
 	private void drawHeatMap(SoulGL2 gl, float y, HeatMap heatMap) {
-		float x = 0.0f;
+		float x = 0;
 
-		for (int i = 0; i < heatMap.heat.length; ++i) {
+		for (int i = 0; i < heatMap.heat.length; ++i, x += 2*this.halfSizeX) {
+			if (!xWithinScreen(x) || !yWithinScreen(y)) continue;
+
 			float redness = (float) heatMap.heat[i] / (float) heatMap.max;
 			float blueness = 1.0f - redness;
 			
@@ -119,15 +120,13 @@ public class TrackView extends GenosideComponent {
 			if (redness > blueness)
 				heatColor = Color.RED;
 			
-			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, this.halfSizeX*payloadSize, this.halfSizeX*payloadSize, gl, heatColor);
-
-			x += 2*this.halfSizeX;
+			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, glx(x), gly(y), 0, glxSize(this.halfSizeX*payloadSize), glySize(this.halfSizeX*payloadSize), gl, heatColor);
 		}
 	}
 	
 	private void drawCoordinates(SoulGL2 gl, float y, ReferenceSequence refSeq)
 	{
-		float x = 0.0f;
+		float x = 0;
 		int step = 10;
 		
 		for (int i = 0; i < refSeq.sequence.length; i += step) {
@@ -141,6 +140,16 @@ public class TrackView extends GenosideComponent {
 			*/
 		}
 	}
+	
+	private boolean xWithinScreen(float x)
+	{
+		return (Math.abs(this.camera.getX() + x) < 1);
+	}
+	
+	private boolean yWithinScreen(float y)
+	{
+		return (y*y <= 1);
+	}
 
 	@Override
 	public boolean handle(MouseEvent event, float screen_x, float screen_y) {
@@ -150,7 +159,7 @@ public class TrackView extends GenosideComponent {
 	
     @Override
     protected void userTick(float dt) {
-    	this.viewMatrix.makeTranslationMatrix(this.camera.getX(), this.camera.getY(), this.camera.getZ());
+    	this.viewMatrix.makeTranslationMatrix(this.camera.getX(), this.camera.getY(), 0);
     }
 
 	@Override
