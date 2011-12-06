@@ -3,8 +3,9 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.sessionvi
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.tech.gles.SoulGL2;
+
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.SessionData;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.TrackView;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -12,11 +13,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class SessionView extends GenosideComponent {
 
     private ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
-    private final SessionData sessionData;
+    private final Session session;
 
-    public SessionView(SessionData sessionData, GenosideComponent parent) {
+    public SessionView(Session session, GenosideComponent parent) {
         super(parent);
-        this.sessionData = sessionData;
+        this.session = session;
+        this.trackViews.add(new TrackView(this, this.session));
     }
 
     public boolean handle(MouseEvent event, float screen_x, float screen_y) {

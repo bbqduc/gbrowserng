@@ -8,6 +8,7 @@ import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import com.soulaim.tech.gles.renderer.TextRenderer;
 import com.soulaim.tech.math.Vector2;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.ReferenceSequence;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.sessionview.SessionView;
 
@@ -22,14 +23,19 @@ public class OverView extends GenosideComponent {
     private float totalTime = 0;
 
     private float percentage = 0;
-
+    
+    private Session session;
+    
     ReferenceSequence referenceSequence = null;
     ConcurrentLinkedQueue<SessionView> sessions = new ConcurrentLinkedQueue<SessionView>();
 
     SessionView activeSession = null;
 
-    public OverView() {
+    public OverView(Session session) {
         super(null);
+        this.session = session;
+        this.activeSession = new SessionView(session, this);
+        this.sessions.add(this.activeSession);
     }
 
     public boolean handle(MouseEvent event, float x, float y) {
@@ -57,15 +63,21 @@ public class OverView extends GenosideComponent {
     }
 
     public boolean handle(KeyEvent event) {
+        if(activeSession != null) {
+            return activeSession.handle(event);
+        }
         return false;
     }
 
-
     public void draw(SoulGL2 gl) {
-        Vector2 mypos = this.getPosition();
-        PrimitiveRenderer.drawCircle(mypos.x, mypos.y, 0.40f, gl, Color.MAGENTA);
-        PrimitiveRenderer.drawCircle(mypos.x, mypos.y, 0.38f, gl, Color.BLACK);
-        TextRenderer.getInstance().drawText(gl, "lol: " + percentage, mypos.x, mypos.y, 1.0f);
+        if(activeSession != null) {
+            activeSession.draw(gl);
+        } else {
+        	Vector2 mypos = this.getPosition();
+        	PrimitiveRenderer.drawCircle(mypos.x, mypos.y, 0.40f, gl, Color.MAGENTA);
+        	PrimitiveRenderer.drawCircle(mypos.x, mypos.y, 0.38f, gl, Color.BLACK);
+        	TextRenderer.getInstance().drawText(gl, "lol: " + percentage, mypos.x, mypos.y, 1.0f);
+        }
     }
 
     @Override
@@ -81,7 +93,10 @@ public class OverView extends GenosideComponent {
             this.setPosition(-0.7f, 0.0f);
             totalTime = 0;
         }
-
+        
+        if (this.activeSession != null) {
+        	this.activeSession.tick(dt);
+        }
     }
 
 }

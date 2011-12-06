@@ -4,8 +4,6 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 
-import com.jogamp.newt.event.KeyEvent;
-import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.desktop.DesktopAssetManager;
 import com.soulaim.desktop.DesktopGL2;
 import com.soulaim.desktop.DesktopTextureManager;
@@ -21,18 +19,14 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GenoSideTimer;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview.OverView;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.TrackView;
-
 
 public class GenoGLListener implements GLEventListener {
 
     private GenoSideTimer timer = new GenoSideTimer();
     private OverView overView;
-    private TrackView trackView;
-
-	public GenoGLListener(OverView overView, TrackView trackView) {
+    
+	public GenoGLListener(OverView overView) {
 		this.overView = overView;
-		this.trackView = trackView;
   }
 
 	public void display(GLAutoDrawable drawable) {
@@ -41,12 +35,9 @@ public class GenoGLListener implements GLEventListener {
 
         float dt = timer.getDT();
 
-        //overView.tick(dt);
-        //overView.draw(gl);
-        
-        trackView.tick(dt);
-        trackView.draw(gl);
-	}
+        overView.tick(dt);
+        overView.draw(gl);
+    }
 
 	public void dispose(GLAutoDrawable drawable) {
 	}

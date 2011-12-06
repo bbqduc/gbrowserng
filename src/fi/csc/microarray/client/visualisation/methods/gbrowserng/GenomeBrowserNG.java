@@ -25,12 +25,11 @@ public class GenomeBrowserNG {
 	
 	public GenomeBrowserNG(int width, int height) {
 		Session session = new Session();
-		OverView overView = new OverView();
-		TrackView trackView = new TrackView(overView, session);
+		OverView overView = new OverView(session);
 		
 		this.eventQueue = new LinkedBlockingQueue<NEWTEvent>();
 		this.windowListener = new GenoWindowListener(eventQueue);
-		this.glListener = new GenoGLListener(overView, trackView);
+		this.glListener = new GenoGLListener(overView);
 		this.genoWindow = new GenoWindow(width, height);
 		this.eventHandler = new EventHandler(this.glListener.getRoot(), eventQueue);
 

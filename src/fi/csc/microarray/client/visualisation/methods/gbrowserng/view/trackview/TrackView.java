@@ -6,6 +6,8 @@ import com.soulaim.tech.gles.Color;
 import com.soulaim.tech.gles.SoulGL2;
 import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import com.soulaim.tech.gles.renderer.TextRenderer;
+import com.soulaim.tech.gles.view.Camera;
+import com.soulaim.tech.math.Matrix4;
 
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.HeatMap;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Read;
@@ -16,6 +18,7 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.Geno
 public class TrackView extends GenosideComponent {
 
 	private Session session;
+	private Camera camera;
 	private float zoom;
 	private float startY;
 	private float sizeY;
@@ -24,15 +27,22 @@ public class TrackView extends GenosideComponent {
 	private float borderSizeY;
 	private float baseBorderSizeX;
 	private float borderSizeX;
+	
+	Matrix4 viewMatrix;
+	Matrix4 projectionMatrix;
 
 	public TrackView(GenosideComponent parent, Session session) {
 		super(parent);
+		this.camera = new Camera();
+		this.viewMatrix = new Matrix4();
+		this.projectionMatrix = new Matrix4();
+		
 		this.session = session;
 		this.startY = -0.6f;
 		this.sizeY = 0.08f;
 		this.baseSize = 0.1f;
 		this.zoom = 1.0f;
-		this.borderSizeY = 0.028f;
+		this.borderSizeY = 0.025f;
 		this.baseBorderSizeX = 0.028f;
 		setZoom(zoom);
 	}
@@ -74,15 +84,15 @@ public class TrackView extends GenosideComponent {
 		for (int i = 0; i < read.genome.length; ++i) {
 			char c = read.genome[i];
 			if (read.snp[i]) {
-				PrimitiveRenderer.drawRectangle(x, y, sizeX, sizeY, gl, Color.RED);
+				PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, sizeX, sizeY, gl, Color.RED);
 			}
 			Color genomeColor = genomeColor(c);
-			PrimitiveRenderer.drawRectangle(x, y, sizeX - 2*borderSizeX, sizeY - 2*borderSizeY, gl, genomeColor);
+			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, sizeX-2*borderSizeX, sizeY-2*borderSizeY, gl, genomeColor);
 
 			if (this.sizeX >= this.sizeY)
 			{
 				float fontSize = sizeY - 2*borderSizeY;
-				TextRenderer.getInstance().drawText(gl, Character.toString(c), x, y, fontSize);
+				TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), x, y, fontSize, Color.WHITE);
 			}
 			x += sizeX;
 		}
@@ -96,12 +106,12 @@ public class TrackView extends GenosideComponent {
 
 			char c = refSeq.sequence[i];
 			Color genomeColor = genomeColor(c);
-			PrimitiveRenderer.drawRectangle(x, y, sizeX - 2*borderSizeX, sizeY - 2*borderSizeY, gl, genomeColor);
-			
+			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, sizeX - 2*borderSizeX, sizeY - 2*borderSizeY, gl, genomeColor);
+
 			if (this.sizeX >= this.sizeY)
 			{
 				float fontSize = sizeY - 2*borderSizeY;
-				TextRenderer.getInstance().drawText(gl, Character.toString(c), x, y, fontSize);
+				TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), x, y, fontSize, Color.WHITE);
 			}
 			x += sizeX;
 		}
@@ -117,22 +127,22 @@ public class TrackView extends GenosideComponent {
 			Color heatColor = Color.BLUE;
 			if (redness > blueness)
 				heatColor = Color.RED;
+			
+			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, x, y, 0, sizeX - 2*borderSizeX, sizeY - 2*borderSizeY, gl, heatColor);
 
-			PrimitiveRenderer.drawRectangle(x, y, sizeX - 2*borderSizeX, sizeY - 2*borderSizeY, gl, heatColor);
 			x += sizeX;
 		}
 	}
 	
 	private void drawCoordinates(SoulGL2 gl, float y, ReferenceSequence refSeq)
 	{
-		//float bot_x = borderSizeX + (sizeX - 2*borderSizeX)/2 - sizeY/2;
 		float x = 0.0f;
 		int step = 10;
 		
 		for (int i = 0; i < refSeq.sequence.length; i += step) {
 			String pos = Integer.toString(i);
 			
-			TextRenderer.getInstance().drawText(gl, pos, x, y, sizeY);
+			TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, pos, x, y, sizeY, Color.WHITE);
 			
 			while (sizeX * step < pos.length()*sizeY)
 				step += 5;
@@ -145,14 +155,22 @@ public class TrackView extends GenosideComponent {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
     @Override
     protected void userTick(float dt) {
+    	this.viewMatrix.makeTranslationMatrix(this.camera.getX(), this.camera.getY(), this.camera.getZ());
     }
 
 	@Override
 	public boolean handle(KeyEvent event) {
-		// TODO Auto-generated method stub
+		if (KeyEvent.VK_LEFT == event.getKeyCode())
+		{
+			this.camera.x += 0.1f;
+			return true;
+		} else if (KeyEvent.VK_RIGHT == event.getKeyCode()) {
+			this.camera.x -= 0.1f;
+			return true;
+		}
 		return false;
 	}
-	
 }
