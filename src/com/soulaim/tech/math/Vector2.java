@@ -187,4 +187,24 @@ public class Vector2
         result.x = x_new;
         result.y = y_new;
     }
+
+    public Vector2 increase(float dx, float dy) {
+        x += dx;
+        y += dy;
+        return this;
+    }
+
+    public void approach(Vector2 target, float dt, float base) {
+        float diff_x = target.x - x;
+        float diff_y = target.y - y;
+        float dx = (float)(1 - Math.pow(base, dt)) * diff_x;
+        float dy = (float)(1 - Math.pow(base, dt)) * diff_y;
+        increase(dx, dy);
+    }
+
+    public Vector2 scale(Vector2 v) {
+        x *= v.x;
+        y *= v.y;
+        return this;
+    }
 }

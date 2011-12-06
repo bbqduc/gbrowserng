@@ -11,10 +11,9 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.HeatMap;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Read;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.ReferenceSequence;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideHudComponent;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideVisualComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 
-public class TrackView implements GenosideHudComponent, GenosideVisualComponent {
+public class TrackView extends GenosideComponent {
 
 	private Session session;
 	private float zoom;
@@ -26,7 +25,8 @@ public class TrackView implements GenosideHudComponent, GenosideVisualComponent 
 	private float baseBorderSizeX;
 	private float borderSizeX;
 
-	public TrackView(Session session) {
+	public TrackView(GenosideComponent parent, Session session) {
+		super(parent);
 		this.session = session;
 		this.startY = -0.6f;
 		this.sizeY = 0.08f;
@@ -139,18 +139,15 @@ public class TrackView implements GenosideHudComponent, GenosideVisualComponent 
 			x += sizeX * step;
 		}
 	}
-	
-	@Override
-	public void tick(float dt) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public boolean handle(MouseEvent event, float screen_x, float screen_y) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+    @Override
+    protected void userTick(float dt) {
+    }
 
 	@Override
 	public boolean handle(KeyEvent event) {
