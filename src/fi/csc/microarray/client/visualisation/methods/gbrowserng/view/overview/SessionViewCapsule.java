@@ -12,10 +12,16 @@ public class SessionViewCapsule extends GenosideComponent {
     private final SessionView sessionView;
     private boolean requiresActivation = false;
     private boolean isActive = false;
+    private boolean dying = false;
+    private float death = 0;
 
     public SessionViewCapsule(SessionView sessionView) {
         super(null); // should be ok
         this.sessionView = sessionView;
+    }
+
+    public boolean isAlive() {
+        return death < 1.0f;
     }
 
     public boolean isActive() {
@@ -46,10 +52,7 @@ public class SessionViewCapsule extends GenosideComponent {
 
         if(screen_x > position.x - dimensions.x * 0.5f && screen_x < position.x + dimensions.x * 0.5f)
             if(screen_y > position.y - dimensions.y * 0.5f && screen_y < position.y + dimensions.y * 0.5f) {
-                if(event.getButton() == 1) {
-                    requiresActivation = true;
-                    return true;
-                }
+                return true;
             }
 
         return false;
@@ -67,10 +70,15 @@ public class SessionViewCapsule extends GenosideComponent {
 
     @Override
     protected void userTick(float dt) {
+        if(dying) death += dt;
         sessionView.tick(dt);
     }
 
     public SessionView getSession() {
         return sessionView;
+    }
+
+    public void die() {
+        dying = true;
     }
 }

@@ -12,6 +12,9 @@ public abstract class GenosideComponent {
     private Vector2 currentDimensions = new Vector2();
     private Vector2 targetDimensions = new Vector2();
 
+    private Vector2 relativePosition = new Vector2();
+    private Vector2 relativeDimensions = new Vector2();
+
     private final GenosideComponent parent;
 
     public GenosideComponent(GenosideComponent parent) {
@@ -24,15 +27,27 @@ public abstract class GenosideComponent {
     protected abstract void userTick(float dt);
 
     public Vector2 getPosition() {
-        if(parent == null)
-            return currentPosition;
-        return parent.getPosition().plus(new Vector2(parent.getDimensions().x * 0.5f * currentPosition.x, parent.getDimensions().y * 0.5f * currentPosition.y));
+        return relativePosition;
     }
 
     public Vector2 getDimensions() {
+        return relativeDimensions;
+    }
+
+    private void updatePosition() {
         if(parent == null)
-            return new Vector2(2, 2);
-        return parent.getDimensions().scale(0.5f).scale(new Vector2(currentDimensions.x * 0.5f, currentDimensions.y * 0.5f)).scale(2.0f);
+            relativePosition.copyFrom(currentPosition);
+        else
+            relativePosition.copyFrom( parent.getPosition().plus(new Vector2(parent.getDimensions().x * 0.5f * currentPosition.x, parent.getDimensions().y * 0.5f * currentPosition.y)) );
+    }
+
+    private void updateDimensions() {
+        if(parent == null) {
+            relativeDimensions.x = 2;
+            relativeDimensions.y = 2;
+        }
+        else
+            relativeDimensions.copyFrom( parent.getDimensions().scaled(0.5f).scale(new Vector2(currentDimensions.x * 0.5f, currentDimensions.y * 0.5f)).scale(2.0f) );
     }
 
     // transforms a float from -1, 1 range to the correct position within this component
@@ -68,6 +83,10 @@ public abstract class GenosideComponent {
     public void tick(float dt) {
         currentPosition.approach(targetPosition, dt, 0.06f);
         currentDimensions.approach(targetDimensions, dt, 0.06f);
+
+        updateDimensions();
+        updatePosition();
+
         userTick(dt);
     }
 }

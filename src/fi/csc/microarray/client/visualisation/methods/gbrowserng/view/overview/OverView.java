@@ -39,6 +39,16 @@ public class OverView extends GenosideComponent {
         }
 
         // if no session is active, handle input myself.
+        if(event.getButton() == 3 && mouseState == 0) {
+            mouseState = 3;
+
+            for(SessionViewCapsule capsule : sessions) {
+                if(capsule.handle(event, x, y)) {
+                    capsule.die();
+                    return true;
+                }
+            }
+        }
         if(event.getButton() == 1 && mouseState == 0) {
             mouseState = 1;
 
@@ -69,6 +79,7 @@ public class OverView extends GenosideComponent {
     }
 
     public boolean handle(KeyEvent event) {
+
         if (event.getKeyChar() == 'b') {
             for(SessionViewCapsule capsule : sessions) {
                 if(capsule.isActive()) {
@@ -87,8 +98,8 @@ public class OverView extends GenosideComponent {
     }
 
     public void draw(SoulGL2 gl) {
-        Vector2 mypos = this.getPosition();
 
+        Vector2 mypos = this.getPosition();
         Matrix4 geneCircleModelMatrix = new Matrix4();
         geneCircleModelMatrix.makeTranslationMatrix(mypos.x, mypos.y, 0);
         geneCircleModelMatrix.scale(0.5f, 0.5f, 0.5f);
@@ -102,7 +113,6 @@ public class OverView extends GenosideComponent {
     @Override
     protected void userTick(float dt) {
         geneCircleGFX.tick(dt);
-
         for(SessionViewCapsule capsule : sessions) {
             capsule.userTick(dt);
         }
