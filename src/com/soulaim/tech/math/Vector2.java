@@ -42,6 +42,10 @@ public class Vector2
         this.y = 0;
     }
 
+    public Vector2 scaled(float s) {
+        return new Vector2(x * s, y * s);
+    }
+
     public Vector2 scale(float s) {
         this.x *= s;
         this.y *= s;

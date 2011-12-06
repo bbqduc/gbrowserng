@@ -47,7 +47,7 @@ public abstract class GenosideComponent {
             relativeDimensions.y = 2;
         }
         else
-            relativeDimensions.copyFrom( parent.getDimensions().scale(0.5f).scale(new Vector2(currentDimensions.x * 0.5f, currentDimensions.y * 0.5f)).scale(2.0f) );
+            relativeDimensions.copyFrom( parent.getDimensions().scaled(0.5f).scale(new Vector2(currentDimensions.x * 0.5f, currentDimensions.y * 0.5f)).scale(2.0f) );
     }
 
     // transforms a float from -1, 1 range to the correct position within this component

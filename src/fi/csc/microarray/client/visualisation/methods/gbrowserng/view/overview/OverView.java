@@ -39,6 +39,16 @@ public class OverView extends GenosideComponent {
         }
 
         // if no session is active, handle input myself.
+        if(event.getButton() == 3 && mouseState == 0) {
+            mouseState = 3;
+
+            for(SessionViewCapsule capsule : sessions) {
+                if(capsule.handle(event, x, y)) {
+                    capsule.die();
+                    return true;
+                }
+            }
+        }
         if(event.getButton() == 1 && mouseState == 0) {
             mouseState = 1;
 
