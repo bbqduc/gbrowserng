@@ -5,6 +5,8 @@ import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.tech.gles.SoulGL2;
 import com.soulaim.tech.math.Vector2;
 
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.AnimatedValues;
+
 public abstract class GenosideComponent {
 
     private Vector2 currentPosition = new Vector2();
@@ -16,6 +18,7 @@ public abstract class GenosideComponent {
     private Vector2 relativeDimensions = new Vector2();
 
     private final GenosideComponent parent;
+    private AnimatedValues animatedValues = new AnimatedValues();
 
     public GenosideComponent(GenosideComponent parent) {
         this.parent = parent;
@@ -25,6 +28,10 @@ public abstract class GenosideComponent {
     public abstract boolean handle(KeyEvent event);
     protected abstract void draw(SoulGL2 gl);
     protected abstract void userTick(float dt);
+
+    public AnimatedValues getAnimatedValues() {
+        return animatedValues;
+    }
 
     public Vector2 getPosition() {
         return relativePosition;
@@ -83,6 +90,7 @@ public abstract class GenosideComponent {
     public void tick(float dt) {
         currentPosition.approach(targetPosition, dt, 0.06f);
         currentDimensions.approach(targetDimensions, dt, 0.06f);
+        animatedValues.tick(dt);
 
         updateDimensions();
         updatePosition();

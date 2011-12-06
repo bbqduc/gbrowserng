@@ -13,15 +13,21 @@ public class GeneCircleGFX {
     public float time = 0;
     private float hilight = 0;
     private float hilightTarget = 0;
+    private Vector2 mousePos = new Vector2();
 
     public void draw(SoulGL2 gl, Matrix4 modelMatrix, Vector2 mousePosition) {
         Shader shader = ShaderManager.getProgram(ShaderManager.ShaderID.GENE_CIRCLE);
         shader.start(gl);
 
-        mousePosition.normalize();
+        mousePos.copyFrom(mousePosition);
+        mousePos.scale(1.2f);
+        if(mousePos.length() > 0.6f) {
+            mousePos.scale( Math.max(0.1f, 1.6f - mousePos.length()) );
+        }
+
         ShaderMemory.setUniformVec1(gl, shader, "time", time);
         ShaderMemory.setUniformVec1(gl, shader, "hilight", hilight);
-        ShaderMemory.setUniformVec2(gl, shader, "mouse", mousePosition.x, mousePosition.y);
+        ShaderMemory.setUniformVec2(gl, shader, "mouse", mousePos.x, mousePos.y);
         ShaderMemory.setUniformMat4(gl, shader, "modelMatrix", modelMatrix);
 
         int vertexPositionHandle = shader.getAttribLocation(gl, "vertexPosition");
