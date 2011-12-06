@@ -20,7 +20,10 @@ public class SessionView extends GenosideComponent {
     public SessionView(Session session, GenosideComponent parent) {
         super(parent);
         this.session = session;
-        this.trackViews.add(new TrackView(this, this.session));
+        TrackView trackView = new TrackView(this, this.session);
+        trackView.setDimensions(2, 2);
+        this.trackViews.add(trackView);
+
     }
 
     public boolean handle(MouseEvent event, float screen_x, float screen_y) {
