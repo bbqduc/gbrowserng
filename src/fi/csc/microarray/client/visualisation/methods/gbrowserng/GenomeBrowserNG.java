@@ -9,8 +9,11 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.controller.Even
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.controller.GenoWindowListener;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.controller.Keyboard;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.controller.Mouse;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.GenoGLListener;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.GenoWindow;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview.OverView;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.TrackView;
 
 public class GenomeBrowserNG {
 	
@@ -21,9 +24,13 @@ public class GenomeBrowserNG {
 	EventHandler eventHandler;
 	
 	public GenomeBrowserNG(int width, int height) {
+		Session session = new Session();
+		TrackView trackView = new TrackView(session);
+		OverView overView = new OverView();
+		
 		this.eventQueue = new LinkedBlockingQueue<NEWTEvent>();
 		this.windowListener = new GenoWindowListener(eventQueue);
-		this.glListener = new GenoGLListener();
+		this.glListener = new GenoGLListener(overView, trackView);
 		this.genoWindow = new GenoWindow(width, height);
 		this.eventHandler = new EventHandler(this.glListener, eventQueue);
 

@@ -21,12 +21,14 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideHudComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GenoSideTimer;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview.OverView;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.TrackView;
 
 
 public class GenoGLListener implements GLEventListener, GenosideHudComponent {
 
-    GenoSideTimer timer = new GenoSideTimer();
-    OverView overView = new OverView();
+    private GenoSideTimer timer = new GenoSideTimer();
+    private OverView overView;
+    private TrackView trackView;
 
     public boolean handle(MouseEvent event, float screen_x, float screen_y) {
         return overView.handle(event, screen_x, screen_y);
@@ -36,7 +38,9 @@ public class GenoGLListener implements GLEventListener, GenosideHudComponent {
         return overView.handle(event);
     }
 
-	public GenoGLListener() {
+	public GenoGLListener(OverView overView, TrackView trackView) {
+		this.overView = overView;
+		this.trackView = trackView;
 	}
 
 	public void display(GLAutoDrawable drawable) {
@@ -45,8 +49,11 @@ public class GenoGLListener implements GLEventListener, GenosideHudComponent {
 
         float dt = timer.getDT();
 
-        overView.tick(dt);
-        overView.draw(gl);
+        //overView.tick(dt);
+        //overView.draw(gl);
+        
+        trackView.tick(dt);
+        trackView.draw(gl);
 	}
 
 	public void dispose(GLAutoDrawable drawable) {
