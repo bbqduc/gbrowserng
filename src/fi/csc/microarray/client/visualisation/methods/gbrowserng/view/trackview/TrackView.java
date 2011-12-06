@@ -5,6 +5,7 @@ import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.tech.gles.Color;
 import com.soulaim.tech.gles.SoulGL2;
 import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
+import com.soulaim.tech.gles.renderer.TextRenderer;
 
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.HeatMap;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Read;
@@ -17,28 +18,23 @@ public class TrackView implements GenosideHudComponent, GenosideVisualComponent 
 
 	private Session session;
 	private float zoom;
-	private float y;
+	private float startY;
 	private float sizeY;
 	private float sizeX;
 	private float baseSize;
 	private float borderSizeY;
 	private float baseBorderSizeX;
 	private float borderSizeX;
-	
-	private static final float cA[] = {0.5f, 0.2f, 0.2f, 1.0f};
-	private static final float cC[] = {0.6f, 1.0f, 0.2f, 1.0f};
-	private static final float cG[] = {0.1f, 0.5f, 0.3f, 1.0f};
-	private static final float cT[] = {0.2f, 0.1f, 1.0f, 1.0f};
 
 	public TrackView(Session session) {
 		this.session = session;
-		this.y = -0.6f;
+		this.startY = -0.6f;
 		this.sizeY = 0.08f;
 		this.baseSize = 0.1f;
 		this.zoom = 1.0f;
-		this.borderSizeY = 0.008f;
-		this.baseBorderSizeX = 0.008f;
-		setZoom(this.zoom);
+		this.borderSizeY = 0.028f;
+		this.baseBorderSizeX = 0.028f;
+		setZoom(zoom);
 	}
 		
 	public void setZoom(float zoom) {
@@ -48,119 +44,100 @@ public class TrackView implements GenosideHudComponent, GenosideVisualComponent 
 	}
 
 	public void draw(SoulGL2 gl) {
-		PrimitiveRenderer.drawRectangle(0.0f, 0.0f, 0.5f, 0.5f, gl, Color.BLUE);
 		
 		for (int i = 0; i < this.session.reads.size(); ++i) {
 			Read read = this.session.reads.get(i);
-			float bot_y = this.y + (i + 1) * sizeY;
-			drawRead(gl, bot_y, read);
+			float y = this.startY + (i + 1) * sizeY;
+			drawRead(gl, y, read);
 		}
-		drawRefSeq(this.y, this.session.referenceSequence);
-		drawHeatMap(this.y - sizeY, this.session.heatMap);
-		drawCoordinates(this.y - 2*sizeY, this.session.referenceSequence);
+		
+		drawRefSeq(gl, this.startY, this.session.referenceSequence);
+		drawHeatMap(gl, this.startY - sizeY, this.session.heatMap);
+		drawCoordinates(gl, this.startY - 2*sizeY, this.session.referenceSequence);
+	}
+	
+	private Color genomeColor(char c)
+	{
+		if (c == 'A')
+			return Color.BLUE;
+		else if (c == 'G')
+			return Color.CYAN;
+		else if (c == 'C')
+			return Color.ORANGE;
+		else // (c == 'T')
+			return Color.MAGENTA;
 	}
 
-	private void drawRead(SoulGL2 gl, float bot_y, Read read) {
-		float bot_x = sizeX * read.position;
-
+	private void drawRead(SoulGL2 gl, float y, Read read) {
+		float x = sizeX * read.position;
+		
 		for (int i = 0; i < read.genome.length; ++i) {
-
 			char c = read.genome[i];
 			if (read.snp[i]) {
-				PrimitiveRenderer.drawRectangle(bot_x, bot_y, sizeX, sizeY, gl, Color.BLUE);
-				//GL11.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-				//Quad.drawQuad(bot_x, bot_y, bot_x + sizeX, bot_y + sizeY, 0.0f);
+				PrimitiveRenderer.drawRectangle(x, y, sizeX, sizeY, gl, Color.RED);
 			}
-			/*
-			if (c == 'A')
-				GL11.glColor4f(cA[0], cA[1], cA[2], cA[3]);
-			else if (c == 'G')
-				GL11.glColor4f(cG[0], cG[1], cG[2], cG[3]);
-			else if (c == 'C')
-				GL11.glColor4f(cC[0], cC[1], cC[2], cC[3]);
-			else
-				GL11.glColor4f(cT[0], cT[1], cT[2], cT[3]);
+			Color genomeColor = genomeColor(c);
+			PrimitiveRenderer.drawRectangle(x, y, sizeX - 2*borderSizeX, sizeY - 2*borderSizeY, gl, genomeColor);
 
-			Quad.drawQuad(bot_x + borderSizeX, bot_y + borderSizeY, bot_x
-					+ sizeX - borderSizeX, bot_y + sizeY - borderSizeY, 0.0f);
 			if (this.sizeX >= this.sizeY)
 			{
-				float posX = bot_x + borderSizeX + (sizeX - 2*borderSizeX)/2 - sizeY/2;
-				float posY = bot_y + borderSizeY;
 				float fontSize = sizeY - 2*borderSizeY;
-				TextRenderer.drawACharacter(c, posX, posY, 0.0f, fontSize);
+				TextRenderer.getInstance().drawText(gl, Character.toString(c), x, y, fontSize);
 			}
-			bot_x += sizeX;
-			*/
+			x += sizeX;
 		}
 	}
 
-	private void drawRefSeq(float bot_y, ReferenceSequence refSeq) {
-		/*
-		float bot_x = 0.0f;
+	private void drawRefSeq(SoulGL2 gl, float y, ReferenceSequence refSeq) {
+
+		float x = 0.0f;
 
 		for (int i = 0; i < refSeq.sequence.length; ++i) {
 
 			char c = refSeq.sequence[i];
-
-			if (c == 'A')
-				GL11.glColor4f(cA[0], cA[1], cA[2], cA[3]);
-			else if (c == 'G')
-				GL11.glColor4f(cG[0], cG[1], cG[2], cG[3]);
-			else if (c == 'C')
-				GL11.glColor4f(cC[0], cC[1], cC[2], cC[3]);
-			else
-				GL11.glColor4f(cT[0], cT[1], cT[2], cT[3]);
-
-			Quad.drawQuad(bot_x + borderSizeX, bot_y + borderSizeY, bot_x
-					+ sizeX - borderSizeX, bot_y + sizeY - borderSizeY, 0.0f);
+			Color genomeColor = genomeColor(c);
+			PrimitiveRenderer.drawRectangle(x, y, sizeX - 2*borderSizeX, sizeY - 2*borderSizeY, gl, genomeColor);
 			
 			if (this.sizeX >= this.sizeY)
 			{
-				float posX = bot_x + borderSizeX + (sizeX - 2*borderSizeX)/2 - sizeY/2;
-				float posY = bot_y + borderSizeY;
 				float fontSize = sizeY - 2*borderSizeY;
-				TextRenderer.drawACharacter(c, posX, posY, 0.0f, fontSize);
+				TextRenderer.getInstance().drawText(gl, Character.toString(c), x, y, fontSize);
 			}
-			bot_x += sizeX;
+			x += sizeX;
 		}
-		*/
 	}
 
-	private void drawHeatMap(float bot_y, HeatMap heatMap) {
-		/*
-		float bot_x = 0.0f;
+	private void drawHeatMap(SoulGL2 gl, float y, HeatMap heatMap) {
+		float x = 0.0f;
 
 		for (int i = 0; i < heatMap.heat.length; ++i) {
 			float redness = (float) heatMap.heat[i] / (float) heatMap.max;
 			float blueness = 1.0f - redness;
 			
-			GL11.glColor4f(redness, 0.0f, blueness, 1.0f);
+			Color heatColor = Color.BLUE;
+			if (redness > blueness)
+				heatColor = Color.RED;
 
-			Quad.drawQuad(bot_x + borderSizeX, bot_y + borderSizeY, bot_x
-					+ sizeX - borderSizeX, bot_y + sizeY - borderSizeY, 0.0f);
-			bot_x += sizeX;
+			PrimitiveRenderer.drawRectangle(x, y, sizeX - 2*borderSizeX, sizeY - 2*borderSizeY, gl, heatColor);
+			x += sizeX;
 		}
-		*/
 	}
 	
-	private void drawCoordinates(float bot_y, ReferenceSequence refSeq)
+	private void drawCoordinates(SoulGL2 gl, float y, ReferenceSequence refSeq)
 	{
-		/*
-		float bot_x = borderSizeX + (sizeX - 2*borderSizeX)/2 - sizeY/2;
+		//float bot_x = borderSizeX + (sizeX - 2*borderSizeX)/2 - sizeY/2;
+		float x = 0.0f;
 		int step = 10;
 		
 		for (int i = 0; i < refSeq.sequence.length; i += step) {
 			String pos = Integer.toString(i);
 			
-			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-			TextRenderer.drawString(pos, bot_x, bot_y, 0.0f, sizeY);
+			TextRenderer.getInstance().drawText(gl, pos, x, y, sizeY);
 			
 			while (sizeX * step < pos.length()*sizeY)
 				step += 5;
-			bot_x += sizeX * step;	
+			x += sizeX * step;
 		}
-		*/
 	}
 	
 	@Override
