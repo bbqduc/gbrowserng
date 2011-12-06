@@ -26,8 +26,8 @@ public abstract class GenosideComponent {
 
     public abstract boolean handle(MouseEvent event, float screen_x, float screen_y);
     public abstract boolean handle(KeyEvent event);
-    protected abstract void draw(SoulGL2 gl);
-    protected abstract void userTick(float dt);
+    public abstract void draw(SoulGL2 gl);
+    public abstract void userTick(float dt);
 
     public AnimatedValues getAnimatedValues() {
         return animatedValues;
@@ -96,5 +96,9 @@ public abstract class GenosideComponent {
         updatePosition();
 
         userTick(dt);
+    }
+
+    public GenosideComponent getParent() {
+        return parent;
     }
 }

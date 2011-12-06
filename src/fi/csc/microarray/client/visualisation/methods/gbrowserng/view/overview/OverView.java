@@ -19,9 +19,6 @@ public class OverView extends GenosideComponent {
 
     private int mouseState = 0;
     private Vector2 mousePosition = new Vector2();
-    private float totalTime = 0;
-
-    private float percentage = 0;
 
     ReferenceSequence referenceSequence = null;
     ConcurrentLinkedQueue<SessionViewCapsule> sessions = new ConcurrentLinkedQueue<SessionViewCapsule>();
@@ -117,11 +114,18 @@ public class OverView extends GenosideComponent {
     }
 
     @Override
-    protected void userTick(float dt) {
+    public void userTick(float dt) {
         geneCircleGFX.tick(dt);
+
+        SessionViewCapsule killCapsule = null;
         for(SessionViewCapsule capsule : sessions) {
+            if(!capsule.isAlive())
+                killCapsule = capsule;
             capsule.tick(dt);
         }
+
+        if(killCapsule != null)
+            sessions.remove(killCapsule);
     }
 
 }

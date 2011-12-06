@@ -158,7 +158,7 @@ public class TrackView extends GenosideComponent {
 	}
 	
     @Override
-    protected void userTick(float dt) {
+    public void userTick(float dt) {
     	this.viewMatrix.makeTranslationMatrix(glxSize(this.camera.getX()), glySize(this.camera.getY()), 0);
     }
 

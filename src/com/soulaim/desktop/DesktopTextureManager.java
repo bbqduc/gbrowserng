@@ -29,7 +29,8 @@ public class DesktopTextureManager extends TextureManager {
 
 
     private void loadTextures(SoulGL2 gl) {
-        makeTexture(gl, "font.png", FONT);
+        makeTexture(gl, "font.png", TextureID.FONT);
+        makeTexture(gl, "quit.png", TextureID.QUIT_BUTTON);
 	}
 
     protected void internalInit(SoulGL2 gl) {

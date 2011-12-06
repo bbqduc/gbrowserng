@@ -8,12 +8,14 @@ import com.soulaim.tech.gles.SoulGL2;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoButton;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.TrackView;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SessionView extends GenosideComponent {
 
+    private final GenoButton quitButton = new GenoButton(this);
     private ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
     private final Session session;
 
@@ -27,6 +29,9 @@ public class SessionView extends GenosideComponent {
     }
 
     public boolean handle(MouseEvent event, float screen_x, float screen_y) {
+
+        quitButton.handle(event, screen_x, screen_y);
+
         // child views want to handle this?
         for(TrackView t : trackViews) {
             if(t.handle(event, screen_x, screen_y))
@@ -61,13 +66,16 @@ public class SessionView extends GenosideComponent {
         }
 
         // then draw whatever this session view wants to draw.
+        quitButton.draw(gl);
     }
 
     @Override
-    protected void userTick(float dt) {
+    public void userTick(float dt) {
         for(TrackView t : trackViews) {
             t.tick(dt);
         }
+
+        quitButton.tick(dt);
     }
 
 }

@@ -69,7 +69,7 @@ public class TextRenderer {
         modelviewProjectionMatrix.makeIdentityMatrix();
                 
         fillTextBuffers(text, x, y, scale);
-        TextureManager.bindTexture(gl, TextureID.DEFAULT);
+        TextureManager.bindTexture(gl, TextureID.FONT);
         drawTextBuffers(gl, text.length());
     }
 

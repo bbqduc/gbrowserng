@@ -6,6 +6,7 @@ import com.soulaim.tech.gles.Color;
 import com.soulaim.tech.gles.SoulGL2;
 import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import com.soulaim.tech.math.Vector2;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.sessionview.SessionView;
 
@@ -17,6 +18,7 @@ public class SessionViewCapsule extends GenosideComponent {
     private boolean dying = false;
     private float death = 0;
     private Color backGroundColor = new Color(0, 0, 0, 255);
+
 
     public SessionViewCapsule(SessionView sessionView) {
         super(null); // should be ok
@@ -69,20 +71,20 @@ public class SessionViewCapsule extends GenosideComponent {
     }
 
     @Override
-    protected void draw(SoulGL2 gl) {
+    public void draw(SoulGL2 gl) {
 
         // this is just for debug
         float v = this.getAnimatedValues().getAnimatedValue("MOUSEHOVER");
         this.backGroundColor.r = v;
         this.backGroundColor.g = v;
         this.backGroundColor.b = v;
-        PrimitiveRenderer.drawRectangle(sessionView.glx(0), sessionView.gly(0), sessionView.getDimensions().x * 0.5f, sessionView.getDimensions().y * 0.5f, gl, backGroundColor);
+        PrimitiveRenderer.drawRectangle(sessionView.glx(0), sessionView.gly(0), sessionView.getDimensions().x * 0.5f, sessionView.getDimensions().y * 0.5f / GlobalVariables.aspectRatio, gl, backGroundColor);
 
         sessionView.draw(gl);
     }
 
     @Override
-    protected void userTick(float dt) {
+    public void userTick(float dt) {
         if(dying) death += dt;
         sessionView.tick(dt);
     }
