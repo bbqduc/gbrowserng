@@ -3,15 +3,15 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.tech.gles.SoulGL2;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideHudComponent;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideVisualComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GeneTrack;
 
-public class TrackView implements GenosideVisualComponent, GenosideHudComponent {
+public class TrackView extends GenosideComponent {
 
     private final GeneTrack myTrack;
 
-    public TrackView(GeneTrack track) {
+    public TrackView(GeneTrack track, GenosideComponent parent) {
+        super(parent);
         this.myTrack = track;
     }
 
@@ -26,7 +26,8 @@ public class TrackView implements GenosideVisualComponent, GenosideHudComponent 
     public void draw(SoulGL2 gl) {
     }
 
-    public void tick(float dt) {
+    @Override
+    protected void userTick(float dt) {
     }
 
 }

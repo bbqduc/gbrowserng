@@ -3,19 +3,19 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.sessionvi
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.tech.gles.SoulGL2;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideHudComponent;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideVisualComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.SessionData;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.TrackView;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class SessionView implements GenosideVisualComponent, GenosideHudComponent {
+public class SessionView extends GenosideComponent {
 
     private ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
     private final SessionData sessionData;
 
-    public SessionView(SessionData sessionData) {
+    public SessionView(SessionData sessionData, GenosideComponent parent) {
+        super(parent);
         this.sessionData = sessionData;
     }
 
@@ -55,9 +55,8 @@ public class SessionView implements GenosideVisualComponent, GenosideHudComponen
         // then draw whatever this session view wants to draw.
     }
 
-    // could update the state of child objects here
-    // for example the information where they should be drawn etc.
-    public void tick(float dt) {
+    @Override
+    protected void userTick(float dt) {
         for(TrackView t : trackViews) {
             t.tick(dt);
         }

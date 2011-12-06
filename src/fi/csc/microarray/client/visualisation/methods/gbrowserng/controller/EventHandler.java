@@ -1,22 +1,21 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.controller;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.newt.event.WindowEvent;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideHudComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 
 public class EventHandler {
 
 	private BlockingQueue<NEWTEvent> eventQueue = null;
 	private GenoEvent genoEvent = new GenoEvent(800, 600);
 
-    private final GenosideHudComponent client;
+    private final GenosideComponent client;
 
-	public EventHandler(GenosideHudComponent client, BlockingQueue<NEWTEvent> eventQueue) {
+	public EventHandler(GenosideComponent client, BlockingQueue<NEWTEvent> eventQueue) {
 	    this.client = client;
         this.eventQueue = eventQueue;
     }
@@ -35,7 +34,9 @@ public class EventHandler {
 					return;
 				} else if (keyEvent.getKeyChar() == 'f') {
 					toggleFullscreen();
-				}
+				} else {
+                    client.handle((KeyEvent) event);
+                }
 			} else if(genoEvent.event instanceof MouseEvent)  {
                 client.handle((MouseEvent)(genoEvent.event), genoEvent.getMouseGLX(), genoEvent.getMouseGLY());
             } else if (event instanceof WindowEvent) {

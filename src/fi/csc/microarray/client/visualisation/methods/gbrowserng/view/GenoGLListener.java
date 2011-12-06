@@ -18,23 +18,15 @@ import com.soulaim.tech.managers.AssetManager;
 import com.soulaim.tech.managers.ShaderManager;
 import com.soulaim.tech.managers.TextureManager;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideHudComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GenoSideTimer;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview.OverView;
 
 
-public class GenoGLListener implements GLEventListener, GenosideHudComponent {
+public class GenoGLListener implements GLEventListener {
 
     GenoSideTimer timer = new GenoSideTimer();
     OverView overView = new OverView();
-
-    public boolean handle(MouseEvent event, float screen_x, float screen_y) {
-        return overView.handle(event, screen_x, screen_y);
-    }
-
-    public boolean handle(KeyEvent event) {
-        return overView.handle(event);
-    }
 
 	public GenoGLListener() {
 	}
@@ -80,4 +72,8 @@ public class GenoGLListener implements GLEventListener, GenosideHudComponent {
         float aspectRatio = width * 1.0f / height;
         GlobalVariables.aspectRatio = aspectRatio;
 	}
+
+    public GenosideComponent getRoot() {
+        return overView;
+    }
 }

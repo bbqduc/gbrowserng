@@ -25,7 +25,7 @@ public class GenomeBrowserNG {
 		this.windowListener = new GenoWindowListener(eventQueue);
 		this.glListener = new GenoGLListener();
 		this.genoWindow = new GenoWindow(width, height);
-		this.eventHandler = new EventHandler(this.glListener, eventQueue);
+		this.eventHandler = new EventHandler(this.glListener.getRoot(), eventQueue);
 
 		this.genoWindow.window.addKeyListener(new Keyboard(eventQueue));
 		this.genoWindow.window.addMouseListener(new Mouse(eventQueue));
