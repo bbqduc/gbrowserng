@@ -69,6 +69,7 @@ public class OverView extends GenosideComponent {
     }
 
     public boolean handle(KeyEvent event) {
+
         if (event.getKeyChar() == 'b') {
             for(SessionViewCapsule capsule : sessions) {
                 if(capsule.isActive()) {
@@ -87,8 +88,8 @@ public class OverView extends GenosideComponent {
     }
 
     public void draw(SoulGL2 gl) {
-        Vector2 mypos = this.getPosition();
 
+        Vector2 mypos = this.getPosition();
         Matrix4 geneCircleModelMatrix = new Matrix4();
         geneCircleModelMatrix.makeTranslationMatrix(mypos.x, mypos.y, 0);
         geneCircleModelMatrix.scale(0.5f, 0.5f, 0.5f);
@@ -102,7 +103,6 @@ public class OverView extends GenosideComponent {
     @Override
     protected void userTick(float dt) {
         geneCircleGFX.tick(dt);
-
         for(SessionViewCapsule capsule : sessions) {
             capsule.userTick(dt);
         }

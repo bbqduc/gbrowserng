@@ -13,9 +13,9 @@ void main() {
         discard;
 
     d = (d - 0.5) * 2.0;
-    // d = 1.0 - d * d;
-    d = d * d;
+    d = 1.0 - d * d;
+    // d = d * d;
 
     float v = hilight;
-    gl_FragColor = vec4(d * v * power, d * v * power, d * power, 1.0f);
+    gl_FragColor = vec4(d * v * power, d * v * power, 0.2 + 0.8 * d * power, 1.0f);
 }
