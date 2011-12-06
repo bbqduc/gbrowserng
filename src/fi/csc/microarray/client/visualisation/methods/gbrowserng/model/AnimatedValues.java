@@ -8,19 +8,23 @@ public class AnimatedValues {
     ConcurrentHashMap<String, Vector2> animatedValues = new ConcurrentHashMap<String, Vector2>();
 
     public float getAnimatedValue(String name) {
-        return animatedValues.get(name).x;
+        if(animatedValues.containsKey(name))
+            return animatedValues.get(name).x;
+        return 0;
     }
 
     public void setAnimatedValue(String name, float value) {
-        if(animatedValues.contains(name))
+        if(animatedValues.containsKey(name)) {
             animatedValues.get(name).y = value;
-        else
+        }
+        else {
             animatedValues.put(name, new Vector2(value, value));
+        }
     }
 
     public void tick(float dt) {
         for(Vector2 v : animatedValues.values()) {
-                v.x += (1.0f - Math.pow(0.07f, dt)) * (v.y - v.x);
+            v.x += (1.0f - Math.pow(0.1f, dt)) * (v.y - v.x);
         }
     }
 }

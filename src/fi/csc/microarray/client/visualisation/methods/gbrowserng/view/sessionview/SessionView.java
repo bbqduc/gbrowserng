@@ -55,9 +55,6 @@ public class SessionView extends GenosideComponent {
 
     public void draw(SoulGL2 gl) {
 
-        // this is just for debug
-        PrimitiveRenderer.drawRectangle(glx(0), gly(0), getDimensions().x * 0.5f, getDimensions().y * 0.5f, gl, Color.WHITE);
-
         // first draw all the internal views
         for(TrackView t : trackViews) {
             t.draw(gl);

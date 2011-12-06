@@ -49,6 +49,12 @@ public class OverView extends GenosideComponent {
                 }
             }
         }
+
+        // allow capsules to update their states
+        for(SessionViewCapsule capsule : sessions)
+            capsule.handle(event, x, y);
+
+        // then see if they actually want the event
         if(event.getButton() == 1 && mouseState == 0) {
             mouseState = 1;
 
@@ -114,7 +120,7 @@ public class OverView extends GenosideComponent {
     protected void userTick(float dt) {
         geneCircleGFX.tick(dt);
         for(SessionViewCapsule capsule : sessions) {
-            capsule.userTick(dt);
+            capsule.tick(dt);
         }
     }
 

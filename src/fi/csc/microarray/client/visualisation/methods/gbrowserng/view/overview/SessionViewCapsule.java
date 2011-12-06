@@ -2,7 +2,9 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview;
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
+import com.soulaim.tech.gles.Color;
 import com.soulaim.tech.gles.SoulGL2;
+import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import com.soulaim.tech.math.Vector2;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.sessionview.SessionView;
@@ -14,6 +16,7 @@ public class SessionViewCapsule extends GenosideComponent {
     private boolean isActive = false;
     private boolean dying = false;
     private float death = 0;
+    private Color backGroundColor = new Color(0, 0, 0, 255);
 
     public SessionViewCapsule(SessionView sessionView) {
         super(null); // should be ok
@@ -52,9 +55,11 @@ public class SessionViewCapsule extends GenosideComponent {
 
         if(screen_x > position.x - dimensions.x * 0.5f && screen_x < position.x + dimensions.x * 0.5f)
             if(screen_y > position.y - dimensions.y * 0.5f && screen_y < position.y + dimensions.y * 0.5f) {
+                this.getAnimatedValues().setAnimatedValue("MOUSEHOVER", 1);
                 return true;
             }
 
+        this.getAnimatedValues().setAnimatedValue("MOUSEHOVER", 0);
         return false;
     }
 
@@ -65,6 +70,14 @@ public class SessionViewCapsule extends GenosideComponent {
 
     @Override
     protected void draw(SoulGL2 gl) {
+
+        // this is just for debug
+        float v = this.getAnimatedValues().getAnimatedValue("MOUSEHOVER");
+        this.backGroundColor.r = v;
+        this.backGroundColor.g = v;
+        this.backGroundColor.b = v;
+        PrimitiveRenderer.drawRectangle(sessionView.glx(0), sessionView.gly(0), sessionView.getDimensions().x * 0.5f, sessionView.getDimensions().y * 0.5f, gl, backGroundColor);
+
         sessionView.draw(gl);
     }
 
