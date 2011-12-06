@@ -73,10 +73,12 @@ public class DefaultShaders {
         int vertexPositionHandle = shader.getAttribLocation(gl, "vertexPosition");
         int colorHandle = shader.getUniformLocation(gl, "color");
         int MVPHandle = shader.getUniformLocation(gl, "MVPMatrix");
-        gl.glEnableVertexAttribArray(vertexPositionHandle);
+
         gl.glUniformMatrix4fv(MVPHandle, 1, false, modelviewProjectionMatrix.data, 0);
         gl.glUniform4f(colorHandle, color.r, color.g, color.b, color.a);
+
         vertexBuffer.rewind();
+        gl.glEnableVertexAttribArray(vertexPositionHandle);
         gl.glVertexAttribPointer(vertexPositionHandle, 2, SoulGL2.GL_FLOAT, false, 0, vertexBuffer);
 
         return vertexPositionHandle;

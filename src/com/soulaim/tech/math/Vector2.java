@@ -113,7 +113,7 @@ public class Vector2
     }
 
     public void normalize() {
-        scale(1 / length());
+        scale(1.0f / (length() + 0.000000001f));
     }
 
 

@@ -2,9 +2,11 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.sessionvi
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
+import com.soulaim.tech.gles.Color;
 import com.soulaim.tech.gles.SoulGL2;
 
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
+import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.TrackView;
 
@@ -49,6 +51,10 @@ public class SessionView extends GenosideComponent {
     }
 
     public void draw(SoulGL2 gl) {
+
+        // this is just for debug
+        PrimitiveRenderer.drawRectangle(glx(0), gly(0), getDimensions().x * 0.5f, getDimensions().y * 0.5f, gl, Color.WHITE);
+
         // first draw all the internal views
         for(TrackView t : trackViews) {
             t.draw(gl);
