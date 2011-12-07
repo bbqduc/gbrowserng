@@ -22,9 +22,25 @@ public class SessionView extends GenosideComponent {
     public SessionView(Session session, GenosideComponent parent) {
         super(parent);
         this.session = session;
-        TrackView trackView = new TrackView(this, this.session);
-        trackView.setDimensions(2, 2);
-        this.trackViews.add(trackView);
+        TrackView trackView1 = new TrackView(this, this.session);
+        TrackView trackView2 = new TrackView(this, this.session);
+        this.addTrackView(trackView1);
+        this.addTrackView(trackView2);
+    }
+    
+    public void addTrackView(TrackView view) {
+    	this.trackViews.add(view);
+    	int num = this.trackViews.size();
+    	int current = 0;
+    	for(TrackView t : this.trackViews) {
+    		
+    		float pos = (current+1.0f) / (num+1.0f);
+    		t.setPosition(0, pos * 2 - 1);
+    		t.setDimensions(2, 2.0f / num);
+    		
+    		++current;
+    	}
+    	
     }
 
     @Override
@@ -61,19 +77,21 @@ public class SessionView extends GenosideComponent {
     }
 
     public boolean handle(KeyEvent event) {
-
-        // child views want to handle this?
-        for(TrackView t : trackViews) {
-            if(t.handle(event))
-                return true;
+    	
+        // does this view want to handle the input?
+        if(event.getKeyChar() == 'b') {
+            getParent().childComponentCall("SESSION", "SHRINK");
+            return true;
         }
 
-        // does this view want to handle the input?
-        if(event.getKeyChar() == 'b')
-            getParent().childComponentCall("SESSION", "SHRINK");
-
-        // if not, then say so.
-        return false;
+        // child views want to handle this?
+    	boolean handled = false;
+        for(TrackView t : trackViews) {
+            if(t.handle(event))
+            	handled = true;
+        }
+        
+        return handled;
     }
 
     public void draw(SoulGL2 gl) {
