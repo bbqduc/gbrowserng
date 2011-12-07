@@ -8,6 +8,7 @@ import com.soulaim.tech.gles.TextureID;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoButton;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoVisualBorder;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.TrackView;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -16,6 +17,8 @@ public class SessionView extends GenosideComponent {
 
     private final GenoButton quitButton = new GenoButton(this, "QUIT_BUTTON", 0.97f, 0.97f, TextureID.QUIT_BUTTON);
     private final GenoButton shrinkButton = new GenoButton(this, "SHRINK_BUTTON", 0.93f, 0.97f, TextureID.SHRINK_BUTTON);
+    private final GenoVisualBorder border = new GenoVisualBorder(this);
+
     private ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
     private final Session session;
 
@@ -86,6 +89,7 @@ public class SessionView extends GenosideComponent {
         // then draw whatever this session view wants to draw.
         quitButton.draw(gl);
         shrinkButton.draw(gl);
+        border.draw(gl);
     }
 
     @Override
