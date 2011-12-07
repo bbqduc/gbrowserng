@@ -28,6 +28,36 @@ public class OverView extends GenosideComponent {
         super(null);
     }
 
+    @Override
+    public void childComponentCall(String who, String what) {
+        if(who.equals("SESSION")) {
+            if(what.equals("SHRINK")) {
+                disableActiveSession();
+            }
+            if(what.equals("KILL")) {
+                killActiveSession();
+                disableActiveSession();
+            }
+        }
+    }
+
+    private void killActiveSession() {
+        for(SessionViewCapsule capsule : sessions) {
+            if(capsule.isActive()) {
+                capsule.die();
+            }
+        }
+    }
+
+    private void disableActiveSession() {
+        for(SessionViewCapsule capsule : sessions) {
+            if(capsule.isActive()) {
+                capsule.deactivate();
+                activeSession = null;
+            }
+        }
+    }
+
     public boolean handle(MouseEvent event, float x, float y) {
 
         // if there is an active session, let it handle input.
@@ -82,16 +112,6 @@ public class OverView extends GenosideComponent {
     }
 
     public boolean handle(KeyEvent event) {
-
-        if (event.getKeyChar() == 'b') {
-            for(SessionViewCapsule capsule : sessions) {
-                if(capsule.isActive()) {
-                    capsule.deactivate();
-                    activeSession = null;
-                    return true;
-                }
-            }
-        }
 
         if (activeSession != null) {
             return activeSession.handle(event);

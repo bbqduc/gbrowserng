@@ -151,7 +151,11 @@ public class TrackView extends GenosideComponent {
 		return (y*y <= 1);
 	}
 
-	@Override
+    @Override
+    public void childComponentCall(String who, String what) {
+    }
+
+    @Override
 	public boolean handle(MouseEvent event, float screen_x, float screen_y) {
 		// TODO Auto-generated method stub
 		return false;

@@ -23,6 +23,7 @@ public class SessionViewCapsule extends GenosideComponent {
     public SessionViewCapsule(SessionView sessionView) {
         super(null); // should be ok
         this.sessionView = sessionView;
+        this.getAnimatedValues().setAnimatedValue("ALPHA", 1.0f);
     }
 
     public boolean isAlive() {
@@ -43,11 +44,18 @@ public class SessionViewCapsule extends GenosideComponent {
         requiresActivation = false;
         sessionView.setDimensions(2, 2);
         sessionView.setPosition(0, 0);
+        this.getAnimatedValues().setAnimatedValue("ALPHA", -0.02f);
     }
 
     public void deactivate() {
+        System.out.println("deactivating capsule");
         isActive = false;
         sessionView.setDimensions(0.4f, 0.2f);
+        this.getAnimatedValues().setAnimatedValue("ALPHA", 1.0f);
+    }
+
+    @Override
+    public void childComponentCall(String who, String what) {
     }
 
     @Override
@@ -75,10 +83,17 @@ public class SessionViewCapsule extends GenosideComponent {
 
         // this is just for debug
         float v = this.getAnimatedValues().getAnimatedValue("MOUSEHOVER");
-        this.backGroundColor.r = v;
-        this.backGroundColor.g = v;
-        this.backGroundColor.b = v;
-        PrimitiveRenderer.drawRectangle(sessionView.glx(0), sessionView.gly(0), sessionView.getDimensions().x * 0.5f, sessionView.getDimensions().y * 0.5f / GlobalVariables.aspectRatio, gl, backGroundColor);
+        float alpha = this.getAnimatedValues().getAnimatedValue("ALPHA");
+
+        if(alpha > 0) {
+            gl.glEnable(SoulGL2.GL_BLEND);
+            this.backGroundColor.r = v;
+            this.backGroundColor.g = v;
+            this.backGroundColor.b = v;
+            this.backGroundColor.a = alpha * (1.0f - death);
+            PrimitiveRenderer.drawRectangle(sessionView.glx(0), sessionView.gly(0), sessionView.getDimensions().x * 0.5f, sessionView.getDimensions().y * 0.5f / GlobalVariables.aspectRatio, gl, backGroundColor);
+            gl.glDisable(SoulGL2.GL_BLEND);
+        }
 
         sessionView.draw(gl);
     }
@@ -97,3 +112,4 @@ public class SessionViewCapsule extends GenosideComponent {
         dying = true;
     }
 }
+

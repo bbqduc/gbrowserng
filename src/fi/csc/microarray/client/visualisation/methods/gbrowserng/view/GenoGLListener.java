@@ -48,8 +48,12 @@ public class GenoGLListener implements GLEventListener {
         TextRenderer.createInstance();
         PrimitiveBuffers.createBuffers();
         AssetManager.setInstance(new DesktopAssetManager());
-        TextureManager.setInstance(new DesktopTextureManager());
+
+        DesktopTextureManager textureManager = new DesktopTextureManager();
+        textureManager.setGLContext(drawable.getGL());
+        TextureManager.setInstance(textureManager);
         TextureManager.init(new DesktopGL2(gl));
+
         ShaderManager.createPrograms(new DesktopGL2(gl));
 
 		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);

@@ -24,6 +24,7 @@ public abstract class GenosideComponent {
         this.parent = parent;
     }
 
+    public abstract void childComponentCall(String who, String what);
     public abstract boolean handle(MouseEvent event, float screen_x, float screen_y);
     public abstract boolean handle(KeyEvent event);
     public abstract void draw(SoulGL2 gl);

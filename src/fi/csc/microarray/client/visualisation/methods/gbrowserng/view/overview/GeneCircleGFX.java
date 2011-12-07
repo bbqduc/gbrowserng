@@ -36,6 +36,7 @@ public class GeneCircleGFX {
         gl.glVertexAttribPointer(vertexPositionHandle, 2, SoulGL2.GL_FLOAT, false, 0, PrimitiveBuffers.circleBuffer);
         gl.glDrawArrays(SoulGL2.GL_TRIANGLE_FAN, 0, PrimitiveBuffers.circleBuffer.capacity() / 2);
         gl.glDisableVertexAttribArray(vertexPositionHandle);
+        shader.stop(gl);
     }
 
     public void tick(float dt) {

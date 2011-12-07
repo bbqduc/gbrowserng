@@ -7,13 +7,10 @@ import com.soulaim.tech.gles.TextureID;
 import com.soulaim.tech.managers.AssetManager;
 import com.soulaim.tech.managers.TextureManager;
 
-import java.io.File;
+import javax.media.opengl.GL;
 import java.io.IOException;
-import java.net.URL;
 import java.util.EnumMap;
 import java.util.Map;
-
-import static com.soulaim.tech.gles.TextureID.*;
 
 public class DesktopTextureManager extends TextureManager {
 
@@ -21,16 +18,22 @@ public class DesktopTextureManager extends TextureManager {
 
     private Map<TextureID, Texture> textures;
     protected boolean ready;
+    private GL glContext;
+
 
     public DesktopTextureManager() {
         super();
         textures = new EnumMap<TextureID, Texture>(TextureID.class);
     }
 
+    public void setGLContext(GL glContext) {
+        this.glContext = glContext;
+    }
 
     private void loadTextures(SoulGL2 gl) {
         makeTexture(gl, "font.png", TextureID.FONT);
         makeTexture(gl, "quit.png", TextureID.QUIT_BUTTON);
+        makeTexture(gl, "shrink.png", TextureID.SHRINK_BUTTON);
 	}
 
     protected void internalInit(SoulGL2 gl) {
@@ -59,7 +62,7 @@ public class DesktopTextureManager extends TextureManager {
     protected void internalBindTexture(SoulGL2 gl, TextureID textureID) {
         Texture texture = textures.get(textureID);
         assert texture != null : "Texture with id " + textureID + " has not been loaded!";
-        //texture.bind();
+        texture.bind(glContext);
     }
 
     // Never called. Maybe is ok.
