@@ -9,6 +9,9 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.AnimatedV
 
 public abstract class GenosideComponent {
 
+    private static int idCounter = 0;
+
+    private final int id;
     private Vector2 currentPosition = new Vector2();
     private Vector2 targetPosition = new Vector2();
     private Vector2 currentDimensions = new Vector2();
@@ -22,6 +25,11 @@ public abstract class GenosideComponent {
 
     public GenosideComponent(GenosideComponent parent) {
         this.parent = parent;
+        id = idCounter++;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public abstract void childComponentCall(String who, String what);
@@ -68,15 +76,13 @@ public abstract class GenosideComponent {
         return getPosition().y + getDimensions().y * 0.5f * y;
     }
     
-    public float glySize(float y) 
-    {
+    public float glySize(float y) {
     	return this.getDimensions().y/2 * y;
     }
     
-    public float glxSize(float x) 
-    {
+    public float glxSize(float x) {
     	return this.getDimensions().x/2 * x;
-    }   
+    }
 
     public void setPosition(float x, float y) {
         targetPosition.x = x;

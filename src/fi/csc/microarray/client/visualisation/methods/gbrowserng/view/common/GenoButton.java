@@ -33,8 +33,8 @@ public class GenoButton extends GenosideComponent {
 
     @Override
     public boolean handle(MouseEvent event, float screen_x, float screen_y) {
-        float dx = screen_x - this.getParent().glx(xpos) + 0.02f;
-        float dy = screen_y - this.getParent().gly(ypos) + 0.02f;
+        float dx = screen_x - this.getParent().glx(xpos) + 0.01f;
+        float dy = screen_y - this.getParent().gly(ypos) + 0.01f;
 
         if(dx * dx + dy * dy < 0.02f * 0.02f) {
             if(event.getButton() == 1) {

@@ -3,12 +3,14 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.tech.gles.SoulGL2;
+import com.soulaim.tech.gles.renderer.TextRenderer;
 import com.soulaim.tech.math.Matrix4;
 import com.soulaim.tech.math.Vector2;
 
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.ReferenceSequence;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GenoFPSCounter;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.sessionview.SessionView;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -16,13 +18,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class OverView extends GenosideComponent {
 
     GeneCircleGFX geneCircleGFX = new GeneCircleGFX();
+    GenoFPSCounter fpsCounter = new GenoFPSCounter();
 
     private int mouseState = 0;
     private Vector2 mousePosition = new Vector2();
 
     ReferenceSequence referenceSequence = null;
     ConcurrentLinkedQueue<SessionViewCapsule> sessions = new ConcurrentLinkedQueue<SessionViewCapsule>();
-    SessionView activeSession = null;
+    SessionViewCapsule activeSession = null;
 
     public OverView() {
         super(null);
@@ -42,39 +45,33 @@ public class OverView extends GenosideComponent {
     }
 
     private void killActiveSession() {
-        for(SessionViewCapsule capsule : sessions) {
-            if(capsule.isActive()) {
-                capsule.die();
-            }
+        if(activeSession == null)
+            return;
+        if(activeSession.isActive()) {
+            activeSession.die();
+            activeSession.getSession().setPosition(-1.4f, 0.0f);
         }
     }
 
     private void disableActiveSession() {
-        for(SessionViewCapsule capsule : sessions) {
-            if(capsule.isActive()) {
-                capsule.deactivate();
-                activeSession = null;
+        if(activeSession == null)
+            return;
+
+        for(SessionViewCapsule otherCapsule : sessions) {
+            if(otherCapsule.getId() != activeSession.getId()) {
+                otherCapsule.show();
             }
         }
+
+        activeSession.deactivate();
+        activeSession = null;
     }
 
     public boolean handle(MouseEvent event, float x, float y) {
 
         // if there is an active session, let it handle input.
         if(activeSession != null) {
-            return activeSession.handle(event, x, y);
-        }
-
-        // if no session is active, handle input myself.
-        if(event.getButton() == 3 && mouseState == 0) {
-            mouseState = 3;
-
-            for(SessionViewCapsule capsule : sessions) {
-                if(capsule.handle(event, x, y)) {
-                    capsule.die();
-                    return true;
-                }
-            }
+            return activeSession.getSession().handle(event, x, y);
         }
 
         // allow capsules to update their states
@@ -86,9 +83,19 @@ public class OverView extends GenosideComponent {
             mouseState = 1;
 
             for(SessionViewCapsule capsule : sessions) {
+                if(capsule.isDying()) {
+                    continue;
+                }
                 if(capsule.handle(event, x, y)) {
                     capsule.activate();
-                    activeSession = capsule.getSession();
+                    activeSession = capsule;
+
+                    for(SessionViewCapsule otherCapsule : sessions) {
+                        if(otherCapsule.getId() != activeSession.getId()) {
+                            otherCapsule.hide();
+                        }
+                    }
+
                     return true;
                 }
             }
@@ -112,11 +119,9 @@ public class OverView extends GenosideComponent {
     }
 
     public boolean handle(KeyEvent event) {
-
         if (activeSession != null) {
-            return activeSession.handle(event);
+            return activeSession.getSession().handle(event);
         }
-
         return false;
     }
 
@@ -131,11 +136,15 @@ public class OverView extends GenosideComponent {
         for(SessionViewCapsule capsule : sessions) {
             capsule.draw(gl);
         }
+
+        TextRenderer.getInstance().drawText(gl, "FPS: " + fpsCounter.getFps(), 0, 0.92f, 1.0f);
     }
 
     @Override
     public void userTick(float dt) {
         geneCircleGFX.tick(dt);
+        fpsCounter.tick(dt);
+
 
         SessionViewCapsule killCapsule = null;
         for(SessionViewCapsule capsule : sessions) {

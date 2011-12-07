@@ -111,5 +111,25 @@ public class SessionViewCapsule extends GenosideComponent {
     public void die() {
         dying = true;
     }
+
+    public boolean isDying() {
+        return dying;
+    }
+
+    public void hide() {
+        // todo
+        Vector2 myPos = this.sessionView.getPosition();
+        myPos.normalize();
+        myPos.scale(1.7f);
+        this.sessionView.setPosition(myPos.x, myPos.y);
+    }
+
+    public void show() {
+        // todo
+        Vector2 myPos = this.sessionView.getPosition();
+        myPos.normalize();
+        myPos.scale(0.7f);
+        this.sessionView.setPosition(myPos.x, myPos.y);
+    }
 }
 
