@@ -77,13 +77,11 @@ public class TrackView extends GenosideComponent {
 			}
 			Color genomeColor = genomeColor(c);
 			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, glx(x), gly(y), 0, glxSize(this.halfSizeX*payloadSize), glySize(this.halfSizeY*payloadSize), gl, genomeColor);
-			/*
-			if (this.sizeX >= this.sizeY)
-			{
-				float fontSize = sizeY*payloadSize;
-				TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), x, y, fontSize, Color.WHITE);
-			}
-			*/
+
+
+            float fontSize = this.glySize(1.2f);
+            TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), glx(x), glx(y), fontSize, Color.WHITE);
+
 		}
 	}
 
@@ -97,13 +95,9 @@ public class TrackView extends GenosideComponent {
 			char c = refSeq.sequence[i];
 			Color genomeColor = genomeColor(c);
 			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, glx(x), gly(y), 0, glxSize(this.halfSizeX*payloadSize), glySize(this.halfSizeY*payloadSize), gl, genomeColor);
-			/*
- 			if (this.sizeX >= this.sizeY)
-			{
-				float fontSize = sizeY*payloadSize;
-				TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), x, y, fontSize, Color.WHITE);
-			}
-			*/
+
+            float fontSize = glySize(1.2f);
+            TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), x, y, fontSize, Color.WHITE);
 		}
 	}
 
