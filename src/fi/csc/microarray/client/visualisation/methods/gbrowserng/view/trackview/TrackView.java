@@ -80,7 +80,7 @@ public class TrackView extends GenosideComponent {
 
 
             float fontSize = this.glySize(1.2f);
-            TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), glx(x), glx(y), fontSize, Color.WHITE);
+            TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), glx(x), gly(y), fontSize, Color.WHITE);
 
 		}
 	}
@@ -97,7 +97,7 @@ public class TrackView extends GenosideComponent {
 			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, glx(x), gly(y), 0, glxSize(this.halfSizeX*payloadSize), glySize(this.halfSizeY*payloadSize), gl, genomeColor);
 
             float fontSize = glySize(1.2f);
-            TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), x, y, fontSize, Color.WHITE);
+            TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), glx(x), gly(y), fontSize, Color.WHITE);
 		}
 	}
 
@@ -125,14 +125,14 @@ public class TrackView extends GenosideComponent {
 		
 		for (int i = 0; i < refSeq.sequence.length; i += step) {
 			String pos = Integer.toString(i);
-			/*
-			TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, pos, x, y, sizeY, Color.WHITE);
-			
-			while (sizeX * step < pos.length()*sizeY)
+
+			TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, pos, glx(x), glx(y), glySize(1.0f), Color.WHITE);
+
+			while (halfSizeX * step < pos.length() * halfSizeY)
 				step += 5;
-			x += sizeX * step;
-			*/
-		}
+			x += halfSizeX * step;
+
+        }
 	}
 	
 	private boolean xWithinScreen(float x)
