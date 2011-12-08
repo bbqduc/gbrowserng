@@ -143,7 +143,7 @@ public class TrackView extends GenosideComponent {
 	
 	private boolean xWithinScreen(float x)
 	{
-		return (Math.abs(this.camera.getX() + x) < 1);
+		return (Math.abs(this.getAnimatedValues().getAnimatedValue("CAM_X") + x) < 1);
 	}
 	
 	private boolean yWithinScreen(float y)
@@ -163,7 +163,8 @@ public class TrackView extends GenosideComponent {
 	
     @Override
     public void userTick(float dt) {
-    	this.viewMatrix.makeTranslationMatrix(glxSize(this.camera.getX()), glySize(this.camera.getY()), 0);
+        this.getAnimatedValues().setAnimatedValue("CAM_X", this.camera.getX());
+    	this.viewMatrix.makeTranslationMatrix(glxSize(this.getAnimatedValues().getAnimatedValue("CAM_X")), glySize(this.camera.getY()), 0);
     }
 
 	@Override
