@@ -34,6 +34,8 @@ public class DesktopTextureManager extends TextureManager {
         makeTexture(gl, "font.png", TextureID.FONT);
         makeTexture(gl, "quit.png", TextureID.QUIT_BUTTON);
         makeTexture(gl, "shrink.png", TextureID.SHRINK_BUTTON);
+        makeTexture(gl, "openfile.png", TextureID.OPENFILE_BUTTON);
+        makeTexture(gl, "maximize.png", TextureID.MAXIMIZE_BUTTON);
 	}
 
     protected void internalInit(SoulGL2 gl) {

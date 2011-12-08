@@ -14,7 +14,7 @@ varying float power;
 
 void main()
 {
-    power = sin( time + (vertexPosition.x * 3.0 + vertexPosition.y * 3.0) ) * 0.5 + 0.5;
+    power = sin( 4.0 * time + (vertexPosition.x * 3.0 + vertexPosition.y * 3.0) ) * 0.5 + 0.5;
     float dot = mouse.x * vertexPosition.x + mouse.y * vertexPosition.y;
     dot = dot * dot * dot;
 

@@ -15,8 +15,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SessionView extends GenosideComponent {
 
-    private final GenoButton quitButton = new GenoButton(this, "QUIT_BUTTON", 0.97f, 0.97f, TextureID.QUIT_BUTTON);
-    private final GenoButton shrinkButton = new GenoButton(this, "SHRINK_BUTTON", 0.93f, 0.97f, TextureID.SHRINK_BUTTON);
+    private final GenoButton quitButton = new GenoButton(this, "QUIT_BUTTON", 0.97f, 0.95f, TextureID.QUIT_BUTTON);
+    private final GenoButton shrinkButton = new GenoButton(this, "SHRINK_BUTTON", 0.92f, 0.95f, TextureID.SHRINK_BUTTON);
+    private final GenoButton openReadFileButton = new GenoButton(this, "OPENREADFILE_BUTTON", 0.87f, 0.95f, TextureID.OPENFILE_BUTTON);
+
     private final GenoVisualBorder border = new GenoVisualBorder(this);
 
     private ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
@@ -37,8 +39,8 @@ public class SessionView extends GenosideComponent {
     	int current = 0;
     	for(TrackView t : this.trackViews) {
     		
-    		float pos = (current+1.0f) / (num+1.0f);
-    		t.setPosition(0, pos * 2 - 1);
+    		float pos = (2 * current+1.0f) / num - 1.0f;
+    		t.setPosition(0, pos);
     		t.setDimensions(2, 2.0f / num);
     		
     		++current;
@@ -60,12 +62,19 @@ public class SessionView extends GenosideComponent {
                 getParent().childComponentCall("SESSION", "KILL");
             }
         }
+
+        if(who.equals("OPENREADFILE_BUTTON")) {
+            if(what.equals("PRESSED")) {
+                this.addTrackView(new TrackView(this, new Session()));
+            }
+        }
     }
 
     public boolean handle(MouseEvent event, float screen_x, float screen_y) {
 
         quitButton.handle(event, screen_x, screen_y);
         shrinkButton.handle(event, screen_x, screen_y);
+        openReadFileButton.handle(event, screen_x, screen_y);
 
         // child views want to handle this?
         for(TrackView t : trackViews) {
@@ -107,6 +116,7 @@ public class SessionView extends GenosideComponent {
         // then draw whatever this session view wants to draw.
         quitButton.draw(gl);
         shrinkButton.draw(gl);
+        openReadFileButton.draw(gl);
         border.draw(gl);
     }
 
@@ -118,6 +128,7 @@ public class SessionView extends GenosideComponent {
 
         quitButton.tick(dt);
         shrinkButton.tick(dt);
+        openReadFileButton.tick(dt);
     }
 
 }
