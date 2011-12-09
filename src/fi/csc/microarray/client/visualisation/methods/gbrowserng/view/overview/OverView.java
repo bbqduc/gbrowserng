@@ -101,7 +101,7 @@ public class OverView extends GenosideComponent {
             }
 
             // respond to mouse click
-            float percentage = (float) (Math.atan2(y, x) / Math.PI);
+            //float percentage = (float) (Math.atan2(y, x) / Math.PI);
 
             System.out.println("Adding capsule");
             SessionViewCapsule capsule = new SessionViewCapsule(new SessionView(new Session(), this));

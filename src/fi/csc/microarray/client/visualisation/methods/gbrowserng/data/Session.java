@@ -13,7 +13,7 @@ public class Session {
 		this.reads = new ArrayList<Read>();
 		this.referenceSequence = new ReferenceSequence(200);
 		
-		for (int i=0; i < 10; ++i)
+		for (int i=0; i < 8; ++i)
 		{
 			this.reads.add(GenomeGenerator.generateRead(this.referenceSequence));
 		}

@@ -4,178 +4,290 @@ import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.tech.gles.Color;
 import com.soulaim.tech.gles.SoulGL2;
+import com.soulaim.tech.gles.TextureID;
 import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import com.soulaim.tech.gles.renderer.TextRenderer;
-import com.soulaim.tech.gles.view.Camera;
-import com.soulaim.tech.math.Matrix4;
 
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.HeatMap;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Read;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.ReferenceSequence;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoButton;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoVisualBorder;
 
 public class TrackView extends GenosideComponent {
 
+	private boolean isActive;
+	private GenoButton deleteButton;
+	private GenoButton minimizeButton;
+	private GenoButton maximizeButton;
+	private final GenoVisualBorder borderComponent = new GenoVisualBorder(this);
+
 	private Session session;
-	private Camera camera;
+	private int position;
+
 	private float startY;
-	private float halfSize;
 	private float halfSizeX;
+	private float targetZoomLevel;
+
 	private float halfSizeY;
 	private float payloadSize;
-	
-	Matrix4 viewMatrix;
-	Matrix4 projectionMatrix;
+
+	Color heatColor = new Color(0, 0, 0, 1);
 
 	public TrackView(GenosideComponent parent, Session session) {
 		super(parent);
-		this.camera = new Camera();
-		this.viewMatrix = new Matrix4();
-		this.projectionMatrix = new Matrix4();
-		
+
+		this.position = 0;
 		this.session = session;
-		this.startY = -0.6f;
-		this.halfSize = 0.05f;
-		this.halfSizeX = this.halfSizeY = this.halfSize;
-		this.payloadSize = 0.8f;
+		this.startY = -0.7f;
+		this.halfSizeY = 0.05f;
+		this.targetZoomLevel = this.halfSizeX = 0.05f;
+		this.getAnimatedValues().setAnimatedValue("ZOOM", this.targetZoomLevel);
+
+		this.payloadSize = 0.85f;
+		this.isActive = true;
+		this.minimizeButton = new GenoButton(this, "MIN_BUTTON", -0.95f, 0.95f,
+				TextureID.SHRINK_BUTTON);
+		this.deleteButton = new GenoButton(this, "DEL_BUTTON", 0.8f, 0.7f,
+				TextureID.QUIT_BUTTON);
+		this.maximizeButton = new GenoButton(this, "MAX_BUTTON", -0.8f, 0.7f,
+				TextureID.SHRINK_BUTTON);
 	}
-	
+
 	public void draw(SoulGL2 gl) {
-		for (int i = 0; i < this.session.reads.size(); ++i) {
-			Read read = this.session.reads.get(i);
-			float y = this.startY + (i + 1) * this.halfSize*2;
-			drawRead(gl, y, read);
+		if (isActive) {
+			float y = this.startY;
+			drawCoordinates(gl, y, this.session.referenceSequence);
+			y += 2.5f * this.halfSizeY;
+			drawHeatMap(gl, y, this.session.heatMap);
+			y += 2.5f * this.halfSizeY;
+			drawRefSeq(gl, y, this.session.referenceSequence);
+			y += 2.5f * this.halfSizeY;
+
+			for (int i = 0; i < this.session.reads.size(); ++i, y += 2.5f * this.halfSizeY) {
+				Read read = this.session.reads.get(i);
+				drawRead(gl, y, read);
+			}
+
+			this.minimizeButton.draw(gl);
+		} else {
+			this.maximizeButton.draw(gl);
+			this.deleteButton.draw(gl);
 		}
-		
-		drawRefSeq(gl, this.startY, this.session.referenceSequence);
-		drawHeatMap(gl, this.startY - 2*this.halfSize, this.session.heatMap);
-		drawCoordinates(gl, this.startY - 4*this.halfSize, this.session.referenceSequence);
+
+		borderComponent.draw(gl);
 	}
-	
-	private Color genomeColor(char c)
-	{
+
+	private Color genomeColor(char c) {
 		if (c == 'A')
 			return Color.BLUE;
 		else if (c == 'G')
 			return Color.CYAN;
 		else if (c == 'C')
 			return Color.ORANGE;
-		else // (c == 'T')
+		else
+			// (c == 'T')
 			return Color.MAGENTA;
 	}
 
 	private void drawRead(SoulGL2 gl, float y, Read read) {
-		float x = 2 * this.halfSizeX * read.position;
-		
-		for (int i = 0; i < read.genome.length; ++i, x += 2*this.halfSizeX) {
-			if (!xWithinScreen(x) || !yWithinScreen(y)) continue;
-			
+		// positive direction
+		float x = this.halfSizeX;
+		for (int i = this.position - read.position; i < read.genome.length
+				&& x < 0.8f; ++i, x += 2 * this.halfSizeX) {
+			if (i < 0)
+				continue;
+
 			char c = read.genome[i];
 			if (read.snp[i]) {
-				PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, glx(x), gly(y), 0, glxSize(halfSizeX), glySize(halfSizeY), gl, Color.RED);
+				PrimitiveRenderer.drawRectangle(glx(x), gly(y),
+						glxSize(halfSizeX), glySize(halfSizeY), gl, Color.RED);
 			}
-			Color genomeColor = genomeColor(c);
-			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, glx(x), gly(y), 0, glxSize(this.halfSizeX*payloadSize), glySize(this.halfSizeY*payloadSize), gl, genomeColor);
-			/*
-			if (this.sizeX >= this.sizeY)
-			{
-				float fontSize = sizeY*payloadSize;
-				TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), x, y, fontSize, Color.WHITE);
+
+			PrimitiveRenderer.drawRectangle(glx(x), gly(y),
+					glxSize(this.halfSizeX * payloadSize),
+					glySize(this.halfSizeY * payloadSize), gl, genomeColor(c));
+			if (this.halfSizeX >= this.halfSizeY) {
+				TextRenderer.getInstance().drawText(gl, Character.toString(c),
+						glx(x), gly(y), glySize(20 * this.halfSizeY));
 			}
-			*/
+		}
+
+		// negative direction
+		x = -this.halfSizeX;
+		for (int i = this.position - read.position - 1; i >= 0 && x > -0.8f; --i, x -= 2 * this.halfSizeX) {
+			if (i >= read.genome.length)
+				continue;
+
+			char c = read.genome[i];
+			if (read.snp[i]) {
+				PrimitiveRenderer.drawRectangle(glx(x), gly(y),
+						glxSize(halfSizeX), glySize(halfSizeY), gl, Color.RED);
+			}
+
+			PrimitiveRenderer.drawRectangle(glx(x), gly(y),
+					glxSize(this.halfSizeX * payloadSize),
+					glySize(this.halfSizeY * payloadSize), gl, genomeColor(c));
+			if (this.halfSizeX >= this.halfSizeY) {
+				TextRenderer.getInstance().drawText(gl, Character.toString(c),
+						glx(x), gly(y), glySize(20 * this.halfSizeY));
+			}
 		}
 	}
 
 	private void drawRefSeq(SoulGL2 gl, float y, ReferenceSequence refSeq) {
 
-		float x = 0;
+		float x = this.halfSizeX;
 
-		for (int i = 0; i < refSeq.sequence.length; ++i, x += 2*this.halfSizeX) {
-			if (!xWithinScreen(x) || !yWithinScreen(y)) continue;
-
+		// positive direction -->
+		for (int i = this.position; i < refSeq.sequence.length && x < 0.8f; ++i, x += 2 * this.halfSizeX) {
+			if (i < 0)
+				continue;
 			char c = refSeq.sequence[i];
-			Color genomeColor = genomeColor(c);
-			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, glx(x), gly(y), 0, glxSize(this.halfSizeX*payloadSize), glySize(this.halfSizeY*payloadSize), gl, genomeColor);
-			/*
- 			if (this.sizeX >= this.sizeY)
-			{
-				float fontSize = sizeY*payloadSize;
-				TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, Character.toString(c), x, y, fontSize, Color.WHITE);
+			PrimitiveRenderer.drawRectangle(glx(x), gly(y),
+					glxSize(this.halfSizeX * payloadSize),
+					glySize(this.halfSizeY * payloadSize), gl, genomeColor(c));
+			if (this.halfSizeX >= this.halfSizeY) {
+				TextRenderer.getInstance().drawText(gl, Character.toString(c),
+						glx(x), gly(y), glySize(20 * this.halfSizeY));
 			}
-			*/
+
+		}
+
+		x = -this.halfSizeX;
+		// negative direction <--
+		for (int i = this.position - 1; i >= 0 && x > -0.8f; --i) {
+			if (i < refSeq.sequence.length) {
+				char c = refSeq.sequence[i];
+				Color genomeColor = genomeColor(c);
+				PrimitiveRenderer.drawRectangle(glx(x), gly(y),
+						glxSize(this.halfSizeX * payloadSize),
+						glySize(this.halfSizeY * payloadSize), gl, genomeColor);
+				if (this.halfSizeX >= this.halfSizeY) {
+					TextRenderer.getInstance().drawText(gl,
+							Character.toString(c), glx(x), gly(y),
+							glySize(20 * this.halfSizeY));
+				}
+			}
+			x -= 2 * this.halfSizeX;
 		}
 	}
 
 	private void drawHeatMap(SoulGL2 gl, float y, HeatMap heatMap) {
-		float x = 0;
+		float x = this.halfSizeX;
 
-		for (int i = 0; i < heatMap.heat.length; ++i, x += 2*this.halfSizeX) {
-			if (!xWithinScreen(x) || !yWithinScreen(y)) continue;
+		for (int i = this.position; i < heatMap.heat.length && x < 0.8f; ++i, x += 2 * this.halfSizeX) {
+			if (i < 0)
+				continue;
 
 			float redness = (float) heatMap.heat[i] / (float) heatMap.max;
 			float blueness = 1.0f - redness;
-			
-			Color heatColor = Color.BLUE;
-			if (redness > blueness)
-				heatColor = Color.RED;
-			
-			PrimitiveRenderer.drawRectangle(viewMatrix, projectionMatrix, glx(x), gly(y), 0, glxSize(this.halfSizeX*payloadSize), glySize(this.halfSizeX*payloadSize), gl, heatColor);
+
+			heatColor.r = redness;
+			heatColor.b = blueness;
+
+			PrimitiveRenderer.drawRectangle(glx(x), gly(y),
+					glxSize(this.halfSizeX * payloadSize),
+					glySize(this.halfSizeY * payloadSize), gl, heatColor);
+		}
+
+		x = -this.halfSizeX;
+		for (int i = this.position - 1; i >= 0 && i < heatMap.heat.length
+				&& x > -0.8f; --i, x -= 2 * this.halfSizeX) {
+
+			float redness = (float) heatMap.heat[i] / (float) heatMap.max;
+			float blueness = 1.0f - redness;
+
+			heatColor.r = redness;
+			heatColor.b = blueness;
+
+			PrimitiveRenderer.drawRectangle(glx(x), gly(y),
+					glxSize(this.halfSizeX * payloadSize),
+					glySize(this.halfSizeY * payloadSize), gl, heatColor);
 		}
 	}
-	
-	private void drawCoordinates(SoulGL2 gl, float y, ReferenceSequence refSeq)
-	{
-		float x = 0;
-		int step = 10;
-		
-		for (int i = 0; i < refSeq.sequence.length; i += step) {
+
+	private void drawCoordinates(SoulGL2 gl, float y, ReferenceSequence refSeq) {
+		int step = 5;
+
+		float x = this.halfSizeX;
+		for (int i = this.position; i < refSeq.sequence.length && x < 0.8f; i += step, x += 2 * halfSizeX * step) {
+			if (i < 0)
+				continue;
 			String pos = Integer.toString(i);
-			/*
-			TextRenderer.getInstance().drawText(gl, viewMatrix, projectionMatrix, pos, x, y, sizeY, Color.WHITE);
-			
-			while (sizeX * step < pos.length()*sizeY)
-				step += 5;
-			x += sizeX * step;
-			*/
+			TextRenderer.getInstance().drawText(gl, pos, glx(x), gly(y),
+					glySize(this.halfSizeY * 20));
+			while (this.halfSizeX*2*step < pos.length()*this.halfSizeY*2)
+				++step;
+		}
+
+		x = -this.halfSizeX * (1 + 2 * (step-1));
+		for (int i = this.position - step; i >= 0 && x > -0.8f; i -= step, x -= 2 * halfSizeX * step) {
+			if (i >= refSeq.sequence.length)
+				continue;
+			String pos = Integer.toString(i);
+			TextRenderer.getInstance().drawText(gl, pos, glx(x), gly(y),
+					glySize(this.halfSizeY * 20));
 		}
 	}
-	
-	private boolean xWithinScreen(float x)
-	{
-		return (Math.abs(this.camera.getX() + x) < 1);
-	}
-	
-	private boolean yWithinScreen(float y)
-	{
-		return (y*y <= 1);
+
+	@Override
+	public void childComponentCall(String who, String what) {
+		if (who.equals("MIN_BUTTON")) {
+			isActive = false;
+			this.getParent().childComponentCall("TRACKVIEW", "MINIMIZE");
+		} else if (who.equals("MAX_BUTTON")) {
+			isActive = true;
+			this.getParent().childComponentCall("TRACKVIEW", "MAXIMIZE");
+		}
 	}
 
-    @Override
-    public void childComponentCall(String who, String what) {
-    }
+	@Override
+	public void userTick(float dt) {
+		if (isActive) {
+			this.halfSizeX = this.getAnimatedValues().getAnimatedValue("ZOOM");
+			this.minimizeButton.tick(dt);
+		} else {
+			this.deleteButton.tick(dt);
+		}
+	}
 
-    @Override
+	@Override
 	public boolean handle(MouseEvent event, float screen_x, float screen_y) {
-		// TODO Auto-generated method stub
-		return false;
+		if (isActive) {
+			return this.minimizeButton.handle(event, screen_x, screen_y);
+		} else {
+			if (this.deleteButton.handle(event, screen_x, screen_y))
+				return true;
+			return this.maximizeButton.handle(event, screen_x, screen_y);
+		}
 	}
-	
-    @Override
-    public void userTick(float dt) {
-    	this.viewMatrix.makeTranslationMatrix(glxSize(this.camera.getX()), glySize(this.camera.getY()), 0);
-    }
 
 	@Override
 	public boolean handle(KeyEvent event) {
-		if (KeyEvent.VK_LEFT == event.getKeyCode())
-		{
-			this.camera.x += 0.1f;
+		if (KeyEvent.VK_LEFT == event.getKeyCode()) {
+			this.position -= 1;
 			return true;
 		} else if (KeyEvent.VK_RIGHT == event.getKeyCode()) {
-			this.camera.x -= 0.1f;
+			this.position += 1;
+			return true;
+		} else if (KeyEvent.VK_UP == event.getKeyCode()) {
+			this.targetZoomLevel *= 0.9f;
+			this.getAnimatedValues().setAnimatedValue("ZOOM",
+					this.targetZoomLevel);
+			return true;
+		} else if (KeyEvent.VK_DOWN == event.getKeyCode()) {
+			this.targetZoomLevel *= 1.0f / 0.9f;
+			this.getAnimatedValues().setAnimatedValue("ZOOM",
+					this.targetZoomLevel);
 			return true;
 		}
 		return false;
+	}
+
+	public boolean isActive() {
+		return this.isActive;
 	}
 }
