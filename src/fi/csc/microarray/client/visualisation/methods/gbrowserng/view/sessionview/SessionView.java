@@ -20,6 +20,8 @@ public class SessionView extends GenosideComponent {
 	private final GenoButton shrinkButton = new GenoButton(this,
 			"SHRINK_BUTTON", 0.93f, 0.97f, TextureID.SHRINK_BUTTON);
 	private final GenoVisualBorder border = new GenoVisualBorder(this);
+	private final GenoButton openReadFileButton = new GenoButton(this,
+			"OPENREADFILE_BUTTON", 0.87f, 0.95f, TextureID.OPENFILE_BUTTON);
 
 	private ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
 	private final Session session;
@@ -66,38 +68,28 @@ public class SessionView extends GenosideComponent {
 	@Override
 	public void childComponentCall(String who, String what) {
 
-		if (who.equals("TRACKVIEW") && (what.equals("MINIMIZE") || what.equals("MAXIMIZE"))) {
+		if (who.equals("TRACKVIEW")
+				&& (what.equals("MINIMIZE") || what.equals("MAXIMIZE"))) {
 			recalculateTrackPositions();
 		}
 
-		if (who.equals("SHRINK_BUTTON")) {
+		else if (who.equals("SHRINK_BUTTON")) {
 			if (what.equals("PRESSED")) {
 				getParent().childComponentCall("SESSION", "SHRINK");
 			}
 		}
 
-		if (who.equals("QUIT_BUTTON")) {
+		else if (who.equals("QUIT_BUTTON")) {
 			if (what.equals("PRESSED")) {
 				getParent().childComponentCall("SESSION", "KILL");
 			}
 		}
-	}
 
-	public boolean handle(MouseEvent event, float screen_x, float screen_y) {
-
-		quitButton.handle(event, screen_x, screen_y);
-		shrinkButton.handle(event, screen_x, screen_y);
-
-		// child views want to handle this?
-		for (TrackView t : trackViews) {
-			if (t.handle(event, screen_x, screen_y))
-				return true;
+		else if (who.equals("OPENREADFILE_BUTTON")) {
+			if (what.equals("PRESSED")) {
+				this.addTrackView(new TrackView(this, new Session()));
+			}
 		}
-
-		// does this view want to handle the input?
-
-		// if not, then say so.
-		return false;
 	}
 
 	public boolean handle(KeyEvent event) {
@@ -118,6 +110,24 @@ public class SessionView extends GenosideComponent {
 		return handled;
 	}
 
+	public boolean handle(MouseEvent event, float screen_x, float screen_y) {
+
+		quitButton.handle(event, screen_x, screen_y);
+		shrinkButton.handle(event, screen_x, screen_y);
+		openReadFileButton.handle(event, screen_x, screen_y);
+
+		// child views want to handle this?
+		for (TrackView t : trackViews) {
+			if (t.handle(event, screen_x, screen_y))
+				return true;
+		}
+
+		// does this view want to handle the input?
+
+		// if not, then say so.
+		return false;
+	}
+
 	public void draw(SoulGL2 gl) {
 
 		// first draw all the internal views
@@ -128,6 +138,7 @@ public class SessionView extends GenosideComponent {
 		// then draw whatever this session view wants to draw.
 		quitButton.draw(gl);
 		shrinkButton.draw(gl);
+		openReadFileButton.draw(gl);
 		border.draw(gl);
 	}
 
@@ -139,6 +150,6 @@ public class SessionView extends GenosideComponent {
 
 		quitButton.tick(dt);
 		shrinkButton.tick(dt);
+		openReadFileButton.tick(dt);
 	}
-
 }

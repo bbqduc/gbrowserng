@@ -16,6 +16,7 @@ public class GenoButton extends GenosideComponent {
     float xpos = 1;
     float ypos = 1;
     String buttonName;
+    private float buttonLock = 0;
 
     public GenoButton(GenosideComponent parent, String name, float x, float y, TextureID textureID) {
         super(parent);
@@ -33,6 +34,10 @@ public class GenoButton extends GenosideComponent {
 
     @Override
     public boolean handle(MouseEvent event, float screen_x, float screen_y) {
+
+        if(buttonLock > 0.01f)
+            return false;
+
         float dx = screen_x - this.getParent().glx(xpos) + 0.01f;
         float dy = screen_y - this.getParent().gly(ypos) + 0.01f;
 
@@ -40,6 +45,7 @@ public class GenoButton extends GenosideComponent {
             if(event.getButton() == 1) {
                 this.getAnimatedValues().setAnimatedValue("MOUSEHOVER", 0);
                 this.getParent().childComponentCall(buttonName, "PRESSED");
+                buttonLock = 0.5f;
                 return true;
             }
 
@@ -68,6 +74,8 @@ public class GenoButton extends GenosideComponent {
 
     @Override
     public void userTick(float dt) {
+        buttonLock -= dt;
+        buttonLock = (buttonLock < 0) ? 0 : buttonLock;
     }
 
 }
