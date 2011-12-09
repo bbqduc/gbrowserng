@@ -15,109 +15,130 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SessionView extends GenosideComponent {
 
-    private final GenoButton quitButton = new GenoButton(this, "QUIT_BUTTON", 0.97f, 0.97f, TextureID.QUIT_BUTTON);
-    private final GenoButton shrinkButton = new GenoButton(this, "SHRINK_BUTTON", 0.93f, 0.97f, TextureID.SHRINK_BUTTON);
-    private final GenoVisualBorder border = new GenoVisualBorder(this);
+	private final GenoButton quitButton = new GenoButton(this, "QUIT_BUTTON",
+			0.97f, 0.97f, TextureID.QUIT_BUTTON);
+	private final GenoButton shrinkButton = new GenoButton(this,
+			"SHRINK_BUTTON", 0.93f, 0.97f, TextureID.SHRINK_BUTTON);
+	private final GenoVisualBorder border = new GenoVisualBorder(this);
 
-    private ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
-    private final Session session;
+	private ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
+	private final Session session;
 
-    public SessionView(Session session, GenosideComponent parent) {
-        super(parent);
-        this.session = session;
-        TrackView trackView1 = new TrackView(this, this.session);
-        TrackView trackView2 = new TrackView(this, this.session);
-        this.addTrackView(trackView1);
-        this.addTrackView(trackView2);
-    }
-    
-    public void addTrackView(TrackView view) {
-    	this.trackViews.add(view);
-    	int num = this.trackViews.size();
-    	int current = 0;
-    	for(TrackView t : this.trackViews) {
-    		
-    		float pos = (current+1.0f) / (num+1.0f);
-    		t.setPosition(0, pos * 2 - 1);
-    		t.setDimensions(2, 2.0f / num);
-    		
-    		++current;
-    	}
-    	
-    }
+	public SessionView(Session session, GenosideComponent parent) {
+		super(parent);
+		this.session = session;
+		TrackView trackView1 = new TrackView(this, this.session);
+		TrackView trackView2 = new TrackView(this, this.session);
+		this.addTrackView(trackView1);
+		this.addTrackView(trackView2);
+	}
 
-    @Override
-    public void childComponentCall(String who, String what) {
+	public void addTrackView(TrackView view) {
+		this.trackViews.add(view);
+		this.recalculateTrackPositions();
+	}
 
-        if(who.equals("SHRINK_BUTTON")) {
-            if(what.equals("PRESSED")) {
-                getParent().childComponentCall("SESSION", "SHRINK");
-            }
-        }
+	public void recalculateTrackPositions() {
+		int numActive = 0;
 
-        if(who.equals("QUIT_BUTTON")) {
-            if(what.equals("PRESSED")) {
-                getParent().childComponentCall("SESSION", "KILL");
-            }
-        }
-    }
+		for (TrackView t : this.trackViews) {
+			if (t.isActive())
+				++numActive;
+		}
 
-    public boolean handle(MouseEvent event, float screen_x, float screen_y) {
+		int current = 0;
+		int absents = 0;
 
-        quitButton.handle(event, screen_x, screen_y);
-        shrinkButton.handle(event, screen_x, screen_y);
+		for (TrackView t : this.trackViews) {
+			if (t.isActive()) {
+				float pos = (2 * current + 1.0f) / (numActive) - 1.0f;
+				t.setPosition(0, pos);
+				t.setDimensions(2, 2.0f / numActive);
+				++current;
+			} else {
+				t.setPosition(-0.7f, 0.8f - absents * 0.20f);
+				t.setDimensions(0.4f, 0.2f);
+				++absents;
+			}
+		}
+	}
 
-        // child views want to handle this?
-        for(TrackView t : trackViews) {
-            if(t.handle(event, screen_x, screen_y))
-                return true;
-        }
+	@Override
+	public void childComponentCall(String who, String what) {
 
-        // does this view want to handle the input?
+		if (who.equals("TRACKVIEW") && (what.equals("MINIMIZE") || what.equals("MAXIMIZE"))) {
+			recalculateTrackPositions();
+		}
 
-        // if not, then say so.
-        return false;
-    }
+		if (who.equals("SHRINK_BUTTON")) {
+			if (what.equals("PRESSED")) {
+				getParent().childComponentCall("SESSION", "SHRINK");
+			}
+		}
 
-    public boolean handle(KeyEvent event) {
-    	
-        // does this view want to handle the input?
-        if(event.getKeyChar() == 'b') {
-            getParent().childComponentCall("SESSION", "SHRINK");
-            return true;
-        }
+		if (who.equals("QUIT_BUTTON")) {
+			if (what.equals("PRESSED")) {
+				getParent().childComponentCall("SESSION", "KILL");
+			}
+		}
+	}
 
-        // child views want to handle this?
-    	boolean handled = false;
-        for(TrackView t : trackViews) {
-            if(t.handle(event))
-            	handled = true;
-        }
-        
-        return handled;
-    }
+	public boolean handle(MouseEvent event, float screen_x, float screen_y) {
 
-    public void draw(SoulGL2 gl) {
+		quitButton.handle(event, screen_x, screen_y);
+		shrinkButton.handle(event, screen_x, screen_y);
 
-        // first draw all the internal views
-        for(TrackView t : trackViews) {
-            t.draw(gl);
-        }
+		// child views want to handle this?
+		for (TrackView t : trackViews) {
+			if (t.handle(event, screen_x, screen_y))
+				return true;
+		}
 
-        // then draw whatever this session view wants to draw.
-        quitButton.draw(gl);
-        shrinkButton.draw(gl);
-        border.draw(gl);
-    }
+		// does this view want to handle the input?
 
-    @Override
-    public void userTick(float dt) {
-        for(TrackView t : trackViews) {
-            t.tick(dt);
-        }
+		// if not, then say so.
+		return false;
+	}
 
-        quitButton.tick(dt);
-        shrinkButton.tick(dt);
-    }
+	public boolean handle(KeyEvent event) {
+
+		// does this view want to handle the input?
+		if (event.getKeyChar() == 'b') {
+			getParent().childComponentCall("SESSION", "SHRINK");
+			return true;
+		}
+
+		// child views want to handle this?
+		boolean handled = false;
+		for (TrackView t : trackViews) {
+			if (t.handle(event))
+				handled = true;
+		}
+
+		return handled;
+	}
+
+	public void draw(SoulGL2 gl) {
+
+		// first draw all the internal views
+		for (TrackView t : trackViews) {
+			t.draw(gl);
+		}
+
+		// then draw whatever this session view wants to draw.
+		quitButton.draw(gl);
+		shrinkButton.draw(gl);
+		border.draw(gl);
+	}
+
+	@Override
+	public void userTick(float dt) {
+		for (TrackView t : trackViews) {
+			t.tick(dt);
+		}
+
+		quitButton.tick(dt);
+		shrinkButton.tick(dt);
+	}
 
 }
