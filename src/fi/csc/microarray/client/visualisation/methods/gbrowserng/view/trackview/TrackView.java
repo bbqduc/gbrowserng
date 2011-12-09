@@ -45,6 +45,7 @@ public class TrackView extends GenosideComponent {
 		this.halfSizeY = 0.05f;
 		this.targetZoomLevel = this.halfSizeX = 0.05f;
 		this.getAnimatedValues().setAnimatedValue("ZOOM", this.targetZoomLevel);
+        this.getAnimatedValues().setAnimatedValue("POSITION", this.position);
 
 		this.payloadSize = 0.85f;
 		this.isActive = true;
@@ -93,10 +94,15 @@ public class TrackView extends GenosideComponent {
 	}
 
 	private void drawRead(SoulGL2 gl, float y, Read read) {
+
+        float smoothPosition = this.getAnimatedValues().getAnimatedValue("POSITION");
+        int intPosition = (int)smoothPosition;
+        float offsetPosition = smoothPosition - intPosition;
+
 		// positive direction
-		float x = this.halfSizeX;
-		for (int i = this.position - read.position; i < read.genome.length
-				&& x < 0.8f; ++i, x += 2 * this.halfSizeX) {
+		float x = this.halfSizeX - offsetPosition * 2 * this.halfSizeX;
+		for (int i = intPosition - read.position; i < read.genome.length
+				&& x < 1.1f; ++i, x += 2 * this.halfSizeX) {
 			if (i < 0)
 				continue;
 
@@ -116,8 +122,8 @@ public class TrackView extends GenosideComponent {
 		}
 
 		// negative direction
-		x = -this.halfSizeX;
-		for (int i = this.position - read.position - 1; i >= 0 && x > -0.8f; --i, x -= 2 * this.halfSizeX) {
+		x = -this.halfSizeX - offsetPosition * 2 * this.halfSizeX;
+		for (int i = intPosition - read.position - 1; i >= 0 && x > -1.1f; --i, x -= 2 * this.halfSizeX) {
 			if (i >= read.genome.length)
 				continue;
 
@@ -139,10 +145,14 @@ public class TrackView extends GenosideComponent {
 
 	private void drawRefSeq(SoulGL2 gl, float y, ReferenceSequence refSeq) {
 
-		float x = this.halfSizeX;
+        float smoothPosition = this.getAnimatedValues().getAnimatedValue("POSITION");
+        int intPosition = (int)smoothPosition;
+        float offsetPosition = smoothPosition - intPosition;
+
+		float x = this.halfSizeX - offsetPosition * 2 * this.halfSizeX;
 
 		// positive direction -->
-		for (int i = this.position; i < refSeq.sequence.length && x < 0.8f; ++i, x += 2 * this.halfSizeX) {
+		for (int i = intPosition; i < refSeq.sequence.length && x < 1.1f; ++i, x += 2 * this.halfSizeX) {
 			if (i < 0)
 				continue;
 			char c = refSeq.sequence[i];
@@ -156,9 +166,9 @@ public class TrackView extends GenosideComponent {
 
 		}
 
-		x = -this.halfSizeX;
+		x = -this.halfSizeX - offsetPosition * 2 * this.halfSizeX;
 		// negative direction <--
-		for (int i = this.position - 1; i >= 0 && x > -0.8f; --i) {
+		for (int i = intPosition - 1; i >= 0 && x > -1.1f; --i) {
 			if (i < refSeq.sequence.length) {
 				char c = refSeq.sequence[i];
 				Color genomeColor = genomeColor(c);
@@ -176,9 +186,14 @@ public class TrackView extends GenosideComponent {
 	}
 
 	private void drawHeatMap(SoulGL2 gl, float y, HeatMap heatMap) {
-		float x = this.halfSizeX;
 
-		for (int i = this.position; i < heatMap.heat.length && x < 0.8f; ++i, x += 2 * this.halfSizeX) {
+        float smoothPosition = this.getAnimatedValues().getAnimatedValue("POSITION");
+        int intPosition = (int)smoothPosition;
+        float offsetPosition = smoothPosition - intPosition;
+
+        float x = this.halfSizeX - offsetPosition * 2 * this.halfSizeX;
+
+		for (int i = intPosition; i < heatMap.heat.length && x < 1.1f; ++i, x += 2 * this.halfSizeX) {
 			if (i < 0)
 				continue;
 
@@ -193,9 +208,9 @@ public class TrackView extends GenosideComponent {
 					glySize(this.halfSizeY * payloadSize), gl, heatColor);
 		}
 
-		x = -this.halfSizeX;
-		for (int i = this.position - 1; i >= 0 && i < heatMap.heat.length
-				&& x > -0.8f; --i, x -= 2 * this.halfSizeX) {
+		x = -this.halfSizeX - offsetPosition * 2 * this.halfSizeX;
+		for (int i = intPosition - 1; i >= 0 && i < heatMap.heat.length
+				&& x > -1.1f; --i, x -= 2 * this.halfSizeX) {
 
 			float redness = (float) heatMap.heat[i] / (float) heatMap.max;
 			float blueness = 1.0f - redness;
@@ -212,8 +227,13 @@ public class TrackView extends GenosideComponent {
 	private void drawCoordinates(SoulGL2 gl, float y, ReferenceSequence refSeq) {
 		int step = 5;
 
-		float x = this.halfSizeX;
-		for (int i = this.position; i < refSeq.sequence.length && x < 0.8f; i += step, x += 2 * halfSizeX * step) {
+        float smoothPosition = this.getAnimatedValues().getAnimatedValue("POSITION");
+        int intPosition = (int)smoothPosition;
+        float offsetPosition = smoothPosition - intPosition;
+
+
+		float x = this.halfSizeX - offsetPosition * this.halfSizeX * 2;
+		for (int i = intPosition; i < refSeq.sequence.length && x < 1.1f; i += step, x += 2 * halfSizeX * step) {
 			if (i < 0)
 				continue;
 			String pos = Integer.toString(i);
@@ -223,8 +243,8 @@ public class TrackView extends GenosideComponent {
 				++step;
 		}
 
-		x = -this.halfSizeX * (1 + 2 * (step-1));
-		for (int i = this.position - step; i >= 0 && x > -0.8f; i -= step, x -= 2 * halfSizeX * step) {
+		x = -this.halfSizeX * (1 + 2 * (step-1)) - offsetPosition * this.halfSizeX * 2;
+		for (int i = intPosition - step; i >= 0 && x > -1.1f; i -= step, x -= 2 * halfSizeX * step) {
 			if (i >= refSeq.sequence.length)
 				continue;
 			String pos = Integer.toString(i);
@@ -268,10 +288,12 @@ public class TrackView extends GenosideComponent {
 	@Override
 	public boolean handle(KeyEvent event) {
 		if (KeyEvent.VK_LEFT == event.getKeyCode()) {
-			this.position -= 1;
+			this.position -= 0.05f / this.getAnimatedValues().getAnimatedValue("ZOOM");
+            this.getAnimatedValues().setAnimatedValue("POSITION", this.position);
 			return true;
 		} else if (KeyEvent.VK_RIGHT == event.getKeyCode()) {
-			this.position += 1;
+			this.position += 0.05f / this.getAnimatedValues().getAnimatedValue("ZOOM");
+            this.getAnimatedValues().setAnimatedValue("POSITION", this.position);
 			return true;
 		} else if (KeyEvent.VK_UP == event.getKeyCode()) {
 			this.targetZoomLevel *= 0.9f;
