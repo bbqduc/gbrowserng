@@ -17,6 +17,9 @@ public class LinkGFX {
     float time = 0.0f;
     private float velocity = 5.0f;
 
+    private float alpha = 1.0f;
+    private float target_alpha = 1.0f;
+
     public LinkGFX(GenosideComponent a, GenosideComponent b) {
         component1 = a;
         component2 = b;
@@ -24,11 +27,16 @@ public class LinkGFX {
 
     public void draw(SoulGL2 gl) {
 
+        // if invisible, don't bother drawing
+        if(alpha < 0)
+            return;
+
         gl.glEnable(SoulGL2.GL_BLEND);
 
         Shader shader = ShaderManager.getProgram(ShaderManager.ShaderID.TORRENT);
         shader.start(gl);
 
+        ShaderMemory.setUniformVec1(gl, shader, "uniAlpha", alpha);
         ShaderMemory.setUniformVec1(gl, shader, "lifetime", time * velocity);
         ShaderMemory.setUniformMat4(gl, shader, "viewMatrix", Matrix4.IDENTITY);
         ShaderMemory.setUniformMat4(gl, shader, "projectionMatrix", Matrix4.IDENTITY);
@@ -60,10 +68,20 @@ public class LinkGFX {
         gl.glDisable(SoulGL2.GL_BLEND);
     }
 
+
     public void tick(float dt) {
         time -= dt;
         if(time < -1.3f / velocity)
             time += 2.6f / velocity;
+
+        alpha += (target_alpha - alpha) * (1.0f - Math.pow(0.1f, dt));
     }
 
+    public void hide() {
+        target_alpha = -0.1f;
+    }
+
+    public void show() {
+        target_alpha = 1.0f;
+    }
 }

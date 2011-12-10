@@ -159,9 +159,12 @@ public class SessionView extends GenosideComponent {
 
 	public void draw(SoulGL2 gl) {
 
+        if(!inScreen())
+            return;
+
 		// first draw all the internal views
 		for (TrackView t : trackViews) {
-			t.draw(gl);
+            t.draw(gl);
 		}
 
 		// then draw whatever this session view wants to draw.

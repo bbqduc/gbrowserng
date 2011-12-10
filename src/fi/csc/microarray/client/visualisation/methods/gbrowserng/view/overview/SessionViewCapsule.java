@@ -41,6 +41,7 @@ public class SessionViewCapsule extends GenosideComponent {
     public void activate() {
         System.out.println("activating capsule");
         isActive = true;
+        link.hide();
         sessionView.setDimensions(2, 2);
         sessionView.setPosition(0, 0);
         this.getAnimatedValues().setAnimatedValue("ALPHA", -0.02f);
@@ -49,6 +50,7 @@ public class SessionViewCapsule extends GenosideComponent {
     public void deactivate() {
         System.out.println("deactivating capsule");
         isActive = false;
+        link.show();
         sessionView.setDimensions(0.4f, 0.2f);
 
         if(!dying) this.show();
@@ -121,6 +123,7 @@ public class SessionViewCapsule extends GenosideComponent {
 
     public void hide() {
         // todo
+        link.hide();
         Vector2 myPos = this.sessionView.getPosition();
         myPos.normalize();
         myPos.scale(1.7f);
@@ -130,6 +133,7 @@ public class SessionViewCapsule extends GenosideComponent {
     public void show() {
         // todo
         Vector2 myPos = this.sessionView.getPosition();
+        link.show();
 
         if(myPos.length() < 0.00000001f) {
             myPos.x = (float) Math.random();

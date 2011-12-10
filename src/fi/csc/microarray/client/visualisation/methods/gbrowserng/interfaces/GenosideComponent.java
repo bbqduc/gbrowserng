@@ -32,6 +32,14 @@ public abstract class GenosideComponent {
         return id;
     }
 
+    public boolean inScreen() {
+        if(getPosition().x + getDimensions().x * 0.5f < -1) return false;
+        if(getPosition().x - getDimensions().x * 0.5f > +1) return false;
+        if(getPosition().y + getDimensions().y * 0.5f < -1) return false;
+        if(getPosition().y - getDimensions().y * 0.5f > +1) return false;
+        return true;
+    }
+
     public abstract void childComponentCall(String who, String what);
     public abstract boolean handle(MouseEvent event, float screen_x, float screen_y);
     public abstract boolean handle(KeyEvent event);
