@@ -49,12 +49,9 @@ public class TrackView extends GenosideComponent {
 
 		this.payloadSize = 0.85f;
 		this.isActive = true;
-		this.minimizeButton = new GenoButton(this, "MIN_BUTTON", -0.95f, 0.95f,
-				TextureID.SHRINK_BUTTON);
-		this.deleteButton = new GenoButton(this, "DEL_BUTTON", 0.8f, 0.7f,
-				TextureID.QUIT_BUTTON);
-		this.maximizeButton = new GenoButton(this, "MAX_BUTTON", -0.8f, 0.7f,
-				TextureID.SHRINK_BUTTON);
+		this.minimizeButton = new GenoButton(this, "MIN_BUTTON", -1.0f, 1.0f, +0.04f, -0.04f, TextureID.SHRINK_BUTTON);
+		this.deleteButton = new GenoButton(this, "DEL_BUTTON",   -1.0f, 1.0f, +0.04f, -0.04f, TextureID.QUIT_BUTTON);
+		this.maximizeButton = new GenoButton(this, "MAX_BUTTON", -1.0f, 1.0f, +0.04f, -0.09f, TextureID.MAXIMIZE_BUTTON);
 	}
 
 	public void draw(SoulGL2 gl) {
@@ -271,6 +268,7 @@ public class TrackView extends GenosideComponent {
 			this.minimizeButton.tick(dt);
 		} else {
 			this.deleteButton.tick(dt);
+            this.maximizeButton.tick(dt);
 		}
 	}
 
@@ -279,8 +277,7 @@ public class TrackView extends GenosideComponent {
 		if (isActive) {
 			return this.minimizeButton.handle(event, screen_x, screen_y);
 		} else {
-			if (this.deleteButton.handle(event, screen_x, screen_y))
-				return true;
+			if(this.deleteButton.handle(event, screen_x, screen_y)) return true;
 			return this.maximizeButton.handle(event, screen_x, screen_y);
 		}
 	}

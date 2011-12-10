@@ -79,9 +79,7 @@ public class OverView extends GenosideComponent {
             capsule.handle(event, x, y);
 
         // then see if they actually want the event
-        if(event.getButton() == 1 && mouseState == 0) {
-            mouseState = 1;
-
+        if(MouseEvent.EVENT_MOUSE_CLICKED == event.getEventType() && event.getButton() == 1) {
             for(SessionViewCapsule capsule : sessions) {
                 if(capsule.isDying()) {
                     continue;
@@ -108,9 +106,6 @@ public class OverView extends GenosideComponent {
             capsule.getSession().setDimensions(0.4f, 0.2f);
             capsule.getSession().setPosition(x, y);
             sessions.add(capsule);
-        }
-        else if(event.getButton() != 1) {
-            mouseState = 0;
         }
 
         mousePosition.x = x;

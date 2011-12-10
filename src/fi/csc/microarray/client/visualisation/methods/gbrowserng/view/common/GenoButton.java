@@ -15,16 +15,22 @@ public class GenoButton extends GenosideComponent {
 
     float xpos = 1;
     float ypos = 1;
+
+    float x_offset;
+    float y_offset;
+
     String buttonName;
     private float buttonLock = 0;
 
-    public GenoButton(GenosideComponent parent, String name, float x, float y, TextureID textureID) {
+    public GenoButton(GenosideComponent parent, String name, float x, float y, float x_offset, float y_offset, TextureID textureID) {
         super(parent);
         setDimensions(0.05f, 0.05f);
 
         myTexture = textureID;
         xpos = x;
         ypos = y;
+        this.x_offset = x_offset;
+        this.y_offset = y_offset;
         buttonName = name;
     }
 
@@ -38,11 +44,11 @@ public class GenoButton extends GenosideComponent {
         if(buttonLock > 0.01f)
             return false;
 
-        float dx = screen_x - this.getParent().glx(xpos) + 0.01f;
-        float dy = screen_y - this.getParent().gly(ypos) + 0.01f;
+        float dx = screen_x - this.getParent().glx(xpos) - x_offset + 0.01f;
+        float dy = screen_y - this.getParent().gly(ypos) - y_offset + 0.01f;
 
         if(dx * dx + dy * dy < 0.02f * 0.02f) {
-            if(event.getButton() == 1) {
+            if(event.getEventType() == MouseEvent.EVENT_MOUSE_CLICKED) {
                 this.getAnimatedValues().setAnimatedValue("MOUSEHOVER", 0);
                 this.getParent().childComponentCall(buttonName, "PRESSED");
                 buttonLock = 0.5f;
@@ -68,7 +74,7 @@ public class GenoButton extends GenosideComponent {
         myColor.g = 1f-this.getAnimatedValues().getAnimatedValue("MOUSEHOVER");
         myColor.b = 1f-this.getAnimatedValues().getAnimatedValue("MOUSEHOVER");
         float myScale = 0.02f + this.getAnimatedValues().getAnimatedValue("MOUSEHOVER") * 0.01f;
-        PrimitiveRenderer.drawTexturedSquare(this.getParent().glx(xpos) - myScale*0.5f, this.getParent().gly(ypos) - myScale*0.5f, myScale, gl, myColor, myTexture);
+        PrimitiveRenderer.drawTexturedSquare(this.getParent().glx(xpos) - myScale * 0.5f + x_offset, this.getParent().gly(ypos) - myScale*0.5f + y_offset, myScale, gl, myColor, myTexture);
         gl.glDisable(SoulGL2.GL_BLEND);
     }
 

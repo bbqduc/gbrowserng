@@ -15,13 +15,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SessionView extends GenosideComponent {
 
-	private final GenoButton quitButton = new GenoButton(this, "QUIT_BUTTON",
-			0.97f, 0.97f, TextureID.QUIT_BUTTON);
-	private final GenoButton shrinkButton = new GenoButton(this,
-			"SHRINK_BUTTON", 0.93f, 0.97f, TextureID.SHRINK_BUTTON);
-	private final GenoVisualBorder border = new GenoVisualBorder(this);
-	private final GenoButton openReadFileButton = new GenoButton(this,
-			"OPENREADFILE_BUTTON", 0.87f, 0.95f, TextureID.OPENFILE_BUTTON);
+    private final GenoVisualBorder border = new GenoVisualBorder(this);
+	private final GenoButton quitButton = new GenoButton(this, "QUIT_BUTTON", 1.0f, 1.0f, -0.04f, -0.04f, TextureID.QUIT_BUTTON);
+	private final GenoButton shrinkButton = new GenoButton(this, "SHRINK_BUTTON", 1.0f, 1.0f, -0.08f, -0.04f, TextureID.SHRINK_BUTTON);
+	private final GenoButton openReadFileButton = new GenoButton(this, "OPENREADFILE_BUTTON", 1.0f, 1.0f, -0.12f, -0.04f, TextureID.OPENFILE_BUTTON);
 
 	private ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
 	private final Session session;
