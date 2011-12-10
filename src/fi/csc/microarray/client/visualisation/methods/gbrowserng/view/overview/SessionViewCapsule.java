@@ -13,17 +13,21 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.sessionvie
 public class SessionViewCapsule extends GenosideComponent {
 
     private final SessionView sessionView;
-    private boolean requiresActivation = false;
+
+    // TODO: SessionViewCapsuleData class could contain this.
     private boolean isActive = false;
     private boolean dying = false;
     private float death = 0;
     private Color backGroundColor = new Color(0, 0, 0, 255);
 
+    private final LinkGFX link;
 
     public SessionViewCapsule(SessionView sessionView) {
         super(null); // should be ok
         this.sessionView = sessionView;
         this.getAnimatedValues().setAnimatedValue("ALPHA", 1.0f);
+
+        link = new LinkGFX(sessionView, sessionView.getParent());
     }
 
     public boolean isAlive() {
@@ -34,14 +38,9 @@ public class SessionViewCapsule extends GenosideComponent {
         return isActive;
     }
 
-    public boolean requiresActivation() {
-        return requiresActivation;
-    }
-
     public void activate() {
         System.out.println("activating capsule");
         isActive = true;
-        requiresActivation = false;
         sessionView.setDimensions(2, 2);
         sessionView.setPosition(0, 0);
         this.getAnimatedValues().setAnimatedValue("ALPHA", -0.02f);
@@ -97,6 +96,7 @@ public class SessionViewCapsule extends GenosideComponent {
             gl.glDisable(SoulGL2.GL_BLEND);
         }
 
+        link.draw(gl);
         sessionView.draw(gl);
     }
 
@@ -104,6 +104,7 @@ public class SessionViewCapsule extends GenosideComponent {
     public void userTick(float dt) {
         if(dying) death += dt;
         sessionView.tick(dt);
+        link.tick(dt);
     }
 
     public SessionView getSession() {

@@ -20,7 +20,6 @@ public class OverView extends GenosideComponent {
     GeneCircleGFX geneCircleGFX = new GeneCircleGFX();
     GenoFPSCounter fpsCounter = new GenoFPSCounter();
 
-    private int mouseState = 0;
     private Vector2 mousePosition = new Vector2();
 
     ReferenceSequence referenceSequence = null;
@@ -29,6 +28,10 @@ public class OverView extends GenosideComponent {
 
     public OverView() {
         super(null);
+    }
+
+    public Vector2 getCirclePosition(long genePosition) {
+        return new Vector2(0, 0);
     }
 
     @Override
