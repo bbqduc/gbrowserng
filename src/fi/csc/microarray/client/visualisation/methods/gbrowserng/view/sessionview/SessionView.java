@@ -89,7 +89,7 @@ public class SessionView extends GenosideComponent {
 
 		else if (who.equals("OPENREADFILE_BUTTON")) {
 			if (what.equals("PRESSED")) {
-				this.addTrackView(new TrackView(this, new Session()));
+				this.addTrackView(new TrackView(this, this.session));
 			}
 		}
 	}
