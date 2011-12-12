@@ -31,7 +31,7 @@ public class GenoGLListener implements GLEventListener {
 
 	public void display(GLAutoDrawable drawable) {
 		SoulGL2 gl = new DesktopGL2(drawable.getGL().getGL2());
-		gl.glClear(GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
 
         float dt = timer.getDT();
 
@@ -56,9 +56,9 @@ public class GenoGLListener implements GLEventListener {
 
         ShaderManager.createPrograms(new DesktopGL2(gl));
 
+        gl.glDisable(GL2.GL_DEPTH_TEST);
 		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		gl.glClearDepth(1.0f);
 	}
 
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {

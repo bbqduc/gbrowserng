@@ -5,8 +5,10 @@ import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.tech.gles.SoulGL2;
 
 import com.soulaim.tech.gles.TextureID;
+import com.soulaim.tech.math.Vector2;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.MouseTracker;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoButton;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoVisualBorder;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.TrackView;
@@ -15,16 +17,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SessionView extends GenosideComponent {
 
-	private final GenoButton quitButton = new GenoButton(this, "QUIT_BUTTON",
-			0.97f, 0.97f, TextureID.QUIT_BUTTON);
-	private final GenoButton shrinkButton = new GenoButton(this,
-			"SHRINK_BUTTON", 0.93f, 0.97f, TextureID.SHRINK_BUTTON);
-	private final GenoVisualBorder border = new GenoVisualBorder(this);
-	private final GenoButton openReadFileButton = new GenoButton(this,
-			"OPENREADFILE_BUTTON", 0.87f, 0.95f, TextureID.OPENFILE_BUTTON);
+    private final GenoVisualBorder border = new GenoVisualBorder(this);
+	private final GenoButton quitButton = new GenoButton(this, "QUIT_BUTTON", 1.0f, 1.0f, -0.04f, -0.04f, TextureID.QUIT_BUTTON);
+	private final GenoButton shrinkButton = new GenoButton(this, "SHRINK_BUTTON", 1.0f, 1.0f, -0.08f, -0.04f, TextureID.SHRINK_BUTTON);
+	private final GenoButton openReadFileButton = new GenoButton(this, "OPENREADFILE_BUTTON", 1.0f, 1.0f, -0.12f, -0.04f, TextureID.OPENFILE_BUTTON);
 
-	private ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
+	private final ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
 	private final Session session;
+
+    private final MouseTracker mouseTracker = new MouseTracker();
 
 	public SessionView(Session session, GenosideComponent parent) {
 		super(parent);
@@ -33,6 +34,9 @@ public class SessionView extends GenosideComponent {
 		TrackView trackView2 = new TrackView(this, this.session);
 		this.addTrackView(trackView1);
 		this.addTrackView(trackView2);
+
+        this.getAnimatedValues().setAnimatedValue("ZOOM", session.targetZoomLevel);
+        this.getAnimatedValues().setAnimatedValue("POSITION", session.position);
 	}
 
 	public void addTrackView(TrackView view) {
@@ -87,7 +91,7 @@ public class SessionView extends GenosideComponent {
 
 		else if (who.equals("OPENREADFILE_BUTTON")) {
 			if (what.equals("PRESSED")) {
-				this.addTrackView(new TrackView(this, new Session()));
+				this.addTrackView(new TrackView(this, this.session));
 			}
 		}
 	}
@@ -97,6 +101,25 @@ public class SessionView extends GenosideComponent {
 		// does this view want to handle the input?
 		if (event.getKeyChar() == 'b') {
 			getParent().childComponentCall("SESSION", "SHRINK");
+			return true;
+		}
+
+
+        if (KeyEvent.VK_LEFT == event.getKeyCode()) {
+			this.session.position -= 0.05f / this.getAnimatedValues().getAnimatedValue("ZOOM");
+            this.getAnimatedValues().setAnimatedValue("POSITION", this.session.position);
+			return true;
+		} else if (KeyEvent.VK_RIGHT == event.getKeyCode()) {
+			this.session.position += 0.05f / this.getAnimatedValues().getAnimatedValue("ZOOM");
+            this.getAnimatedValues().setAnimatedValue("POSITION", this.session.position);
+			return true;
+		} else if (KeyEvent.VK_UP == event.getKeyCode()) {
+			this.session.targetZoomLevel *= 0.9f;
+			this.getAnimatedValues().setAnimatedValue("ZOOM", this.session.targetZoomLevel);
+			return true;
+		} else if (KeyEvent.VK_DOWN == event.getKeyCode()) {
+			this.session.targetZoomLevel *= 1.0f / 0.9f;
+			this.getAnimatedValues().setAnimatedValue("ZOOM", this.session.targetZoomLevel);
 			return true;
 		}
 
@@ -116,6 +139,14 @@ public class SessionView extends GenosideComponent {
 		shrinkButton.handle(event, screen_x, screen_y);
 		openReadFileButton.handle(event, screen_x, screen_y);
 
+        mouseTracker.handle(event, screen_x, screen_y);
+
+        if(event.getEventType() == MouseEvent.EVENT_MOUSE_DRAGGED) {
+            this.session.position -= mouseTracker.getDragging_dx() / this.getAnimatedValues().getAnimatedValue("ZOOM");
+            this.getAnimatedValues().setAnimatedValue("POSITION", session.position);
+            return true;
+        }
+
 		// child views want to handle this?
 		for (TrackView t : trackViews) {
 			if (t.handle(event, screen_x, screen_y))
@@ -130,9 +161,12 @@ public class SessionView extends GenosideComponent {
 
 	public void draw(SoulGL2 gl) {
 
+        if(!inScreen())
+            return;
+
 		// first draw all the internal views
 		for (TrackView t : trackViews) {
-			t.draw(gl);
+            t.draw(gl);
 		}
 
 		// then draw whatever this session view wants to draw.
@@ -151,5 +185,7 @@ public class SessionView extends GenosideComponent {
 		quitButton.tick(dt);
 		shrinkButton.tick(dt);
 		openReadFileButton.tick(dt);
+
+        this.session.halfSizeX = this.getAnimatedValues().getAnimatedValue("ZOOM");
 	}
 }

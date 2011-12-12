@@ -10,7 +10,9 @@ package com.soulaim.tech.math;
  */
 public class Matrix4 {
 
+    public static final Matrix4 IDENTITY = new Matrix4();
     public float[] data = new float[16];
+
 
     public Matrix4() {
         makeIdentityMatrix();

@@ -7,8 +7,12 @@ public class Session {
 	public ArrayList<Read> reads;
 	public ReferenceSequence referenceSequence;
 	public HeatMap heatMap;
-	
-	public Session()
+    public float position = 0;
+
+    public float targetZoomLevel = 0.05f;
+    public float halfSizeX = 0.05f;
+
+    public Session()
 	{
 		this.reads = new ArrayList<Read>();
 		this.referenceSequence = new ReferenceSequence(200);

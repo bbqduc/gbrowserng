@@ -13,17 +13,21 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.sessionvie
 public class SessionViewCapsule extends GenosideComponent {
 
     private final SessionView sessionView;
-    private boolean requiresActivation = false;
+
+    // TODO: SessionViewCapsuleData class could contain this.
     private boolean isActive = false;
     private boolean dying = false;
     private float death = 0;
     private Color backGroundColor = new Color(0, 0, 0, 255);
 
+    private final LinkGFX link;
 
     public SessionViewCapsule(SessionView sessionView) {
         super(null); // should be ok
         this.sessionView = sessionView;
         this.getAnimatedValues().setAnimatedValue("ALPHA", 1.0f);
+
+        link = new LinkGFX(sessionView, sessionView.getParent());
     }
 
     public boolean isAlive() {
@@ -34,14 +38,10 @@ public class SessionViewCapsule extends GenosideComponent {
         return isActive;
     }
 
-    public boolean requiresActivation() {
-        return requiresActivation;
-    }
-
     public void activate() {
         System.out.println("activating capsule");
         isActive = true;
-        requiresActivation = false;
+        link.hide();
         sessionView.setDimensions(2, 2);
         sessionView.setPosition(0, 0);
         this.getAnimatedValues().setAnimatedValue("ALPHA", -0.02f);
@@ -50,6 +50,7 @@ public class SessionViewCapsule extends GenosideComponent {
     public void deactivate() {
         System.out.println("deactivating capsule");
         isActive = false;
+        if(!dying) link.show();
         sessionView.setDimensions(0.4f, 0.2f);
 
         if(!dying) this.show();
@@ -83,6 +84,8 @@ public class SessionViewCapsule extends GenosideComponent {
     @Override
     public void draw(SoulGL2 gl) {
 
+        link.draw(gl);
+
         // this is just for debug
         float v = this.getAnimatedValues().getAnimatedValue("MOUSEHOVER");
         float alpha = this.getAnimatedValues().getAnimatedValue("ALPHA");
@@ -104,6 +107,7 @@ public class SessionViewCapsule extends GenosideComponent {
     public void userTick(float dt) {
         if(dying) death += dt;
         sessionView.tick(dt);
+        link.tick(dt);
     }
 
     public SessionView getSession() {
@@ -112,6 +116,7 @@ public class SessionViewCapsule extends GenosideComponent {
 
     public void die() {
         dying = true;
+        link.hide();
     }
 
     public boolean isDying() {
@@ -120,6 +125,7 @@ public class SessionViewCapsule extends GenosideComponent {
 
     public void hide() {
         // todo
+        link.hide();
         Vector2 myPos = this.sessionView.getPosition();
         myPos.normalize();
         myPos.scale(1.7f);
@@ -130,6 +136,7 @@ public class SessionViewCapsule extends GenosideComponent {
         // todo
         Vector2 myPos = this.sessionView.getPosition();
 
+        link.show();
         if(myPos.length() < 0.00000001f) {
             myPos.x = (float) Math.random();
             myPos.y = (float) Math.random();
