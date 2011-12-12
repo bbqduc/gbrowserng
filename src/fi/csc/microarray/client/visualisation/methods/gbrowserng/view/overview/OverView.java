@@ -153,6 +153,8 @@ public class OverView extends GenosideComponent {
         // if no active session, try to place session views in a good way.
         if(activeSession == null) {
             for(SessionViewCapsule capsule1 : sessions) {
+                if(capsule1.isDying())
+                    continue;
 
                 // push away from the origin
                 Vector2 position = new Vector2();
@@ -170,6 +172,8 @@ public class OverView extends GenosideComponent {
 
                 for(SessionViewCapsule capsule2 : sessions) {
                     if(capsule1.getId() == capsule2.getId())
+                        continue;
+                    if(capsule2.isDying())
                         continue;
 
                     if(capsule1.getSession().getPosition().distance( capsule2.getSession().getPosition() ) < 0.5f) {
