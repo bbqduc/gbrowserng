@@ -1,17 +1,15 @@
-package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.sessionview;
+package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview;
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.tech.gles.SoulGL2;
 
 import com.soulaim.tech.gles.TextureID;
-import com.soulaim.tech.math.Vector2;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.MouseTracker;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoButton;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoVisualBorder;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.TrackView;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
