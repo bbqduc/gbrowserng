@@ -11,7 +11,7 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.ReferenceS
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GenoFPSCounter;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.sessionview.SessionView;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.SessionView;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
