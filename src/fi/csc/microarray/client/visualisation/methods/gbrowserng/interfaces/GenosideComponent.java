@@ -102,6 +102,16 @@ public abstract class GenosideComponent {
         targetDimensions.y = h;
     }
 
+    public void modifyPosition(float x, float y) {
+        targetPosition.x += x;
+        targetPosition.y += y;
+    }
+
+    public void modifyDimensions(float x, float y) {
+        targetDimensions.x += x;
+        targetDimensions.y += y;
+    }
+
     public void tick(float dt) {
         currentPosition.approach(targetPosition, dt, 0.06f);
         currentDimensions.approach(targetDimensions, dt, 0.06f);

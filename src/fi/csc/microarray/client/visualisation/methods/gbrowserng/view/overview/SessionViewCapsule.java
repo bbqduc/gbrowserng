@@ -84,6 +84,8 @@ public class SessionViewCapsule extends GenosideComponent {
     @Override
     public void draw(SoulGL2 gl) {
 
+        link.draw(gl);
+
         // this is just for debug
         float v = this.getAnimatedValues().getAnimatedValue("MOUSEHOVER");
         float alpha = this.getAnimatedValues().getAnimatedValue("ALPHA");
@@ -98,7 +100,6 @@ public class SessionViewCapsule extends GenosideComponent {
             gl.glDisable(SoulGL2.GL_BLEND);
         }
 
-        link.draw(gl);
         sessionView.draw(gl);
     }
 

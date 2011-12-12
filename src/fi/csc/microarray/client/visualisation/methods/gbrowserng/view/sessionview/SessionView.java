@@ -5,6 +5,7 @@ import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.tech.gles.SoulGL2;
 
 import com.soulaim.tech.gles.TextureID;
+import com.soulaim.tech.math.Vector2;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.MouseTracker;
@@ -21,9 +22,10 @@ public class SessionView extends GenosideComponent {
 	private final GenoButton shrinkButton = new GenoButton(this, "SHRINK_BUTTON", 1.0f, 1.0f, -0.08f, -0.04f, TextureID.SHRINK_BUTTON);
 	private final GenoButton openReadFileButton = new GenoButton(this, "OPENREADFILE_BUTTON", 1.0f, 1.0f, -0.12f, -0.04f, TextureID.OPENFILE_BUTTON);
 
-	private ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
+	private final ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
 	private final Session session;
-    private MouseTracker mouseTracker = new MouseTracker();
+
+    private final MouseTracker mouseTracker = new MouseTracker();
 
 	public SessionView(Session session, GenosideComponent parent) {
 		super(parent);

@@ -52,7 +52,7 @@ public class LinkGFX {
 
         modelMatrix.makeTranslationMatrix(x, y, 0);
         modelMatrix.rotate(angle + 90f, 0, 0, 1);
-        modelMatrix.scale(0.02f, length, 0.2f);
+        modelMatrix.scale(0.01f, length, 0.2f);
 
         ShaderMemory.setUniformMat4(gl, shader, "modelMatrix", modelMatrix);
 
