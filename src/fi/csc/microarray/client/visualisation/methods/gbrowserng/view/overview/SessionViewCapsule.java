@@ -8,7 +8,7 @@ import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import com.soulaim.tech.math.Vector2;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.sessionview.SessionView;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.SessionView;
 
 public class SessionViewCapsule extends GenosideComponent {
 
