@@ -9,9 +9,9 @@ public class Session {
 
     public float targetZoomLevel = 0.05f;
     public float halfSizeX = 0.05f;
+    public float halfSizeY = 0.05f;
 
     public float startY = -0.7f;
-	public float halfSizeY = 0.05f;
 	public float payloadSize = 0.85f;
 
     public Session() {
