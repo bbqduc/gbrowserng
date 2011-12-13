@@ -163,6 +163,7 @@ public class TrackView extends GenosideComponent {
 	}
 
 	private void drawCoordinates(SoulGL2 gl, float y, ReferenceSequence refSeq) {
+		/*
 		int step = 5;
 
 		float smoothPosition = getGenePosition();
@@ -195,6 +196,7 @@ public class TrackView extends GenosideComponent {
 			TextRenderer.getInstance().drawText(gl, pos, glx(x), gly(y),
 					glySize(this.session.halfSizeY * 20));
 		}
+				*/
 	}
 
 	@Override

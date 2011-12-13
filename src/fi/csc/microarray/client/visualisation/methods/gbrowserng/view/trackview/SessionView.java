@@ -21,9 +21,13 @@ public class SessionView extends GenosideComponent {
 	private final GenoButton openReadFileButton = new GenoButton(this, "OPENREADFILE_BUTTON", 1.0f, 1.0f, -0.12f, -0.04f, TextureID.OPENFILE_BUTTON);
 
 	private final ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
+	private CoordinateView coordinateView;
 	private final Session session;
 
     private final MouseTracker mouseTracker = new MouseTracker();
+    
+    private int left;
+    private int right;
 
 	public SessionView(Session session, GenosideComponent parent) {
 		super(parent);
@@ -35,6 +39,15 @@ public class SessionView extends GenosideComponent {
 
         this.getAnimatedValues().setAnimatedValue("ZOOM", session.targetZoomLevel);
         this.getAnimatedValues().setAnimatedValue("POSITION", session.position);
+        
+        this.left = 0;
+        this.right = 20;
+        this.coordinateView = new CoordinateView(this);
+        this.coordinateView.setPosition(0, -0.95f);
+        this.coordinateView.setDimensions(2f, 0.1f);
+        
+        this.getAnimatedValues().setAnimatedValue("LEFT", this.left);
+        this.getAnimatedValues().setAnimatedValue("RIGHT", this.right);
 	}
 
 	public void addTrackView(TrackView view) {
@@ -158,7 +171,6 @@ public class SessionView extends GenosideComponent {
 	}
 
 	public void draw(SoulGL2 gl) {
-
         if(!inScreen())
             return;
 
@@ -172,6 +184,7 @@ public class SessionView extends GenosideComponent {
 		shrinkButton.draw(gl);
 		openReadFileButton.draw(gl);
 		border.draw(gl);
+		coordinateView.draw(gl);
 	}
 
 	@Override
@@ -183,6 +196,7 @@ public class SessionView extends GenosideComponent {
 		quitButton.tick(dt);
 		shrinkButton.tick(dt);
 		openReadFileButton.tick(dt);
+		coordinateView.tick(dt);
 
         this.session.halfSizeX = this.getAnimatedValues().getAnimatedValue("ZOOM");
 	}
