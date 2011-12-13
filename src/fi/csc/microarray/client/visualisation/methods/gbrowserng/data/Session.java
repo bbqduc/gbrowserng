@@ -3,25 +3,19 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.data;
 import java.util.ArrayList;
 
 public class Session {
-	
-	public ArrayList<Read> reads;
+
 	public ReferenceSequence referenceSequence;
-	public HeatMap heatMap;
     public float position = 0;
 
     public float targetZoomLevel = 0.05f;
     public float halfSizeX = 0.05f;
 
-    public Session()
-	{
-		this.reads = new ArrayList<Read>();
-		this.referenceSequence = new ReferenceSequence(200);
-		
-		for (int i=0; i < 8; ++i)
-		{
-			this.reads.add(GenomeGenerator.generateRead(this.referenceSequence));
-		}
-		
-		this.heatMap = new HeatMap(this.referenceSequence, this.reads);
+    public float startY = -0.7f;
+	public float halfSizeY = 0.05f;
+	public float payloadSize = 0.85f;
+
+    public Session() {
+		this.referenceSequence = new ReferenceSequence(1, 200);
 	}
 }
+

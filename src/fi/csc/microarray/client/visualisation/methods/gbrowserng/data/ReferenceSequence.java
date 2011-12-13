@@ -4,14 +4,12 @@ public class ReferenceSequence {
 	public final int chromosome;
 	public final char[] sequence;
 	
-	public ReferenceSequence(int size)
-	{
+	public ReferenceSequence(int chromosome, int size) {
 		this.chromosome = 1;
 		this.sequence = GenomeGenerator.generateSequence(size);
 	}
 	
-	public String toString()
-	{
+	public String toString() {
 		return "Reference sequence: " + new String(this.sequence);
 	}
 }
