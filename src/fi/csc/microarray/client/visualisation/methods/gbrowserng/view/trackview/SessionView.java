@@ -25,9 +25,6 @@ public class SessionView extends GenosideComponent {
 	private final Session session;
 
     private final MouseTracker mouseTracker = new MouseTracker();
-    
-    private int left;
-    private int right;
 
 	public SessionView(Session session, GenosideComponent parent) {
 		super(parent);
@@ -39,15 +36,10 @@ public class SessionView extends GenosideComponent {
 
         this.getAnimatedValues().setAnimatedValue("ZOOM", session.targetZoomLevel);
         this.getAnimatedValues().setAnimatedValue("POSITION", session.position);
-        
-        this.left = 0;
-        this.right = 20;
+
         this.coordinateView = new CoordinateView(this);
         this.coordinateView.setPosition(0, -0.95f);
         this.coordinateView.setDimensions(2f, 0.1f);
-        
-        this.getAnimatedValues().setAnimatedValue("LEFT", this.left);
-        this.getAnimatedValues().setAnimatedValue("RIGHT", this.right);
 	}
 
 	public void addTrackView(TrackView view) {
@@ -154,6 +146,7 @@ public class SessionView extends GenosideComponent {
 
         if(event.getEventType() == MouseEvent.EVENT_MOUSE_DRAGGED) {
             this.session.position -= mouseTracker.getDragging_dx() / this.getAnimatedValues().getAnimatedValue("ZOOM");
+            this.session.halfSizeY *= 1.0f + mouseTracker.getDragging_dy();
             this.getAnimatedValues().setAnimatedValue("POSITION", session.position);
             return true;
         }

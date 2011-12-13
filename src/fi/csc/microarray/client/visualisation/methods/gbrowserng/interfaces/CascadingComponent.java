@@ -2,7 +2,7 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces;
 
 import com.soulaim.tech.math.Vector2;
 
-public class CascadingComponent {
+public abstract class CascadingComponent {
 
     CascadingComponent parent;
 

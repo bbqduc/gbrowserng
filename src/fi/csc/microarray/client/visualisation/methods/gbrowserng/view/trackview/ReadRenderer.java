@@ -8,7 +8,6 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Read;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.CascadingComponent;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.VisualComponent;
 
 import java.util.ArrayList;
@@ -79,8 +78,10 @@ public class ReadRenderer extends CascadingComponent implements VisualComponent 
 
 
     public void draw(SoulGL2 gl) {
-        float y = 0.0f;
+        float y = -0.2f;
         for (int i = 0; i < this.reads.size(); ++i, y += 2.5f * this.session.halfSizeY) {
+            if( y - session.halfSizeY > 1.0f )
+                break;
             Read read = this.reads.get(i);
             drawRead(gl, y, read);
         }
