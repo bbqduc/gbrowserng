@@ -22,7 +22,6 @@ public class OverView extends GenosideComponent {
 
     private Vector2 mousePosition = new Vector2();
 
-    ReferenceSequence referenceSequence = null;
     ConcurrentLinkedQueue<SessionViewCapsule> sessions = new ConcurrentLinkedQueue<SessionViewCapsule>();
     SessionViewCapsule activeSession = null;
 
