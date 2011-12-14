@@ -20,6 +20,7 @@ public class TrackView extends GenosideComponent {
 
     TrackSession trackSession;
     ReadRenderer readRenderer;
+    HeatMapRenderer heatMapRenderer;
     ReferenceRenderer referenceRenderer;
 
 	private boolean isActive;
@@ -30,22 +31,30 @@ public class TrackView extends GenosideComponent {
 
 	private Session session;
 
-	Color heatColor = new Color(0, 0, 0, 1);
-
-
     public float getGenePosition() {
         return this.getParent().getAnimatedValues().getAnimatedValue("POSITION");
+    }
+    
+    public float getHalfWidth() {
+        return this.getParent().getAnimatedValues().getAnimatedValue("ZOOM");
+    }
+    
+    public Session getSession() {
+    	return this.session;
     }
 
 	public TrackView(GenosideComponent parent, Session session) {
 		super(parent);
+		
+		this.session = session;
 
         referenceRenderer = new ReferenceRenderer(this, session);
         trackSession = new TrackSession(session.referenceSequence);
         readRenderer = new ReadRenderer(session, trackSession.getReads(), this);
+        heatMapRenderer = new HeatMapRenderer(this, trackSession.getHeatMap());
 
         this.readRenderer.setDimensions(2, 2);
-		this.session = session;
+        this.heatMapRenderer.setDimensions(2, 2);
 
 		this.isActive = true;
 		this.minimizeButton = new GenoButton(this, "MIN_BUTTON", -1.0f, 1.0f,
@@ -58,12 +67,7 @@ public class TrackView extends GenosideComponent {
 
 	public void draw(SoulGL2 gl) {
 		if (isActive) {
-			float y = this.session.startY;
-			drawCoordinates(gl, y, this.session.referenceSequence);
-			y += 2.5f * this.session.halfSizeY;
-			drawHeatMap(gl, y, this.trackSession.getHeatMap());
-			y += 2.5f * this.session.halfSizeY;
-
+			this.heatMapRenderer.draw(gl);
             this.referenceRenderer.draw(gl);
             this.readRenderer.draw(gl);
 			this.minimizeButton.draw(gl);
@@ -73,85 +77,6 @@ public class TrackView extends GenosideComponent {
 		}
 
 		borderComponent.draw(gl);
-	}
-
-	private void drawHeatMap(SoulGL2 gl, float y, HeatMap heatMap) {
-
-		float smoothPosition = getGenePosition();
-		int intPosition = (int) smoothPosition;
-		float offsetPosition = smoothPosition - intPosition;
-
-		float x = this.session.halfSizeX - offsetPosition * 2
-				* this.session.halfSizeX;
-
-		for (int i = intPosition; i < heatMap.heat.length
-				&& x < 1f + glxSize(this.session.halfSizeX); ++i, x += 2 * this.session.halfSizeX) {
-			if (i < 0)
-				continue;
-
-			float redness = (float) heatMap.heat[i] / (float) heatMap.max;
-			float blueness = 1.0f - redness;
-
-			heatColor.r = redness;
-			heatColor.b = blueness;
-
-			PrimitiveRenderer.drawRectangle(glx(x), gly(y),
-					glxSize(this.session.halfSizeX * session.payloadSize),
-					glySize(this.session.halfSizeY * session.payloadSize), gl, heatColor);
-		}
-
-		x = -this.session.halfSizeX - offsetPosition * 2 * this.session.halfSizeX;
-		for (int i = intPosition - 1; i >= 0 && x > -1f - glxSize(this.session.halfSizeX); --i, x -= 2 * this.session.halfSizeX) {
-			if (i >= heatMap.heat.length)
-				continue;
-
-			float redness = (float) heatMap.heat[i] / (float) heatMap.max;
-			float blueness = 1.0f - redness;
-
-			heatColor.r = redness;
-			heatColor.b = blueness;
-
-			PrimitiveRenderer.drawRectangle(glx(x), gly(y),
-					glxSize(this.session.halfSizeX * session.payloadSize),
-					glySize(this.session.halfSizeY * session.payloadSize), gl, heatColor);
-		}
-	}
-
-	private void drawCoordinates(SoulGL2 gl, float y, ReferenceSequence refSeq) {
-		/*
-		int step = 5;
-
-		float smoothPosition = getGenePosition();
-		int intPosition = (int) smoothPosition;
-		float offsetPosition = smoothPosition - intPosition;
-
-		float x = this.session.halfSizeX - offsetPosition
-				* this.session.halfSizeX * 2;
-		for (int i = intPosition; i < refSeq.sequence.length
-				&& x < 1f + glxSize(this.session.halfSizeX); i += step, x += 2
-				* session.halfSizeX * step) {
-			if (i < 0)
-				continue;
-			String pos = Integer.toString(i);
-			TextRenderer.getInstance().drawText(gl, pos, glx(x), gly(y),
-					glySize(this.session.halfSizeY * 20));
-			while (this.session.halfSizeX * 2 * step < pos.length()
-					* this.session.halfSizeY * 2)
-				++step;
-		}
-
-		x = -this.session.halfSizeX * (1 + 2 * (step - 1)) - offsetPosition
-				* this.session.halfSizeX * 2;
-		for (int i = intPosition - step; i >= 0
-				&& x > -1f - glxSize(this.session.halfSizeX); i -= step, x -= 2
-				* session.halfSizeX * step) {
-			if (i >= refSeq.sequence.length)
-				continue;
-			String pos = Integer.toString(i);
-			TextRenderer.getInstance().drawText(gl, pos, glx(x), gly(y),
-					glySize(this.session.halfSizeY * 20));
-		}
-				*/
 	}
 
 	@Override
@@ -168,6 +93,7 @@ public class TrackView extends GenosideComponent {
 	@Override
 	public void userTick(float dt) {
 		if (isActive) {
+			this.heatMapRenderer.tick(dt);
             this.referenceRenderer.tick(dt);
             this.readRenderer.tick(dt);
 			this.minimizeButton.tick(dt);
