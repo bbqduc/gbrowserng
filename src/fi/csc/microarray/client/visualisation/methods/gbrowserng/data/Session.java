@@ -14,8 +14,9 @@ public class Session {
     public float startY = -0.7f;
 	public float payloadSize = 0.85f;
 
-    public Session() {
-		this.referenceSequence = new ReferenceSequence(1, 200);
+    public Session(ReferenceSequence referenceSequence, long chromosomePosition) {
+		this.referenceSequence = referenceSequence;
+        this.position = chromosomePosition;
 	}
 }
 

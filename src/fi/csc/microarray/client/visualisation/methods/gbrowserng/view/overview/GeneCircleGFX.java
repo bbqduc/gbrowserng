@@ -20,10 +20,14 @@ public class GeneCircleGFX {
         shader.start(gl);
 
         mousePos.copyFrom(mousePosition);
+        mousePos.normalize();
+
+        /*
         mousePos.scale(1.2f);
         if(mousePos.length() > 0.6f) {
             mousePos.scale( Math.max(0.1f, 1.6f - mousePos.length()) );
         }
+        */
 
         ShaderMemory.setUniformVec1(gl, shader, "time", time);
         ShaderMemory.setUniformVec1(gl, shader, "hilight", hilight);

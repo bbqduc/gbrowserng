@@ -7,6 +7,8 @@ import com.soulaim.tech.gles.SoulGL2;
 import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import com.soulaim.tech.math.Vector2;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractGenome;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.SessionView;
 
@@ -20,6 +22,8 @@ public class SessionViewCapsule extends GenosideComponent {
     private float death = 0;
     private Color backGroundColor = new Color(0, 0, 0, 255);
 
+    private Vector2 genecirclePosition = new Vector2(1, 0);
+
     private final LinkGFX link;
 
     public SessionViewCapsule(SessionView sessionView) {
@@ -27,7 +31,19 @@ public class SessionViewCapsule extends GenosideComponent {
         this.sessionView = sessionView;
         this.getAnimatedValues().setAnimatedValue("ALPHA", 1.0f);
 
-        link = new LinkGFX(sessionView, sessionView.getParent());
+        link = new LinkGFX(sessionView, this);
+    }
+
+    public Vector2 getGeneCirclePosition(float circleSize) {
+        Session mySession = this.sessionView.getSession();
+        int chromosomeID = mySession.referenceSequence.chromosome;
+        long chromosomePos = (long) mySession.position;
+        chromosomePos += AbstractGenome.getStartPoint(chromosomeID);
+        float relativePos = (float) chromosomePos / AbstractGenome.getTotalLength();
+        genecirclePosition.x = circleSize;
+        genecirclePosition.y = 0;
+        genecirclePosition.rotate(2 * 3.14159f * relativePos);
+        return genecirclePosition;
     }
 
     public boolean isAlive() {
@@ -107,6 +123,11 @@ public class SessionViewCapsule extends GenosideComponent {
     public void userTick(float dt) {
         if(dying) death += dt;
         sessionView.tick(dt);
+
+        // TODO: This is not necessary on every tick.
+        Vector2 pos = this.getGeneCirclePosition(0.485f);
+        this.setPosition(pos.x, pos.y);
+
         link.tick(dt);
     }
 
@@ -138,8 +159,8 @@ public class SessionViewCapsule extends GenosideComponent {
 
         link.show();
         if(myPos.length() < 0.00000001f) {
-            myPos.x = (float) Math.random();
-            myPos.y = (float) Math.random();
+            myPos.x = (float) Math.random() - 0.5f;
+            myPos.y = (float) Math.random() - 0.5f;
         }
 
         myPos.normalize();

@@ -1,23 +1,31 @@
+
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.data;
 
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GeneTrack;
-
 public class AbstractChromosome {
+
     private long size;
     private int id;
-    GeneTrack geneTrack;
+    ReferenceSequence sequence;
 
     public AbstractChromosome(int id, long size) {
         this.id = id;
         this.size = size;
-        geneTrack = new GeneTrack((int)size);
+        sequence = new ReferenceSequence(id, (int) size);
+    }
+
+    public int getChromosomeNumber() {
+        return id;
     }
 
     public long length() {
         return size;
     }
 
-    public GeneTrack getGeneTrack() {
-        return geneTrack;
+    ReferenceSequence getSequence() {
+        return sequence;
+    }
+
+    public ReferenceSequence getReferenceSequence() {
+        return sequence;
     }
 }

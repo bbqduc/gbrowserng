@@ -6,6 +6,7 @@ precision mediump float;
 uniform float hilight;
 varying float dist;
 varying float power;
+varying float dotproduct;
 
 void main() {
     float d = dist * 10.0 - 9.0;
@@ -15,5 +16,7 @@ void main() {
     d = 1.0 - d * d;
 
     float v = hilight;
-    gl_FragColor = vec4(d * v * power, d * v * power, 0.2 + 0.8 * d * power, 1.0);
+    vec4 color1 = vec4(d, 0.0, 0.0, 1.0);
+    vec4 color2 = vec4(0.0, v, 0.2 + 0.4 * d * power, 1.0);
+    gl_FragColor = dotproduct * color1 + (1.0 - dotproduct) * color2;
 }

@@ -7,6 +7,8 @@ import com.soulaim.tech.gles.renderer.TextRenderer;
 import com.soulaim.tech.math.Matrix4;
 import com.soulaim.tech.math.Vector2;
 
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractChromosome;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractGenome;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.ReferenceSequence;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
@@ -24,6 +26,11 @@ public class OverView extends GenosideComponent {
 
     ConcurrentLinkedQueue<SessionViewCapsule> sessions = new ConcurrentLinkedQueue<SessionViewCapsule>();
     SessionViewCapsule activeSession = null;
+
+    // TODO: Wrap these up in a class
+    private float pointerGenePosition = 0;
+    private AbstractChromosome chromosome = AbstractGenome.getChromosome(0);
+    private long chromosomePosition = 0;
 
     public OverView() {
         super(null);
@@ -76,6 +83,12 @@ public class OverView extends GenosideComponent {
             return activeSession.getSession().handle(event, x, y);
         }
 
+        // note, x axis is negated to make tracking begin from the mathematical zero angle.
+        this.pointerGenePosition = ((float) (Math.atan2(y, -x) / Math.PI) * 0.5f + 0.5f);
+        this.pointerGenePosition = (1.0f - this.pointerGenePosition) * AbstractGenome.getTotalLength();
+        chromosome = AbstractGenome.getChromosomeByPosition((long) this.pointerGenePosition);
+        chromosomePosition = (long) (this.pointerGenePosition - AbstractGenome.getStartPoint(chromosome.getChromosomeNumber()));
+
         // allow capsules to update their states
         for(SessionViewCapsule capsule : sessions)
             capsule.handle(event, x, y);
@@ -101,10 +114,8 @@ public class OverView extends GenosideComponent {
             }
 
             // respond to mouse click
-            //float percentage = (float) (Math.atan2(y, x) / Math.PI);
-
             System.out.println("Adding capsule");
-            SessionViewCapsule capsule = new SessionViewCapsule(new SessionView(new Session(), this));
+            SessionViewCapsule capsule = new SessionViewCapsule(new SessionView(new Session(chromosome.getReferenceSequence(), chromosomePosition), this));
             capsule.getSession().setDimensions(0.4f, 0.2f);
             capsule.getSession().setPosition(x, y);
             sessions.add(capsule);
@@ -134,7 +145,14 @@ public class OverView extends GenosideComponent {
             capsule.draw(gl);
         }
 
-        TextRenderer.getInstance().drawText(gl, "FPS: " + fpsCounter.getFps(), 0, 0.92f, 1.0f);
+        TextRenderer.getInstance().drawText(gl, "FPS: " + fpsCounter.getFps(), 0, 0.92f, 0.9f);
+
+        if(activeSession != null) {
+            // Mouse hover information
+            // TODO: Show the info of a session view, when hovering mouse over session view.
+            TextRenderer.getInstance().drawText(gl, "Chromosome " + this.chromosome.getChromosomeNumber(), 0, -0.86f, 0.8f);
+            TextRenderer.getInstance().drawText(gl, "Position: " + this.chromosomePosition, 0, -0.95f, 0.8f);
+        }
     }
 
     @Override
@@ -164,8 +182,11 @@ public class OverView extends GenosideComponent {
 
                 // pull towards target
                 position.copyFrom(capsule1.getSession().getPosition());
+                position.x -= capsule1.getPosition().x;
+                position.y -= capsule1.getPosition().y;
+
                 float pow = position.lengthSquared();
-                position.scale(0.01f * pow);
+                position.scale(0.1f * pow);
 
                 capsule1.getSession().modifyPosition(-position.x, -position.y);
 
@@ -181,7 +202,6 @@ public class OverView extends GenosideComponent {
                         capsule1.getSession().modifyPosition(+v.x, +v.y);
                         capsule2.getSession().modifyPosition(-v.x, -v.y);
                     }
-
                 }
             }
 

@@ -22,6 +22,11 @@ public class AbstractGenome {
         return ans;
     }
 
+    public static long getStartPoint(int id) {
+        if(id == 0) return 0;
+        else return getEndPoint(id-1);
+    }
+
     public static long getEndPoint(int id) {
         long ans = 0;
         for(int i=0; i<=id; ++i) {
@@ -36,6 +41,14 @@ public class AbstractGenome {
 
     public static int getNumChromosomes() {
         return abstractGenomeData.size();
+    }
+
+
+    public static AbstractChromosome getChromosomeByPosition(long position) {
+        for(int i=0; i<getNumChromosomes(); ++i)
+            if(getEndPoint(i) >= position)
+                return abstractGenomeData.get(i);
+        return abstractGenomeData.get(0);
     }
 
     public static AbstractChromosome getChromosome(int id) {

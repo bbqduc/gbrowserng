@@ -5,7 +5,7 @@ public class ReferenceSequence {
 	public final char[] sequence;
 	
 	public ReferenceSequence(int chromosome, int size) {
-		this.chromosome = 1;
+		this.chromosome = chromosome;
 		this.sequence = GenomeGenerator.generateSequence(size);
 	}
 	

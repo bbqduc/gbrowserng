@@ -117,12 +117,10 @@ public class SessionView extends GenosideComponent {
             this.getAnimatedValues().setAnimatedValue("POSITION", this.session.position);
 			return true;
 		} else if (KeyEvent.VK_UP == event.getKeyCode()) {
-			this.session.targetZoomLevel *= 0.9f;
-			this.getAnimatedValues().setAnimatedValue("ZOOM", this.session.targetZoomLevel);
+            zoom(0.9f / 1.0f);
 			return true;
 		} else if (KeyEvent.VK_DOWN == event.getKeyCode()) {
-			this.session.targetZoomLevel *= 1.0f / 0.9f;
-			this.getAnimatedValues().setAnimatedValue("ZOOM", this.session.targetZoomLevel);
+			zoom(1.0f / 0.9f);
 			return true;
 		}
 
@@ -136,7 +134,12 @@ public class SessionView extends GenosideComponent {
 		return handled;
 	}
 
-	public boolean handle(MouseEvent event, float screen_x, float screen_y) {
+    private void zoom(float v) {
+        this.session.targetZoomLevel *= v;
+        this.getAnimatedValues().setAnimatedValue("ZOOM", this.session.targetZoomLevel);
+    }
+
+    public boolean handle(MouseEvent event, float screen_x, float screen_y) {
 
 		quitButton.handle(event, screen_x, screen_y);
 		shrinkButton.handle(event, screen_x, screen_y);
@@ -193,4 +196,8 @@ public class SessionView extends GenosideComponent {
 
         this.session.halfSizeX = this.getAnimatedValues().getAnimatedValue("ZOOM");
 	}
+
+    public Session getSession() {
+        return session;
+    }
 }
