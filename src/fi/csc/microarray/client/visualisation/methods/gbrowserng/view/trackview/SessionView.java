@@ -11,6 +11,7 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.MouseTrac
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoButton;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoVisualBorder;
 
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SessionView extends GenosideComponent {
@@ -22,6 +23,7 @@ public class SessionView extends GenosideComponent {
 
 	private final ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
 	private CoordinateView coordinateView;
+	private boolean heatMapMode;
 	private final Session session;
 
     private final MouseTracker mouseTracker = new MouseTracker();
@@ -29,6 +31,8 @@ public class SessionView extends GenosideComponent {
 	public SessionView(Session session, GenosideComponent parent) {
 		super(parent);
 		this.session = session;
+		this.heatMapMode = false;
+		
 		TrackView trackView1 = new TrackView(this, this.session);
 		TrackView trackView2 = new TrackView(this, this.session);
 		this.addTrackView(trackView1);
@@ -48,35 +52,82 @@ public class SessionView extends GenosideComponent {
 	}
 
 	public void recalculateTrackPositions() {
-		int numActive = 0;
-
-		for (TrackView t : this.trackViews) {
-			if (t.isActive())
-				++numActive;
-		}
-
-		int current = 0;
-		int absents = 0;
-
-		for (TrackView t : this.trackViews) {
-			if (t.isActive()) {
-				float pos = (2 * current + 1.0f) / (numActive) - 1.0f;
-				t.setPosition(0, pos);
-				t.setDimensions(2, 2.0f / numActive);
-				++current;
-			} else {
-				t.setPosition(-0.7f, 0.8f - absents * 0.20f);
-				t.setDimensions(0.4f, 0.2f);
-				++absents;
+		if (!this.heatMapMode)
+		{
+			int numActive = 0;
+	
+			for (TrackView t : this.trackViews) {
+				if (t.isActive())
+					++numActive;
 			}
+	
+			int current = 0;
+			int absents = 0;
+	
+			for (TrackView t : this.trackViews) {
+				if (t.isActive()) {
+					float pos = (2 * current + 1.0f) / (numActive) - 1.0f;
+					t.setPosition(0, pos);
+					t.setDimensions(2, 2.0f / numActive);
+					++current;
+				} else {
+					t.setPosition(-0.7f, 0.8f - absents * 0.20f);
+					t.setDimensions(0.4f, 0.2f);
+					++absents;
+				}
+			}
+		} else {
+			int i = 0;
+			for (TrackView t : this.trackViews) {
+				t.setPosition(0f, 0.7f - i * 0.20f);
+				t.setDimensions(2, 0.2f);
+				++i;
+			}
+			
 		}
 	}
 
 	@Override
 	public void childComponentCall(String who, String what) {
 
-		if (who.equals("TRACKVIEW")
-				&& (what.equals("MINIMIZE") || what.equals("MAXIMIZE"))) {
+		if (who.equals("TRACKVIEW") && (what.equals("MINIMIZE"))) {
+			recalculateTrackPositions();
+		}
+		
+		else if (who.equals("MAXIMIZE"))
+		{
+			if (this.heatMapMode)
+			{
+				try {
+					int id = Integer.parseInt(what);
+					Iterator<TrackView> it = this.trackViews.iterator();
+					while (it.hasNext())
+					{
+						TrackView t = it.next();
+						t.setActive(t.getId() == id);
+					}
+				} catch (NumberFormatException e) {
+				}
+				toggleHeatMapMode();
+			}
+			recalculateTrackPositions();
+		}
+		else if (who.equals("DELETE"))
+		{
+			try {
+				int id = Integer.parseInt(what);
+				Iterator<TrackView> it = this.trackViews.iterator();
+				while (it.hasNext())
+				{
+					TrackView t = it.next();
+					if (t.getId() == id)
+					{
+						it.remove();
+						break;
+					}
+				}
+			} catch (NumberFormatException e) {
+			}
 			recalculateTrackPositions();
 		}
 
@@ -94,7 +145,9 @@ public class SessionView extends GenosideComponent {
 
 		else if (who.equals("OPENREADFILE_BUTTON")) {
 			if (what.equals("PRESSED")) {
-				this.addTrackView(new TrackView(this, this.session));
+				TrackView t = new TrackView(this, this.session);
+				t.setHeatMapMode(this.heatMapMode);
+				this.addTrackView(t);
 			}
 		}
 	}
@@ -122,6 +175,8 @@ public class SessionView extends GenosideComponent {
 		} else if (KeyEvent.VK_DOWN == event.getKeyCode()) {
 			zoom(1.0f / 0.9f);
 			return true;
+		} else if (KeyEvent.VK_H == event.getKeyCode() && KeyEvent.EVENT_KEY_RELEASED == event.getEventType()) {
+			toggleHeatMapMode();
 		}
 
 		// child views want to handle this?
@@ -132,6 +187,18 @@ public class SessionView extends GenosideComponent {
 		}
 
 		return handled;
+	}
+	
+	private void toggleHeatMapMode()
+	{
+		this.heatMapMode = !this.heatMapMode;
+		for (TrackView t : this.trackViews)
+		{
+			t.setHeatMapMode(this.heatMapMode);
+			if (this.heatMapMode)
+				t.setActive(true);
+		}
+		recalculateTrackPositions();
 	}
 
     private void zoom(float v) {

@@ -2,19 +2,13 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
-import com.soulaim.tech.gles.Color;
 import com.soulaim.tech.gles.SoulGL2;
 import com.soulaim.tech.gles.TextureID;
-import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
-import com.soulaim.tech.gles.renderer.TextRenderer;
 
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.*;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoButton;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoVisualBorder;
-
-import java.util.ArrayList;
 
 public class TrackView extends GenosideComponent {
 
@@ -24,6 +18,7 @@ public class TrackView extends GenosideComponent {
     ReferenceRenderer referenceRenderer;
 
 	private boolean isActive;
+	private boolean heatMapMode;
 	private GenoButton deleteButton;
 	private GenoButton minimizeButton;
 	private GenoButton maximizeButton;
@@ -67,10 +62,18 @@ public class TrackView extends GenosideComponent {
 
 	public void draw(SoulGL2 gl) {
 		if (isActive) {
-			this.heatMapRenderer.draw(gl);
-            this.referenceRenderer.draw(gl);
-            this.readRenderer.draw(gl);
-			this.minimizeButton.draw(gl);
+			if (!heatMapMode)
+			{
+	            this.referenceRenderer.draw(gl);
+	            this.readRenderer.draw(gl);
+				this.minimizeButton.draw(gl);
+			}
+			else
+			{
+				this.heatMapRenderer.draw(gl);
+				this.maximizeButton.draw(gl);
+				this.deleteButton.draw(gl);
+			}
 		} else {
 			this.maximizeButton.draw(gl);
 			this.deleteButton.draw(gl);
@@ -86,17 +89,27 @@ public class TrackView extends GenosideComponent {
 			this.getParent().childComponentCall("TRACKVIEW", "MINIMIZE");
 		} else if (who.equals("MAX_BUTTON")) {
 			isActive = true;
-			this.getParent().childComponentCall("TRACKVIEW", "MAXIMIZE");
+			this.getParent().childComponentCall("MAXIMIZE", Integer.toString(this.getId()));
+		} else if (who.equals("DEL_BUTTON")) {
+			this.getParent().childComponentCall("DELETE", Integer.toString(this.getId()));
 		}
 	}
 
 	@Override
 	public void userTick(float dt) {
 		if (isActive) {
-			this.heatMapRenderer.tick(dt);
-            this.referenceRenderer.tick(dt);
-            this.readRenderer.tick(dt);
-			this.minimizeButton.tick(dt);
+			if (!heatMapMode)
+			{
+	            this.referenceRenderer.tick(dt);
+	            this.readRenderer.tick(dt);
+				this.minimizeButton.tick(dt);
+			}
+			else
+			{
+				this.heatMapRenderer.tick(dt);
+				this.deleteButton.tick(dt);
+				this.maximizeButton.tick(dt);
+			}
 		} else {
 			this.deleteButton.tick(dt);
 			this.maximizeButton.tick(dt);
@@ -107,9 +120,16 @@ public class TrackView extends GenosideComponent {
 	public boolean handle(MouseEvent event, float screen_x, float screen_y) {
 
 		if (isActive) {
-			if (this.minimizeButton.handle(event, screen_x, screen_y))
-				return true;
-			return false;
+			if (this.heatMapMode)
+			{
+				if (this.deleteButton.handle(event, screen_x, screen_y))
+					return true;
+				return this.maximizeButton.handle(event, screen_x, screen_y);
+			} else {
+				if (this.minimizeButton.handle(event, screen_x, screen_y))
+					return true;
+				return false;
+			}
 		} else {
 			if (this.deleteButton.handle(event, screen_x, screen_y))
 				return true;
@@ -121,8 +141,18 @@ public class TrackView extends GenosideComponent {
 	public boolean handle(KeyEvent event) {
 		return false;
 	}
+	
+	public void setHeatMapMode(boolean heatMapMode)
+	{
+		this.heatMapMode = heatMapMode;
+	}
 
 	public boolean isActive() {
 		return this.isActive;
 	}
+	
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+	
 }
