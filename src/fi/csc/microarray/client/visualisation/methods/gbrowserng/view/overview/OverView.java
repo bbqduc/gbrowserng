@@ -9,7 +9,6 @@ import com.soulaim.tech.math.Vector2;
 
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractChromosome;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractGenome;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.ReferenceSequence;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GenoFPSCounter;

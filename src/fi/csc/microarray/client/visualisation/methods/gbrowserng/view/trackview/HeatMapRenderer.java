@@ -7,7 +7,6 @@ import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.HeatMap;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.CascadingComponent;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.VisualComponent;
 
 public class HeatMapRenderer extends CascadingComponent implements VisualComponent {
@@ -27,7 +26,6 @@ public class HeatMapRenderer extends CascadingComponent implements VisualCompone
 	public void draw(SoulGL2 gl) {
 		float smoothPosition = ((TrackView)getParent()).getGenePosition();
 		float halfWidth = this.session.halfSizeX;
-		float height = this.session.startY + 2.5f * this.session.halfSizeY;
 		
 		int intPosition = (int) smoothPosition;
 		float offsetPosition = smoothPosition - intPosition;
@@ -45,9 +43,9 @@ public class HeatMapRenderer extends CascadingComponent implements VisualCompone
 			heatColor.r = redness;
 			heatColor.b = blueness;
 
-			PrimitiveRenderer.drawRectangle(glx(x), gly(height),
+			PrimitiveRenderer.drawRectangle(glx(x), gly(0),
 					glxSize(this.session.halfSizeX * session.payloadSize),
-					glySize(this.session.halfSizeY * session.payloadSize), gl, heatColor);
+					glySize(0.5f), gl, heatColor);
 		}
 
 		x = -halfWidth - offsetPosition * 2 * halfWidth;
@@ -61,9 +59,9 @@ public class HeatMapRenderer extends CascadingComponent implements VisualCompone
 			heatColor.r = redness;
 			heatColor.b = blueness;
 
-			PrimitiveRenderer.drawRectangle(glx(x), gly(height),
+			PrimitiveRenderer.drawRectangle(glx(x), gly(0),
 					glxSize(this.session.halfSizeX * session.payloadSize),
-					glySize(this.session.halfSizeY * session.payloadSize), gl, heatColor);
+					glySize(0.5f), gl, heatColor);
 		}
 		
 	}

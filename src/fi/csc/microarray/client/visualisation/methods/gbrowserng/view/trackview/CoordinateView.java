@@ -28,6 +28,7 @@ public class CoordinateView extends GenosideComponent {
 		
 		int p =  (int)position - (int)total/2;
 		int delta = (int)total/4;
+		delta = (delta == 0) ? 1 : delta;
 		
 		for (float x = -1.0f + halfWidth - offset; x < 1.0f; x += 2 * halfWidth, ++p) {
 			if (p % delta == 0) {
