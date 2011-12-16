@@ -36,10 +36,6 @@ public class OverView extends GenosideComponent {
         super(null);
     }
 
-    public Vector2 getCirclePosition(long genePosition) {
-        return new Vector2(0, 0);
-    }
-
     @Override
     public void childComponentCall(String who, String what) {
         if(who.equals("SESSION")) {
