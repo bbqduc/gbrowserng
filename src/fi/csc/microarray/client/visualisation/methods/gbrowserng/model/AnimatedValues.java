@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class AnimatedValues {
 
-    ConcurrentHashMap<String, Vector2> animatedValues = new ConcurrentHashMap<String, Vector2>();
+    final ConcurrentHashMap<String, Vector2> animatedValues = new ConcurrentHashMap<String, Vector2>();
 
     public float getAnimatedValue(String name) {
         if(animatedValues.containsKey(name))

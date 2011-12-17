@@ -16,7 +16,7 @@ public class DesktopTextureManager extends TextureManager {
 
     String path = "images/";
 
-    private Map<TextureID, Texture> textures;
+    private final Map<TextureID, Texture> textures;
     protected boolean ready;
     private GL glContext;
 

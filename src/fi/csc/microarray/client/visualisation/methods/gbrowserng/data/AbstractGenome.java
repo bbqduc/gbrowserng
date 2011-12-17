@@ -3,7 +3,7 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.data;
 import java.util.ArrayList;
 
 public class AbstractGenome {
-    private static ArrayList<AbstractChromosome> abstractGenomeData = new ArrayList<AbstractChromosome>();
+    private static final ArrayList<AbstractChromosome> abstractGenomeData = new ArrayList<AbstractChromosome>();
     private static String name = "empty";
 
     public static void setName(String name) {

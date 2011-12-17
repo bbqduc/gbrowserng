@@ -13,7 +13,6 @@ public class DrawableRenderer
 
     private static int textureCoordinateHandle;
     private static int vertexPositionHandle;
-    private static int MVPMatrixHandle;
 
 
     public static void startDrawingDrawable(SoulGL2 gl, Matrix4 modelviewProjectionMatrix) {
@@ -22,7 +21,7 @@ public class DrawableRenderer
 
         textureCoordinateHandle = shader.getAttribLocation(gl, "textureCoordinate");
         vertexPositionHandle = shader.getAttribLocation(gl, "vertexPosition");
-        MVPMatrixHandle = shader.getUniformLocation(gl, "MVPMatrix");
+        int MVPMatrixHandle = shader.getUniformLocation(gl, "MVPMatrix");
 
         gl.glEnable(SoulGL2.GL_TEXTURE_2D);
         gl.glEnableVertexAttribArray(textureCoordinateHandle);

@@ -71,8 +71,7 @@ public class GenoGLListener implements GLEventListener {
         PrimitiveRenderer.onSurfaceChanged(width, height);
         TextRenderer.getInstance().onSurfaceChanged(width, height);
 
-        float aspectRatio = width * 1.0f / height;
-        GlobalVariables.aspectRatio = aspectRatio;
+        GlobalVariables.aspectRatio = width * 1.0f / height;
 	}
 
     public GenosideComponent getRoot() {

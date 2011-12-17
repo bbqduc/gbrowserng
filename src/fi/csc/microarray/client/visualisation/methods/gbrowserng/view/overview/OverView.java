@@ -2,6 +2,7 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview;
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
+
 import com.soulaim.tech.gles.SoulGL2;
 import com.soulaim.tech.gles.renderer.TextRenderer;
 import com.soulaim.tech.math.Matrix4;
@@ -142,7 +143,7 @@ public class OverView extends GenosideComponent {
 
         TextRenderer.getInstance().drawText(gl, "FPS: " + fpsCounter.getFps(), 0, 0.92f, 0.9f);
 
-        if(activeSession != null) {
+        if(activeSession == null) {
             // Mouse hover information
             // TODO: Show the info of a session view, when hovering mouse over session view.
             TextRenderer.getInstance().drawText(gl, "Chromosome " + this.chromosome.getChromosomeNumber(), 0, -0.86f, 0.8f);
@@ -180,7 +181,8 @@ public class OverView extends GenosideComponent {
                 position.x -= capsule1.getPosition().x;
                 position.y -= capsule1.getPosition().y;
 
-                float pow = position.lengthSquared();
+                // to prevent overdoing things.
+                float pow = Math.min(0.2f, position.lengthSquared());
                 position.scale(0.1f * pow);
 
                 capsule1.getSession().modifyPosition(-position.x, -position.y);

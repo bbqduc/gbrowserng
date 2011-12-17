@@ -3,9 +3,9 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.data;
 
 public class AbstractChromosome {
 
-    private long size;
-    private int id;
-    ReferenceSequence sequence;
+    private final long size;
+    private final int id;
+    private final ReferenceSequence sequence;
 
     public AbstractChromosome(int id, long size) {
         this.id = id;

@@ -10,13 +10,13 @@ public abstract class CascadingComponent {
         this.parent = parent;
     }
 
-    private Vector2 currentPosition = new Vector2();
-    private Vector2 targetPosition = new Vector2();
-    private Vector2 currentDimensions = new Vector2();
-    private Vector2 targetDimensions = new Vector2();
+    private final Vector2 currentPosition = new Vector2();
+    private final Vector2 targetPosition = new Vector2();
+    private final Vector2 currentDimensions = new Vector2();
+    private final Vector2 targetDimensions = new Vector2();
 
-    private Vector2 relativePosition = new Vector2();
-    private Vector2 relativeDimensions = new Vector2();
+    private final Vector2 relativePosition = new Vector2();
+    private final Vector2 relativeDimensions = new Vector2();
 
     public boolean inScreen() {
         if(getPosition().x + getDimensions().x * 0.5f < -1) return false;
