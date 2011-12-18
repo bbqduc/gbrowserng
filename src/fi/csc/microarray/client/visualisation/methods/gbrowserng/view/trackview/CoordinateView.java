@@ -23,14 +23,16 @@ public class CoordinateView extends GenosideComponent {
 	public void draw(SoulGL2 gl) {
 		float position = this.getParent().getAnimatedValues().getAnimatedValue("POSITION");
 		float halfWidth = this.getParent().getAnimatedValues().getAnimatedValue("ZOOM");
-		float total = 1.0f / halfWidth;
+		float total = Math.min(100f, 1.0f / halfWidth);
 		float offset = 2*halfWidth*(position - (int)position);
+
+        float delta_x = Math.max(2 * halfWidth, 0.02f);
 		
 		int p =  (int)position - (int)total/2;
 		int delta = (int)total/4;
 		delta = (delta == 0) ? 1 : delta;
 		
-		for (float x = -1.0f + halfWidth - offset; x < 1.0f; x += 2 * halfWidth, ++p) {
+		for (float x = -1.0f + halfWidth - offset; x < 1.0f; x += delta_x, ++p) {
 			if (p % delta == 0) {
 				PrimitiveRenderer.drawRectangle(glx(x), gly(0.9f),
 						glxSize(0.002f), glySize(0.1f), gl, Color.WHITE);

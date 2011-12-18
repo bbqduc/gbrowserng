@@ -25,7 +25,7 @@ public class OverView extends GenosideComponent {
     private Vector2 mousePosition = new Vector2();
 
     ConcurrentLinkedQueue<SessionViewCapsule> sessions = new ConcurrentLinkedQueue<SessionViewCapsule>();
-    SessionViewCapsule activeSession = null;
+    ConcurrentLinkedQueue<SessionViewCapsule> activeSessions = new ConcurrentLinkedQueue<SessionViewCapsule>();
 
     // TODO: Wrap these up in a class
     private float pointerGenePosition = 0;
@@ -50,33 +50,39 @@ public class OverView extends GenosideComponent {
     }
 
     private void killActiveSession() {
-        if(activeSession == null)
+        if(activeSessions.isEmpty())
             return;
-        if(activeSession.isActive()) {
-            activeSession.die();
-            activeSession.getSession().setPosition(-1.4f, 0.0f);
+
+        for(SessionViewCapsule capsule : activeSessions) {
+            if(capsule.isActive()) {
+                capsule.die();
+                capsule.getSession().setPosition(-1.4f, 0.0f);
+            }
         }
     }
 
     private void disableActiveSession() {
-        if(activeSession == null)
+        if(activeSessions.isEmpty())
             return;
 
         for(SessionViewCapsule otherCapsule : sessions) {
-            if(otherCapsule.getId() != activeSession.getId()) {
-                otherCapsule.show();
-            }
+            otherCapsule.show();
         }
 
-        activeSession.deactivate();
-        activeSession = null;
+        for(SessionViewCapsule capsule : activeSessions) {
+            capsule.deactivate();
+        }
+
+        activeSessions.clear();
     }
 
     public boolean handle(MouseEvent event, float x, float y) {
 
         // if there is an active session, let it handle input.
-        if(activeSession != null) {
-            return activeSession.getSession().handle(event, x, y);
+        if(!activeSessions.isEmpty()) {
+            for(SessionViewCapsule capsule : activeSessions)
+                if(capsule.getSession().inComponent(x, y))
+                    return capsule.getSession().handle(event, x, y);
         }
 
         // note, x axis is negated to make tracking begin from the mathematical zero angle.
@@ -97,12 +103,18 @@ public class OverView extends GenosideComponent {
                 }
                 if(capsule.handle(event, x, y)) {
                     capsule.activate();
-                    activeSession = capsule;
+                    activeSessions.add(capsule);
 
                     for(SessionViewCapsule otherCapsule : sessions) {
-                        if(otherCapsule.getId() != activeSession.getId()) {
-                            otherCapsule.hide();
+                        boolean found = false;
+                        for(SessionViewCapsule activeCapsule : activeSessions) {
+                            if(otherCapsule.getId() == activeCapsule.getId()) {
+                                found = true;
+                            }
                         }
+
+                        if(!found)
+                            otherCapsule.hide();
                     }
 
                     return true;
@@ -123,8 +135,11 @@ public class OverView extends GenosideComponent {
     }
 
     public boolean handle(KeyEvent event) {
-        if (activeSession != null) {
-            return activeSession.getSession().handle(event);
+        if (!activeSessions.isEmpty()) {
+            for(SessionViewCapsule capsule : activeSessions) {
+                if(capsule.inComponent(mousePosition.x, mousePosition.y))
+                    return capsule.getSession().handle(event);
+            }
         }
         return false;
     }
@@ -143,7 +158,7 @@ public class OverView extends GenosideComponent {
 
         TextRenderer.getInstance().drawText(gl, "FPS: " + fpsCounter.getFps(), 0, 0.92f, 0.9f);
 
-        if(activeSession == null) {
+        if(activeSessions.isEmpty()) {
             // Mouse hover information
             // TODO: Show the info of a session view, when hovering mouse over session view.
             TextRenderer.getInstance().drawText(gl, "Chromosome " + this.chromosome.getChromosomeNumber(), 0, -0.86f, 0.8f);
@@ -164,7 +179,7 @@ public class OverView extends GenosideComponent {
         }
 
         // if no active session, try to place session views in a good way.
-        if(activeSession == null) {
+        if(activeSessions.isEmpty()) {
             for(SessionViewCapsule capsule1 : sessions) {
                 if(capsule1.isDying())
                     continue;
@@ -201,7 +216,6 @@ public class OverView extends GenosideComponent {
                     }
                 }
             }
-
         }
 
         if(killCapsule != null)

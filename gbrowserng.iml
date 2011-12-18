@@ -26,6 +26,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="JOGL" level="application" />
+    <orderEntry type="library" name="SAS-Tech" level="application" />
   </component>
 </module>
 
