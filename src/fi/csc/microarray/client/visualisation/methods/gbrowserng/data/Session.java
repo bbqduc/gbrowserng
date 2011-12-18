@@ -1,7 +1,5 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.data;
 
-import java.util.ArrayList;
-
 public class Session {
 
 	public ReferenceSequence referenceSequence;

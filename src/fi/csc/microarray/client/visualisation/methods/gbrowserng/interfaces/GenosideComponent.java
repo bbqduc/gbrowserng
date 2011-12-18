@@ -3,7 +3,6 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.tech.gles.SoulGL2;
-import com.soulaim.tech.math.Vector2;
 
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.AnimatedValues;
 

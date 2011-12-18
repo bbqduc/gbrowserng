@@ -6,7 +6,6 @@ import com.soulaim.tech.gles.shaders.Shader;
 import com.soulaim.tech.gles.shaders.ShaderMemory;
 import com.soulaim.tech.managers.ShaderManager;
 import com.soulaim.tech.math.Matrix4;
-import com.soulaim.tech.math.Vector2;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 
 public class LinkGFX {

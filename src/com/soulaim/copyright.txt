@@ -1,7 +1,0 @@
-
-Files and code within the soulaim package were created by:
-Soul Aim Studios LTD
-
-The code may be freely used and altered, however if the source code is distributed,
-Soul Aim Studios LTD must be credited. This does not apply to distribution of a
-compiled product, which makes use of the code.
