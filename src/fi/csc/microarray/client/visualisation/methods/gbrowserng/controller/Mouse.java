@@ -1,10 +1,10 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.controller;
 
-import java.util.concurrent.BlockingQueue;
-
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.MouseListener;
 import com.jogamp.newt.event.NEWTEvent;
+
+import java.util.concurrent.BlockingQueue;
 
 public class Mouse implements MouseListener
 {
