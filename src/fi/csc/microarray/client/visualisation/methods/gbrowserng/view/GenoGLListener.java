@@ -1,14 +1,9 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.view;
 
-import javax.media.opengl.GL2;
-import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLEventListener;
-
 import com.soulaim.desktop.DesktopAssetManager;
 import com.soulaim.desktop.DesktopGL2;
 import com.soulaim.desktop.DesktopTextureManager;
 import com.soulaim.tech.gles.SoulGL2;
-
 import com.soulaim.tech.gles.primitives.PrimitiveBuffers;
 import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import com.soulaim.tech.gles.renderer.TextRenderer;
@@ -19,6 +14,10 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GenoSideTimer;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview.OverView;
+
+import javax.media.opengl.GL2;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLEventListener;
 
 public class GenoGLListener implements GLEventListener {
 

@@ -1,10 +1,6 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import com.jogamp.newt.event.NEWTEvent;
-
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.controller.EventHandler;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.controller.GenoWindowListener;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.controller.Keyboard;
@@ -14,6 +10,9 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractGe
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.GenoGLListener;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.GenoWindow;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview.OverView;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class GenomeBrowserNG {
 	

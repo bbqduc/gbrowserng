@@ -1,7 +1,6 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng;
 
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.CascadingComponent;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.TrackView;
 
 import java.util.ArrayList;
 

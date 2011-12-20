@@ -1,10 +1,10 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.view;
 
-import javax.media.opengl.GLCapabilities;
-import javax.media.opengl.GLProfile;
-
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.Animator;
+
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLProfile;
 
 public class GenoWindow {
 	

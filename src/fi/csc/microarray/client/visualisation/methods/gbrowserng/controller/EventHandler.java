@@ -1,13 +1,13 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.controller;
 
-import java.util.concurrent.BlockingQueue;
-
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.newt.event.WindowEvent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.GenoWindow;
+
+import java.util.concurrent.BlockingQueue;
 
 public class EventHandler {
 

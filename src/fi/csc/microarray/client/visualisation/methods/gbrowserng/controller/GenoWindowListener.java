@@ -1,11 +1,11 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.controller;
 
-import java.util.concurrent.BlockingQueue;
-
 import com.jogamp.newt.event.NEWTEvent;
 import com.jogamp.newt.event.WindowEvent;
 import com.jogamp.newt.event.WindowListener;
 import com.jogamp.newt.event.WindowUpdateEvent;
+
+import java.util.concurrent.BlockingQueue;
 
 public class GenoWindowListener implements WindowListener {
 	

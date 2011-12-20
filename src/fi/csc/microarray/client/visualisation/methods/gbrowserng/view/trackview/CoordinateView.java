@@ -6,7 +6,6 @@ import com.soulaim.tech.gles.Color;
 import com.soulaim.tech.gles.SoulGL2;
 import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import com.soulaim.tech.gles.renderer.TextRenderer;
-
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 
 public class CoordinateView extends GenosideComponent {

@@ -4,8 +4,8 @@ import com.soulaim.tech.gles.Color;
 
 public class GlobalVariables {
     public static float aspectRatio = 1.0f;
-    public static float minimumTrackSize = 0.05f; // ??
 
+    // TODO: Lots of if statements could be replaced by one memory look-up.
     public static Color genomeColor(char c) {
 		if (c == 'A')
 			return Color.BLUE;

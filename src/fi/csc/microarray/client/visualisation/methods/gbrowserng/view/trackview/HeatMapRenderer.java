@@ -3,7 +3,6 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview
 import com.soulaim.tech.gles.Color;
 import com.soulaim.tech.gles.SoulGL2;
 import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
-
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.HeatMap;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.CascadingComponent;

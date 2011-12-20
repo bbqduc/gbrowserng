@@ -4,8 +4,8 @@ import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.tech.gles.SoulGL2;
 import com.soulaim.tech.gles.TextureID;
-
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.*;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.TrackSession;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoButton;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoVisualBorder;

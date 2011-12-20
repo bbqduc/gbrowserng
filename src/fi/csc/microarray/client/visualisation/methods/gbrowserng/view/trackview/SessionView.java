@@ -3,7 +3,6 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.tech.gles.SoulGL2;
-
 import com.soulaim.tech.gles.TextureID;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.SpaceDivider;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
