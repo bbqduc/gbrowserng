@@ -8,7 +8,6 @@ import com.soulaim.tech.gles.TextureID;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.SpaceDivider;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.ModeTrackView;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.MouseTracker;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoButton;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoVisualBorder;
@@ -27,8 +26,6 @@ public class SessionView extends GenosideComponent {
 	private final ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
 	private CoordinateView coordinateView;
 	private final Session session;
-
-    private ModeTrackView trackViewMode = ModeTrackView.MODE_VIEW_UNSPECIFIED;
 
     private final MouseTracker mouseTracker = new MouseTracker();
 
