@@ -61,6 +61,10 @@ public class TrackView extends GenosideComponent {
 	}
 
 	public void draw(SoulGL2 gl) {
+
+        if(!inScreen())
+            return;
+
 		if (isActive) {
 			if (!heatMapMode)
 			{

@@ -58,8 +58,8 @@ public class SessionViewCapsule extends GenosideComponent {
         System.out.println("activating capsule");
         isActive = true;
         link.hide();
-        sessionView.setDimensions(2, 2);
-        sessionView.setPosition(0, 0);
+        // sessionView.setDimensions(2, 2);
+        // sessionView.setPosition(0, 0);
         this.getAnimatedValues().setAnimatedValue("ALPHA", -0.02f);
     }
 

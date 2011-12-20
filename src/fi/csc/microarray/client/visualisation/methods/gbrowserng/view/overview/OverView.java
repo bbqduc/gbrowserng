@@ -8,6 +8,8 @@ import com.soulaim.tech.gles.renderer.TextRenderer;
 import com.soulaim.tech.math.Matrix4;
 import com.soulaim.tech.math.Vector2;
 
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.SpaceDivider;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractChromosome;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractGenome;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
@@ -32,6 +34,8 @@ public class OverView extends GenosideComponent {
     private AbstractChromosome chromosome = AbstractGenome.getChromosome(0);
     private long chromosomePosition = 0;
 
+    OverViewState state = OverViewState.OVERVIEW_ACTIVE;
+
     public OverView() {
         super(null);
     }
@@ -41,12 +45,37 @@ public class OverView extends GenosideComponent {
         if(who.equals("SESSION")) {
             if(what.equals("SHRINK")) {
                 disableActiveSession();
+                state = OverViewState.OVERVIEW_ACTIVE;
             }
             if(what.equals("KILL")) {
                 killActiveSession();
                 disableActiveSession();
+                state = OverViewState.OVERVIEW_ACTIVE;
+            }
+            if(what.equals("OPEN_ANOTHER")) {
+                hideActiveSessions();
+                state = OverViewState.OVERVIEW_ACTIVE;
             }
         }
+    }
+
+    private void showActiveSessions() {
+        SpaceDivider divider = new SpaceDivider(SpaceDivider.HORIZONTAL, 1.0f, 2.0f);
+        for(SessionViewCapsule capsule : activeSessions)
+            divider.insertComponent(capsule.getSession());
+        divider.calculate();
+    }
+
+    private void hideActiveSessions() {
+
+        for(SessionViewCapsule otherCapsule : sessions) {
+            otherCapsule.show();
+        }
+
+        for(SessionViewCapsule capsule : activeSessions) {
+            capsule.getSession().setPosition(+2.5f, 0);
+        }
+
     }
 
     private void killActiveSession() {
@@ -61,6 +90,7 @@ public class OverView extends GenosideComponent {
         }
     }
 
+    // TODO: might be a good idea to break this function apart
     private void disableActiveSession() {
         if(activeSessions.isEmpty())
             return;
@@ -76,6 +106,8 @@ public class OverView extends GenosideComponent {
         activeSessions.clear();
     }
 
+
+    // TODO: This is becoming quite tedious. Consider writing separate input-handler classes.
     public boolean handle(MouseEvent event, float x, float y) {
 
         // if there is an active session, let it handle input.
@@ -104,6 +136,9 @@ public class OverView extends GenosideComponent {
                 if(capsule.handle(event, x, y)) {
                     capsule.activate();
                     activeSessions.add(capsule);
+
+                    showActiveSessions();
+                    state = OverViewState.SESSIONVIEW_ACTIVE;
 
                     for(SessionViewCapsule otherCapsule : sessions) {
                         boolean found = false;
@@ -158,7 +193,7 @@ public class OverView extends GenosideComponent {
 
         TextRenderer.getInstance().drawText(gl, "FPS: " + fpsCounter.getFps(), 0, 0.92f, 0.9f);
 
-        if(activeSessions.isEmpty()) {
+        if(state == OverViewState.OVERVIEW_ACTIVE) {
             // Mouse hover information
             // TODO: Show the info of a session view, when hovering mouse over session view.
             TextRenderer.getInstance().drawText(gl, "Chromosome " + this.chromosome.getChromosomeNumber(), 0, -0.86f, 0.8f);
