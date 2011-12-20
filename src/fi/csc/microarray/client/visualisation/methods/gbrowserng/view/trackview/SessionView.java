@@ -25,7 +25,7 @@ public class SessionView extends GenosideComponent {
     private final GenoButton openAnotherSessionButton = new GenoButton(this, "ANOTHERSESSION_BUTTON", 1.0f, 1.0f, -0.16f, -0.04f, TextureID.OPENFILE_BUTTON);
 
 	private final ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
-	private CoordinateView coordinateView;
+	private CoordinateRenderer coordinateView;
 	private final Session session;
 
     private ModeTrackView trackViewMode = ModeTrackView.MODE_VIEW_UNSPECIFIED;
@@ -44,7 +44,7 @@ public class SessionView extends GenosideComponent {
         this.getAnimatedValues().setAnimatedValue("ZOOM", session.targetZoomLevel);
         this.getAnimatedValues().setAnimatedValue("POSITION", session.position);
 
-        this.coordinateView = new CoordinateView(this);
+        this.coordinateView = new CoordinateRenderer(this);
         this.coordinateView.setPosition(0, -0.95f);
         this.coordinateView.setDimensions(2f, 0.1f);
 	}
@@ -72,7 +72,6 @@ public class SessionView extends GenosideComponent {
                 t.setDimensions(0.4f, 0.2f);
             }
         }
-
         divider.calculate();
 	}
 
@@ -82,15 +81,18 @@ public class SessionView extends GenosideComponent {
 		if (who.equals("TRACKVIEW") && (what.equals("MINIMIZE"))) {
 			recalculateTrackPositions();
 		}
-
 		else if (who.equals("MAXIMIZE")) {
             int id = this.getTrackID(what);
             Iterator<TrackView> it = this.trackViews.iterator();
             while (it.hasNext()) {
                 TrackView t = it.next();
-                t.setActive(t.getId() == id);
+                if (t.getId() == id)
+                {
+	                t.setTrackViewMode(TrackView.READ);
+	                break;
+                }
             }
-			recalculateTrackPositions();
+            recalculateTrackPositions();
 		}
 		else if (who.equals("DELETE"))
 		{
@@ -170,7 +172,7 @@ public class SessionView extends GenosideComponent {
 
 		return handled;
 	}
-
+	
     private void zoom(float v) {
         this.session.targetZoomLevel *= v;
         this.getAnimatedValues().setAnimatedValue("ZOOM", this.session.targetZoomLevel);
