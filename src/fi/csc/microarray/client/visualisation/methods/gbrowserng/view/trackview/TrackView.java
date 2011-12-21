@@ -44,14 +44,14 @@ public class TrackView extends GenosideComponent {
         this.readRenderer.setDimensions(2, 2);
         this.heatMapRenderer.setDimensions(2, 2);
 
-		this.minimizeButton = new GenoButton(this, "MIN_BUTTON", -1.0f, 1.0f,
+		this.minimizeButton = new GenoButton(this, "MIN_BUTTON", -0.95f, 1.0f,
 				+0.04f, -0.04f, TextureID.SHRINK_BUTTON);
 		this.deleteButton = new GenoButton(this, "DEL_BUTTON", -1.0f, 1.0f,
 				+0.04f, -0.04f, TextureID.QUIT_BUTTON);
 		this.maximizeButton = new GenoButton(this, "MAX_BUTTON", -1.0f, 1.0f,
 				+0.04f, -0.09f, TextureID.MAXIMIZE_BUTTON);
 		
-		this.trackViewMode = TrackView.READ;
+		setTrackViewMode(TrackView.READ);
 	}
 	
     public float getGenePosition() {
@@ -69,13 +69,12 @@ public class TrackView extends GenosideComponent {
 	public void draw(SoulGL2 gl) {
 		switch (this.trackViewMode) {
 			case TrackView.MINIMIZED:
-				this.maximizeButton.draw(gl);
 				this.deleteButton.draw(gl);
 				break;
 				
 			case TrackView.HEATMAP:
 				this.heatMapRenderer.draw(gl);
-				this.maximizeButton.draw(gl);
+				this.minimizeButton.draw(gl);
 				this.deleteButton.draw(gl);
 				break;
 				
@@ -83,6 +82,7 @@ public class TrackView extends GenosideComponent {
 	            this.referenceRenderer.draw(gl);
 	            this.readRenderer.draw(gl);
 				this.minimizeButton.draw(gl);
+				this.deleteButton.draw(gl);
 				break;
 		}
 		
@@ -92,11 +92,9 @@ public class TrackView extends GenosideComponent {
 	@Override
 	public void childComponentCall(String who, String what) {
 		if (who.equals("MIN_BUTTON")) {
-			this.trackViewMode = TrackView.MINIMIZED;
-			this.getParent().childComponentCall("TRACKVIEW", "MINIMIZE");
+			setTrackViewMode(TrackView.MINIMIZED);
 		} else if (who.equals("MAX_BUTTON")) {
-			this.trackViewMode = TrackView.READ;
-			this.getParent().childComponentCall("MAXIMIZE", Integer.toString(this.getId()));
+			setTrackViewMode(TrackView.READ);
 		} else if (who.equals("DEL_BUTTON")) {
 			this.getParent().childComponentCall("DELETE", Integer.toString(this.getId()));
 		}
@@ -108,26 +106,26 @@ public class TrackView extends GenosideComponent {
 		{
 			case TrackView.HEATMAP:
 				this.heatMapRenderer.tick(dt);
+				this.minimizeButton.tick(dt);
 				this.deleteButton.tick(dt);
-				this.maximizeButton.tick(dt);
 				break;
 				
 			case TrackView.MINIMIZED:
 				this.deleteButton.tick(dt);
-				this.maximizeButton.tick(dt);
 				break;
 				
 			case TrackView.READ:
 	            this.referenceRenderer.tick(dt);
 	            this.readRenderer.tick(dt);
 				this.minimizeButton.tick(dt);
+				this.deleteButton.tick(dt);
 				break;
 				
 			default:
 				throw new RuntimeException("Invalid TrackViewMode");
 		}
 	}
-
+	
 	@Override
 	public boolean handle(MouseEvent event, float screen_x, float screen_y) {
 		switch (this.trackViewMode)
@@ -135,17 +133,39 @@ public class TrackView extends GenosideComponent {
 			case TrackView.MINIMIZED:
 				if (this.deleteButton.handle(event, screen_x, screen_y))
 					return true;
+				if (inComponent(screen_x, screen_y) &&
+						MouseEvent.EVENT_MOUSE_CLICKED == event.getEventType())
+				{
+					setTrackViewMode(TrackView.READ);
+					return true;
+				}
+				
 				return this.maximizeButton.handle(event, screen_x, screen_y);
 				
 			case TrackView.READ:
 				if (this.minimizeButton.handle(event, screen_x, screen_y))
 					return true;
+				if (inComponent(screen_x, screen_y) &&
+						MouseEvent.EVENT_MOUSE_CLICKED == event.getEventType())
+				{
+					setTrackViewMode(TrackView.HEATMAP);
+					return true;
+				}
+					
 				return false;
 				
 			case TrackView.HEATMAP:
 				if (this.deleteButton.handle(event, screen_x, screen_y))
 					return true;
-				return this.maximizeButton.handle(event, screen_x, screen_y);
+				if (this.minimizeButton.handle(event, screen_x, screen_y))
+					return true;
+				if (inComponent(screen_x, screen_y) &&
+						MouseEvent.EVENT_MOUSE_CLICKED == event.getEventType())
+				{
+					setTrackViewMode(TrackView.READ);
+					return true;
+				}
+				return false;
 				
 			default:
 				return false;
@@ -158,16 +178,23 @@ public class TrackView extends GenosideComponent {
 	}
 	
 	public void setTrackViewMode(int mode) {
+		if (this.trackViewMode == mode) return;
+		
 		this.trackViewMode = mode;
-		/*
 		switch (mode)
 		{
 			case TrackView.MINIMIZED:
+				this.getParent().childComponentCall("TRACKVIEW", "MINIMIZE");
+				break;
+				
 			case TrackView.HEATMAP:
+				this.getParent().childComponentCall("MODESWITCH", Integer.toString(this.getId()));
+				break;
+			
 			case TrackView.READ:
-			break;
+				this.getParent().childComponentCall("MODESWITCH", Integer.toString(this.getId()));
+				break;
 		}
-		*/
 	}
 	
 	public boolean isActive()
