@@ -9,6 +9,7 @@ public class SpaceDivider {
     public static final int HORIZONTAL = 0;
     public static final int VERTICAL = 1;
 
+    // TODO: These should be decided within a component. Not static during one round of computation!
     private final float maximumSize;
     private final float minimumSize;
     private final int myDirection;
