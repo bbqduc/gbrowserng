@@ -23,7 +23,7 @@ public class SessionView extends GenosideComponent {
     private final GenoButton openAnotherSessionButton = new GenoButton(this, "ANOTHERSESSION_BUTTON", 1.0f, 1.0f, -0.16f, -0.04f, TextureID.OPENFILE_BUTTON);
 
 	private final ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
-	private CoordinateView coordinateView;
+	private CoordinateRenderer coordinateView;
 	private final Session session;
 
     private final MouseTracker mouseTracker = new MouseTracker();
@@ -40,7 +40,7 @@ public class SessionView extends GenosideComponent {
         this.getAnimatedValues().setAnimatedValue("ZOOM", session.targetZoomLevel);
         this.getAnimatedValues().setAnimatedValue("POSITION", session.position);
 
-        this.coordinateView = new CoordinateView(this);
+        this.coordinateView = new CoordinateRenderer(this);
         this.coordinateView.setPosition(0, -0.95f);
         this.coordinateView.setDimensions(2f, 0.1f);
 	}
@@ -56,6 +56,7 @@ public class SessionView extends GenosideComponent {
     }
 
     // TODO: Think about what to do with inactive trackviews.
+    /*
 	public void recalculateTrackPositions() {
         int absents = 0;
         SpaceDivider divider = new SpaceDivider(SpaceDivider.VERTICAL, 0.4f, 2.0f);
@@ -68,8 +69,41 @@ public class SessionView extends GenosideComponent {
                 t.setDimensions(0.4f, 0.2f);
             }
         }
-
         divider.calculate();
+	}
+	*/
+    
+	public void recalculateTrackPositions() {
+        int minimized, reads, heatMaps;
+        minimized = reads = heatMaps = 0;
+        
+        for (TrackView t : this.trackViews) {
+        	if (t.getTrackViewMode() == TrackView.READ) {
+        		++reads;
+        	} else if (t.getTrackViewMode() == TrackView.HEATMAP) {
+        		++heatMaps;
+        	}
+        }
+        
+        float total_y = 1.9f;
+        float heatSize = 0.2f;
+        float readSize = (total_y - heatMaps * heatSize) / reads;
+        float y = 1.0f;
+        
+        for (TrackView t : this.trackViews) {
+            if (t.getTrackViewMode() == TrackView.READ) {
+            	t.setPosition(0, y - readSize/2);
+            	t.setDimensions(2, readSize);
+            	y -= readSize;
+            } else if (t.getTrackViewMode() == TrackView.HEATMAP) {
+            	t.setPosition(0, y - heatSize/2);
+            	t.setDimensions(2, heatSize);
+            	y -= heatSize;
+            } else {
+                t.setPosition(-0.7f, 0.8f - minimized++ * 0.20f);
+                t.setDimensions(0.4f, 0.2f);
+            }
+        }
 	}
 
 	@Override
@@ -78,15 +112,8 @@ public class SessionView extends GenosideComponent {
 		if (who.equals("TRACKVIEW") && (what.equals("MINIMIZE"))) {
 			recalculateTrackPositions();
 		}
-
-		else if (who.equals("MAXIMIZE")) {
-            int id = this.getTrackID(what);
-            Iterator<TrackView> it = this.trackViews.iterator();
-            while (it.hasNext()) {
-                TrackView t = it.next();
-                t.setActive(t.getId() == id);
-            }
-			recalculateTrackPositions();
+		else if (who.equals("MODESWITCH")) {
+            recalculateTrackPositions();
 		}
 		else if (who.equals("DELETE"))
 		{
@@ -166,7 +193,7 @@ public class SessionView extends GenosideComponent {
 
 		return handled;
 	}
-
+	
     private void zoom(float v) {
         this.session.targetZoomLevel *= v;
         this.getAnimatedValues().setAnimatedValue("ZOOM", this.session.targetZoomLevel);
@@ -174,10 +201,14 @@ public class SessionView extends GenosideComponent {
 
     public boolean handle(MouseEvent event, float screen_x, float screen_y) {
 
-		quitButton.handle(event, screen_x, screen_y);
-		shrinkButton.handle(event, screen_x, screen_y);
-		openReadFileButton.handle(event, screen_x, screen_y);
-        openAnotherSessionButton.handle(event, screen_x, screen_y);
+		if (quitButton.handle(event, screen_x, screen_y))
+			return true;
+		if (shrinkButton.handle(event, screen_x, screen_y))
+			return true;
+		if (openReadFileButton.handle(event, screen_x, screen_y))
+			return true;
+        if (openAnotherSessionButton.handle(event, screen_x, screen_y))
+        	return true;
 
         mouseTracker.handle(event, screen_x, screen_y);
 
@@ -190,13 +221,17 @@ public class SessionView extends GenosideComponent {
 
 		// child views want to handle this?
 		for (TrackView t : trackViews) {
-			if (t.handle(event, screen_x, screen_y))
-				return true;
+			if (t.getTrackViewMode() == TrackView.MINIMIZED &&
+				t.handle(event, screen_x, screen_y))
+					return true;
+		}
+		
+		for (TrackView t : trackViews) {
+			if (t.getTrackViewMode() != TrackView.MINIMIZED &&
+				t.handle(event, screen_x, screen_y))
+					return true;
 		}
 
-		// does this view want to handle the input?
-
-		// if not, then say so.
 		return false;
 	}
 

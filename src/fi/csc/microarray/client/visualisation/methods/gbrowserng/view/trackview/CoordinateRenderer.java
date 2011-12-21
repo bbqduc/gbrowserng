@@ -8,9 +8,9 @@ import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import com.soulaim.tech.gles.renderer.TextRenderer;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 
-public class CoordinateView extends GenosideComponent {
+public class CoordinateRenderer extends GenosideComponent {
 
-	public CoordinateView(GenosideComponent parent) {
+	public CoordinateRenderer(GenosideComponent parent) {
 		super(parent);
 	}
 

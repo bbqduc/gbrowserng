@@ -12,31 +12,24 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.Gen
 
 public class TrackView extends GenosideComponent {
 
-    TrackSession trackSession;
-    ReadRenderer readRenderer;
-    HeatMapRenderer heatMapRenderer;
-    ReferenceRenderer referenceRenderer;
-
-	private boolean isActive;
-	private boolean heatMapMode;
+    private TrackSession trackSession;
+    private ReadRenderer readRenderer;
+    private HeatMapRenderer heatMapRenderer;
+    private ReferenceRenderer referenceRenderer;
+    
 	private GenoButton deleteButton;
 	private GenoButton minimizeButton;
 	private GenoButton maximizeButton;
+	
+	private int trackViewMode;
+	
+	public final static int MINIMIZED = 1;
+	public final static int HEATMAP = 2;
+	public final static int READ = 4;
+	
 	private final GenoVisualBorder borderComponent = new GenoVisualBorder(this);
 
 	private Session session;
-
-    public float getGenePosition() {
-        return this.getParent().getAnimatedValues().getAnimatedValue("POSITION");
-    }
-    
-    public float getHalfWidth() {
-        return this.getParent().getAnimatedValues().getAnimatedValue("ZOOM");
-    }
-    
-    public Session getSession() {
-    	return this.session;
-    }
 
 	public TrackView(GenosideComponent parent, Session session) {
 		super(parent);
@@ -51,49 +44,57 @@ public class TrackView extends GenosideComponent {
         this.readRenderer.setDimensions(2, 2);
         this.heatMapRenderer.setDimensions(2, 2);
 
-		this.isActive = true;
-		this.minimizeButton = new GenoButton(this, "MIN_BUTTON", -1.0f, 1.0f,
+		this.minimizeButton = new GenoButton(this, "MIN_BUTTON", -0.95f, 1.0f,
 				+0.04f, -0.04f, TextureID.SHRINK_BUTTON);
 		this.deleteButton = new GenoButton(this, "DEL_BUTTON", -1.0f, 1.0f,
 				+0.04f, -0.04f, TextureID.QUIT_BUTTON);
 		this.maximizeButton = new GenoButton(this, "MAX_BUTTON", -1.0f, 1.0f,
 				+0.04f, -0.09f, TextureID.MAXIMIZE_BUTTON);
+		
+		setTrackViewMode(TrackView.READ);
 	}
+	
+    public float getGenePosition() {
+        return this.getParent().getAnimatedValues().getAnimatedValue("POSITION");
+    }
+    
+    public float getHalfWidth() {
+        return this.getParent().getAnimatedValues().getAnimatedValue("ZOOM");
+    }
+    
+    public Session getSession() {
+    	return this.session;
+    }
 
 	public void draw(SoulGL2 gl) {
-
-        if(!inScreen())
-            return;
-
-		if (isActive) {
-			if (!heatMapMode)
-			{
+		switch (this.trackViewMode) {
+			case TrackView.MINIMIZED:
+				this.deleteButton.draw(gl);
+				break;
+				
+			case TrackView.HEATMAP:
+				this.heatMapRenderer.draw(gl);
+				this.minimizeButton.draw(gl);
+				this.deleteButton.draw(gl);
+				break;
+				
+			case TrackView.READ:
 	            this.referenceRenderer.draw(gl);
 	            this.readRenderer.draw(gl);
 				this.minimizeButton.draw(gl);
-			}
-			else
-			{
-				this.heatMapRenderer.draw(gl);
-				this.maximizeButton.draw(gl);
 				this.deleteButton.draw(gl);
-			}
-		} else {
-			this.maximizeButton.draw(gl);
-			this.deleteButton.draw(gl);
+				break;
 		}
-
-		borderComponent.draw(gl);
+		
+		this.borderComponent.draw(gl);
 	}
 
 	@Override
 	public void childComponentCall(String who, String what) {
 		if (who.equals("MIN_BUTTON")) {
-			isActive = false;
-			this.getParent().childComponentCall("TRACKVIEW", "MINIMIZE");
+			setTrackViewMode(TrackView.MINIMIZED);
 		} else if (who.equals("MAX_BUTTON")) {
-			isActive = true;
-			this.getParent().childComponentCall("MAXIMIZE", Integer.toString(this.getId()));
+			setTrackViewMode(TrackView.READ);
 		} else if (who.equals("DEL_BUTTON")) {
 			this.getParent().childComponentCall("DELETE", Integer.toString(this.getId()));
 		}
@@ -101,43 +102,73 @@ public class TrackView extends GenosideComponent {
 
 	@Override
 	public void userTick(float dt) {
-		if (isActive) {
-			if (!heatMapMode)
-			{
+		switch (this.trackViewMode)
+		{
+			case TrackView.HEATMAP:
+				this.heatMapRenderer.tick(dt);
+				this.minimizeButton.tick(dt);
+				this.deleteButton.tick(dt);
+				break;
+				
+			case TrackView.MINIMIZED:
+				this.deleteButton.tick(dt);
+				break;
+				
+			case TrackView.READ:
 	            this.referenceRenderer.tick(dt);
 	            this.readRenderer.tick(dt);
 				this.minimizeButton.tick(dt);
-			}
-			else
-			{
-				this.heatMapRenderer.tick(dt);
 				this.deleteButton.tick(dt);
-				this.maximizeButton.tick(dt);
-			}
-		} else {
-			this.deleteButton.tick(dt);
-			this.maximizeButton.tick(dt);
+				break;
+				
+			default:
+				throw new RuntimeException("Invalid TrackViewMode");
 		}
 	}
-
+	
 	@Override
 	public boolean handle(MouseEvent event, float screen_x, float screen_y) {
-
-		if (isActive) {
-			if (this.heatMapMode)
-			{
+		switch (this.trackViewMode)
+		{
+			case TrackView.MINIMIZED:
 				if (this.deleteButton.handle(event, screen_x, screen_y))
 					return true;
+				if (inComponent(screen_x, screen_y) &&
+						MouseEvent.EVENT_MOUSE_CLICKED == event.getEventType())
+				{
+					setTrackViewMode(TrackView.READ);
+					return true;
+				}
+				
 				return this.maximizeButton.handle(event, screen_x, screen_y);
-			} else {
+				
+			case TrackView.READ:
 				if (this.minimizeButton.handle(event, screen_x, screen_y))
 					return true;
+				if (inComponent(screen_x, screen_y) &&
+						MouseEvent.EVENT_MOUSE_CLICKED == event.getEventType())
+				{
+					setTrackViewMode(TrackView.HEATMAP);
+					return true;
+				}
+					
 				return false;
-			}
-		} else {
-			if (this.deleteButton.handle(event, screen_x, screen_y))
-				return true;
-			return this.maximizeButton.handle(event, screen_x, screen_y);
+				
+			case TrackView.HEATMAP:
+				if (this.deleteButton.handle(event, screen_x, screen_y))
+					return true;
+				if (this.minimizeButton.handle(event, screen_x, screen_y))
+					return true;
+				if (inComponent(screen_x, screen_y) &&
+						MouseEvent.EVENT_MOUSE_CLICKED == event.getEventType())
+				{
+					setTrackViewMode(TrackView.READ);
+					return true;
+				}
+				return false;
+				
+			default:
+				return false;
 		}
 	}
 
@@ -146,17 +177,33 @@ public class TrackView extends GenosideComponent {
 		return false;
 	}
 	
-	public void setHeatMapMode(boolean heatMapMode)
+	public void setTrackViewMode(int mode) {
+		if (this.trackViewMode == mode) return;
+		
+		this.trackViewMode = mode;
+		switch (mode)
+		{
+			case TrackView.MINIMIZED:
+				this.getParent().childComponentCall("TRACKVIEW", "MINIMIZE");
+				break;
+				
+			case TrackView.HEATMAP:
+				this.getParent().childComponentCall("MODESWITCH", Integer.toString(this.getId()));
+				break;
+			
+			case TrackView.READ:
+				this.getParent().childComponentCall("MODESWITCH", Integer.toString(this.getId()));
+				break;
+		}
+	}
+	
+	public boolean isActive()
 	{
-		this.heatMapMode = heatMapMode;
-	}
-
-	public boolean isActive() {
-		return this.isActive;
+		return this.trackViewMode != TrackView.MINIMIZED;
 	}
 	
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
+	public int getTrackViewMode()
+	{
+		return this.trackViewMode;
 	}
-	
 }

@@ -11,27 +11,27 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.Geno
 public class GenoButton extends GenosideComponent {
 
     private final TextureID myTexture;
-    Color myColor = new Color(1, 1, 1, 1);
+    private Color myColor = new Color(1, 1, 1, 1);
 
-    float xpos = 1;
-    float ypos = 1;
+    private float xpos = 1;
+    private float ypos = 1;
 
-    float x_offset;
-    float y_offset;
+    private float x_offset;
+    private float y_offset;
 
-    String buttonName;
+    private String buttonName;
     private float buttonLock = 0;
 
     public GenoButton(GenosideComponent parent, String name, float x, float y, float x_offset, float y_offset, TextureID textureID) {
         super(parent);
         setDimensions(0.05f, 0.05f);
 
-        myTexture = textureID;
-        xpos = x;
-        ypos = y;
+        this.myTexture = textureID;
+        this.xpos = x;
+        this.ypos = y;
         this.x_offset = x_offset;
         this.y_offset = y_offset;
-        buttonName = name;
+        this.buttonName = name;
     }
 
     @Override
