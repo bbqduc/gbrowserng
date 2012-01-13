@@ -23,6 +23,7 @@ public class SessionViewCapsule extends GenosideComponent {
     private Color backGroundColor = new Color(0, 0, 0, 255);
 
     private Vector2 genecirclePosition = new Vector2(1, 0);
+    private Vector2 positionAdjustment = new Vector2();
 
     private final LinkGFX link;
 
@@ -124,6 +125,10 @@ public class SessionViewCapsule extends GenosideComponent {
         if(dying) death += dt;
         sessionView.tick(dt);
 
+        if(this.positionAdjustment.lengthSquared() > 0.00001f) {
+            this.getSession().modifyPosition(this.positionAdjustment.x, this.positionAdjustment.y);
+        }
+
         // TODO: This is not necessary on every tick.
         Vector2 pos = this.getGeneCirclePosition(0.485f);
         this.setPosition(pos.x, pos.y);
@@ -166,6 +171,15 @@ public class SessionViewCapsule extends GenosideComponent {
         myPos.normalize();
         myPos.scale(0.7f);
         this.sessionView.setPosition(myPos.x, myPos.y);
+    }
+
+    public void incrementPositionAdjustment(float x, float y) {
+        positionAdjustment.increase(x, y);
+    }
+
+    public void clearPositionAdjustment() {
+        this.positionAdjustment.x = 0;
+        this.positionAdjustment.y = 0;
     }
 }
 

@@ -208,6 +208,7 @@ public class OverView extends GenosideComponent {
             if(!capsule.isAlive())
                 killCapsule = capsule;
             capsule.tick(dt);
+            capsule.clearPositionAdjustment();
         }
 
         // if no active session, try to place session views in a good way.
@@ -221,7 +222,7 @@ public class OverView extends GenosideComponent {
                 position.copyFrom(capsule1.getSession().getPosition());
                 position.normalize();
                 position.scale(0.004f);
-                capsule1.getSession().modifyPosition(position.x, position.y);
+                capsule1.incrementPositionAdjustment(position.x, position.y);
 
                 // pull towards target
                 position.copyFrom(capsule1.getSession().getPosition());
@@ -232,7 +233,7 @@ public class OverView extends GenosideComponent {
                 float pow = Math.min(0.2f, position.lengthSquared());
                 position.scale(0.1f * pow);
 
-                capsule1.getSession().modifyPosition(-position.x, -position.y);
+                capsule1.incrementPositionAdjustment(-position.x, -position.y);
 
                 for(SessionViewCapsule capsule2 : sessions) {
                     if(capsule1.getId() == capsule2.getId())
@@ -243,8 +244,8 @@ public class OverView extends GenosideComponent {
                     if(capsule1.getSession().getPosition().distance( capsule2.getSession().getPosition() ) < 0.5f) {
                         Vector2 v = capsule1.getSession().getPosition().minus( capsule2.getSession().getPosition() );
                         v.scale(0.0005f / (0.001f + v.lengthSquared()));
-                        capsule1.getSession().modifyPosition(+v.x, +v.y);
-                        capsule2.getSession().modifyPosition(-v.x, -v.y);
+                        capsule1.incrementPositionAdjustment(+v.x, +v.y);
+                        capsule2.incrementPositionAdjustment(-v.x, -v.y);
                     }
                 }
             }
