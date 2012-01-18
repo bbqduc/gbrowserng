@@ -3,9 +3,12 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.tech.gles.SoulGL2;
+import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import com.soulaim.tech.gles.renderer.TextRenderer;
 import com.soulaim.tech.math.Matrix4;
 import com.soulaim.tech.math.Vector2;
+
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.SpaceDivider;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractChromosome;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractGenome;
@@ -17,6 +20,8 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.soulaim.tech.gles.Color;
+
 public class OverView extends GenosideComponent {
 
     GeneCircle geneCircle = new GeneCircle();
@@ -27,6 +32,7 @@ public class OverView extends GenosideComponent {
 
     ConcurrentLinkedQueue<SessionViewCapsule> sessions = new ConcurrentLinkedQueue<SessionViewCapsule>();
     ConcurrentLinkedQueue<SessionViewCapsule> activeSessions = new ConcurrentLinkedQueue<SessionViewCapsule>();
+    ConcurrentLinkedQueue<SessionViewRecentCapsule> recentSessions = new ConcurrentLinkedQueue<SessionViewRecentCapsule>();
 
     // TODO: Wrap these up in a class
     //private float pointerGenePosition = 0;
@@ -85,6 +91,7 @@ public class OverView extends GenosideComponent {
             if(capsule.isActive()) {
                 capsule.die();
                 capsule.getSession().setPosition(-1.4f, 0.0f);
+                recentSessions.add(new SessionViewRecentCapsule(recentSessions.size(), capsule.getSession(), capsule.getSession().getSession()));
             }
         }
     }
@@ -185,6 +192,11 @@ public class OverView extends GenosideComponent {
 
         for(SessionViewCapsule capsule : sessions) {
             capsule.draw(gl);
+        }
+        
+        for(SessionViewRecentCapsule capsule : recentSessions)
+        {
+        	capsule.draw(gl);
         }
 
         TextRenderer.getInstance().drawText(gl, "FPS: " + fpsCounter.getFps(), 0, 0.92f, 0.9f);
