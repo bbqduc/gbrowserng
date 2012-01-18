@@ -11,6 +11,7 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractCh
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractGenome;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GeneCircle;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GenoFPSCounter;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.SessionView;
 
@@ -18,7 +19,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class OverView extends GenosideComponent {
 
-    GeneCircleGFX geneCircleGFX = new GeneCircleGFX();
+    GeneCircle geneCircle = new GeneCircle();
+    GeneCircleGFX geneCircleGFX = new GeneCircleGFX(geneCircle);
     GenoFPSCounter fpsCounter = new GenoFPSCounter();
 
     private Vector2 mousePosition = new Vector2();
@@ -27,7 +29,7 @@ public class OverView extends GenosideComponent {
     ConcurrentLinkedQueue<SessionViewCapsule> activeSessions = new ConcurrentLinkedQueue<SessionViewCapsule>();
 
     // TODO: Wrap these up in a class
-    private float pointerGenePosition = 0;
+    //private float pointerGenePosition = 0;
     private AbstractChromosome chromosome = AbstractGenome.getChromosome(0);
     private long chromosomePosition = 0;
 
@@ -115,10 +117,8 @@ public class OverView extends GenosideComponent {
         }
 
         // note, x axis is negated to make tracking begin from the mathematical zero angle.
-        this.pointerGenePosition = ((float) (Math.atan2(y, -x) / Math.PI) * 0.5f + 0.5f);
-        this.pointerGenePosition = (1.0f - this.pointerGenePosition) * AbstractGenome.getTotalLength();
-        chromosome = AbstractGenome.getChromosomeByPosition((long) this.pointerGenePosition);
-        chromosomePosition = (long) (this.pointerGenePosition - AbstractGenome.getStartPoint(chromosome.getChromosomeNumber()));
+        float pointerGenePosition = 1.0f - ((float) (Math.atan2(y, -x) / Math.PI) * 0.5f + 0.5f);
+        geneCircle.updatePosition(pointerGenePosition);
 
         // allow capsules to update their states
         for(SessionViewCapsule capsule : sessions)
@@ -177,7 +177,6 @@ public class OverView extends GenosideComponent {
     }
 
     public void draw(SoulGL2 gl) {
-
         Vector2 mypos = this.getPosition();
         Matrix4 geneCircleModelMatrix = new Matrix4();
         geneCircleModelMatrix.makeTranslationMatrix(mypos.x, mypos.y, 0);
@@ -193,8 +192,8 @@ public class OverView extends GenosideComponent {
         if(state == OverViewState.OVERVIEW_ACTIVE) {
             // Mouse hover information
             // TODO: Show the info of a session view, when hovering mouse over session view.
-            TextRenderer.getInstance().drawText(gl, "Chromosome " + this.chromosome.getChromosomeNumber(), 0, -0.86f, 0.8f);
-            TextRenderer.getInstance().drawText(gl, "Position: " + this.chromosomePosition, 0, -0.95f, 0.8f);
+            TextRenderer.getInstance().drawText(gl, "Chromosome " + this.geneCircle.getChromosome().getChromosomeNumber(), 0, -0.86f, 0.8f);
+            TextRenderer.getInstance().drawText(gl, "Position: " + this.geneCircle.getChromosomePosition(), 0, -0.95f, 0.8f);
         }
     }
 

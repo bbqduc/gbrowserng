@@ -43,7 +43,6 @@ public class AbstractGenome {
         return abstractGenomeData.size();
     }
 
-
     public static AbstractChromosome getChromosomeByPosition(long position) {
         for(int i=0; i<getNumChromosomes(); ++i)
             if(getEndPoint(i) >= position)
