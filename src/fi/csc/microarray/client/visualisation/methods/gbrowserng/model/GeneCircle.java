@@ -2,6 +2,7 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.model;
 
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractChromosome;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractGenome;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview.SessionViewCapsule;
 
 public class GeneCircle {
     
@@ -26,7 +27,7 @@ public class GeneCircle {
         for(int i=1; i<chromosomeBoundaries.length; ++i)
             if(chromosomeBoundaries[i] >= pointerGenePosition) {
                 chromosome = AbstractGenome.getChromosome(i-1);
-                chromosomePosition = (long) (getChromosome().length() * (pointerGenePosition - chromosomeBoundaries[i-1]));
+                chromosomePosition = (long) (getChromosome().length() * (pointerGenePosition - chromosomeBoundaries[i-1]) / (chromosomeBoundaries[i] - chromosomeBoundaries[i-1]));
                 break;
             }        
     }

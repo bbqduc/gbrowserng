@@ -10,11 +10,13 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractGenome;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GeneCircle;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.SessionView;
 
 public class SessionViewCapsule extends GenosideComponent {
 
     private final SessionView sessionView;
+    public static GeneCircle geneCircle;
 
     // TODO: SessionViewCapsuleData class could contain this.
     private boolean isActive = false;
@@ -38,9 +40,12 @@ public class SessionViewCapsule extends GenosideComponent {
     public Vector2 getGeneCirclePosition(float circleSize) {
         Session mySession = this.sessionView.getSession();
         int chromosomeID = mySession.referenceSequence.chromosome;
-        long chromosomePos = (long) mySession.position;
-        chromosomePos += AbstractGenome.getStartPoint(chromosomeID);
-        float relativePos = (float) chromosomePos / AbstractGenome.getTotalLength();
+        float relativePos = geneCircle.getChromosomeBoundaries()[chromosomeID] + (geneCircle.getChromosomeBoundaries()[chromosomeID+1] - geneCircle.getChromosomeBoundaries()[chromosomeID])*(mySession.position/AbstractGenome.getChromosome(chromosomeID).length());
+        System.out.println("CHR : " + chromosomeID);
+        System.out.println("POS : " + mySession.position);
+        System.out.println("CHRLENGTH : " + AbstractGenome.getChromosome(chromosomeID).length());
+        System.out.println((geneCircle.getChromosomeBoundaries()[chromosomeID+1] - geneCircle.getChromosomeBoundaries()[chromosomeID]));//*(mySession.position/AbstractGenome.getChromosome(chromosomeID).length()));
+        System.out.println((mySession.position/AbstractGenome.getChromosome(chromosomeID).length()));
         genecirclePosition.x = circleSize;
         genecirclePosition.y = 0;
         genecirclePosition.rotate(2 * 3.14159f * relativePos);
