@@ -35,16 +35,16 @@ public class GenomeBrowserNG {
         AbstractGenome.addChromosome(new AbstractChromosome(6, 500));
 
         this.eventQueue = new LinkedBlockingQueue<NEWTEvent>();
-        this.windowListener = new GenoWindowListener(eventQueue);
-        this.glListener = new GenoGLListener(new OverView());
 
         this.genoWindow = new GenoWindow(width, height);
+        this.glListener = new GenoGLListener(new OverView());
         this.eventHandler = new EventHandler(this.genoWindow, this.glListener.getRoot(), eventQueue);
+        this.windowListener = new GenoWindowListener(eventQueue);
 
         this.genoWindow.window.addKeyListener(new Keyboard(eventQueue));
         this.genoWindow.window.addMouseListener(new Mouse(eventQueue));
-        this.genoWindow.window.addGLEventListener(glListener);
         this.genoWindow.window.addWindowListener(windowListener);
+        this.genoWindow.window.addGLEventListener(glListener);
 	}
 	
 	public void run() throws InterruptedException {

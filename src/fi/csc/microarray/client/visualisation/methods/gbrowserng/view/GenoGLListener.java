@@ -10,6 +10,7 @@ import gles.SoulGL2;
 import gles.primitives.PrimitiveBuffers;
 import gles.renderer.PrimitiveRenderer;
 import gles.renderer.TextRenderer;
+import gles.shaders.DefaultShaders;
 import managers.AssetManager;
 import managers.ShaderManager;
 import managers.TextureManager;
@@ -54,7 +55,8 @@ public class GenoGLListener implements GLEventListener {
         textureManager.setGL2(drawable.getGL().getGL2());
         TextureManager.setInstance(textureManager);
         TextureManager.init(new DesktopGL2(gl));
-
+        
+        DefaultShaders.createDefaultShaders(new DesktopGL2(gl));
         GenoShaders.createShaders(new DesktopGL2(gl));
         GenoTexID.createTextures(new DesktopGL2(gl));
 
