@@ -90,10 +90,13 @@ public class OverView extends GenosideComponent {
                 	}
                 	recentSessions.remove(recentSessions.getFirst());
                 }
+                for(SessionViewRecentCapsule recentcapsule : recentSessions) recentcapsule.show();
                 int id;
                 if(recentSessions.size()>0) id=recentSessions.getLast().getId()+1;
                 else id=0;
-                recentSessions.add(new SessionViewRecentCapsule(id, capsule.getPosition(), capsule.getGeneCirclePosition(), capsule.getSession(), capsule.getSession().getSession()));
+                SessionViewRecentCapsule recent=new SessionViewRecentCapsule(id, capsule.getPosition(), capsule.getGeneCirclePosition(), capsule.getSession(), capsule.getSession().getSession());
+                recentSessions.add(recent);
+                recent.show();
             }
         }
     }
@@ -162,6 +165,8 @@ public class OverView extends GenosideComponent {
                         if(!found)
                             otherCapsule.hide();
                     }
+                    for(SessionViewRecentCapsule recentCapsule : recentSessions)
+                    	recentCapsule.hide();
 
                     return true;
                 }

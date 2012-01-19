@@ -10,15 +10,17 @@ import com.soulaim.tech.math.Vector2;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoVisualBorder;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.SessionView;
 
 public class SessionViewRecentCapsule extends GenosideComponent {
 	
-	private int			id;
-	private Session		session;
-	private SessionView sessionView;
-	private Vector2		oldPosition;
-	private Vector2		oldGeneCirclePosition;
+	private int	id;
+	private Session	session;
+	private SessionView	sessionView;
+	private Vector2	oldPosition;
+	private Vector2	oldGeneCirclePosition;
+	private GenoVisualBorder border;
 
 	public SessionViewRecentCapsule(int id, Vector2 oldposition, Vector2 oldgenecirclepos, SessionView sessionview, Session session) {
         super(null);
@@ -27,6 +29,7 @@ public class SessionViewRecentCapsule extends GenosideComponent {
         this.sessionView = sessionview;
         this.oldPosition=oldposition;
         this.oldGeneCirclePosition=oldgenecirclepos;
+        this.border=new GenoVisualBorder(this.sessionView);
 	}
 	public int getId()
 	{
@@ -75,13 +78,28 @@ public class SessionViewRecentCapsule extends GenosideComponent {
 	public boolean handle(KeyEvent event) {
 		return false;
 	}
+	
+	public void hide()
+	{
+		this.getAnimatedValues().setAnimatedValue("ALPHA", 0.0f);
+		System.out.println("hide");
+	}
+	public void show()
+	{
+		this.getAnimatedValues().setAnimatedValue("ALPHA", 1.0f);
+		System.out.println("show");
+	}
 
 	@Override
 	public void draw(SoulGL2 gl) {
 		float r=this.getAnimatedValues().getAnimatedValue("MOUSEHOVER");
-		Color c=new Color(r,r,r);
+		float a=this.getAnimatedValues().getAnimatedValue("ALPHA");
+		border.getAnimatedValues().setAnimatedValue("ALPHA", a);
+		Color c=new Color(r,r,r,a);
+		gl.glEnable(SoulGL2.GL_BLEND);
 		PrimitiveRenderer.drawRectangle(this.sessionView.getPosition().x, this.sessionView.getPosition().y, 0.05f, 0.05f/GlobalVariables.aspectRatio, gl, c);
-		sessionView.draw(gl);
+		border.draw(gl, new Color(255,255,255,a));
+		gl.glDisable(SoulGL2.GL_BLEND);
 	}
 
 	@Override
