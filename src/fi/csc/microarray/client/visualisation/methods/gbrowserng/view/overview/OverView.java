@@ -3,15 +3,11 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.soulaim.tech.gles.SoulGL2;
-import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import com.soulaim.tech.gles.renderer.TextRenderer;
 import com.soulaim.tech.math.Matrix4;
 import com.soulaim.tech.math.Vector2;
 
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.SpaceDivider;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractChromosome;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractGenome;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GeneCircle;
@@ -20,7 +16,6 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.soulaim.tech.gles.Color;
 
 public class OverView extends GenosideComponent {
 

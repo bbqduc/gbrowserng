@@ -41,11 +41,6 @@ public class SessionViewCapsule extends GenosideComponent {
         Session mySession = this.sessionView.getSession();
         int chromosomeID = mySession.referenceSequence.chromosome;
         float relativePos = geneCircle.getChromosomeBoundaries()[chromosomeID] + (geneCircle.getChromosomeBoundaries()[chromosomeID+1] - geneCircle.getChromosomeBoundaries()[chromosomeID])*(mySession.position/AbstractGenome.getChromosome(chromosomeID).length());
-        System.out.println("CHR : " + chromosomeID);
-        System.out.println("POS : " + mySession.position);
-        System.out.println("CHRLENGTH : " + AbstractGenome.getChromosome(chromosomeID).length());
-        System.out.println((geneCircle.getChromosomeBoundaries()[chromosomeID+1] - geneCircle.getChromosomeBoundaries()[chromosomeID]));//*(mySession.position/AbstractGenome.getChromosome(chromosomeID).length()));
-        System.out.println((mySession.position/AbstractGenome.getChromosome(chromosomeID).length()));
         genecirclePosition.x = circleSize;
         genecirclePosition.y = 0;
         genecirclePosition.rotate(2 * 3.14159f * relativePos);
