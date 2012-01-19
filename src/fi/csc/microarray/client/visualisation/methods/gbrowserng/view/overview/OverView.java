@@ -79,7 +79,7 @@ public class OverView extends GenosideComponent {
             if(capsule.isActive()) {
                 capsule.die();
                 capsule.getSession().setPosition(-1.4f, 0.0f);
-                recentSessions.add(new SessionViewRecentCapsule(recentSessions.size(), capsule.getSession(), capsule.getSession().getSession()));
+                recentSessions.add(new SessionViewRecentCapsule(recentSessions.size(), capsule.getPosition(), capsule.getGeneCirclePosition(), capsule.getSession(), capsule.getSession().getSession()));
             }
         }
     }
@@ -151,6 +151,18 @@ public class OverView extends GenosideComponent {
 
                     return true;
                 }
+            }
+            for(SessionViewRecentCapsule capsule : recentSessions)
+            {
+            	if(capsule.handle(event, x,y))
+            	{
+            		SessionViewCapsule restorecapsule = new SessionViewCapsule(new SessionView(capsule.getSession(), this), capsule.getOldGeneCirclePosition());
+            		restorecapsule.getSession().setDimensions(0.4f, 0.2f);
+            		Vector2 oldpos=capsule.getOldPosition();
+            		restorecapsule.getSession().setPosition(oldpos.x, oldpos.y);
+            		sessions.add(restorecapsule);
+            		return true;
+            	}
             }
 
             // respond to mouse click

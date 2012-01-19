@@ -17,17 +17,33 @@ public class SessionViewRecentCapsule extends GenosideComponent {
 	private int			Position;
 	private Session		session;
 	private SessionView sessionView;
+	private Vector2		oldPosition;
+	private Vector2		oldGeneCirclePosition;
 
-	public SessionViewRecentCapsule(int position, SessionView sessionview, Session session) {
+	public SessionViewRecentCapsule(int position, Vector2 oldposition, Vector2 oldgenecirclepos, SessionView sessionview, Session session) {
         super(null);
         this.Position=position;
         this.session=session;
         this.sessionView = sessionview;
+        this.oldPosition=oldposition;
+        this.oldGeneCirclePosition=oldgenecirclepos;
 	}
 
-	public SessionView getSession()
+	public Vector2 getOldPosition()
+	{
+		return this.oldPosition;
+	}
+	public Vector2 getOldGeneCirclePosition()
+	{
+		return this.oldGeneCirclePosition;
+	}
+	public SessionView getSessionView()
 	{
 		return this.sessionView;
+	}
+	public Session getSession()
+	{
+		return this.session;
 	}
 	@Override
 	public void childComponentCall(String who, String what) {}

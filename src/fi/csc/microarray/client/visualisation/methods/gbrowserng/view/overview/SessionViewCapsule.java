@@ -33,6 +33,13 @@ public class SessionViewCapsule extends GenosideComponent {
         setGeneCirclePosition(0.485f, relativePos);
         link = new LinkGFX(sessionView, this);
     }
+    public SessionViewCapsule(SessionView sessionView, Vector2 relativePosVector) {
+        super(null); // should be ok
+        this.sessionView = sessionView;
+        this.getAnimatedValues().setAnimatedValue("ALPHA", 1.0f);
+        this.genecirclePosition=relativePosVector;
+        link = new LinkGFX(sessionView, this);
+    }
 
     public Vector2 getGeneCirclePosition() {
         return genecirclePosition;
@@ -41,7 +48,7 @@ public class SessionViewCapsule extends GenosideComponent {
     private void setGeneCirclePosition(float circleSize, float relativePos) {
         genecirclePosition.x = circleSize;
         genecirclePosition.y = 0;
-        genecirclePosition.rotate(2 * 3.14159f * relativePos);   
+        genecirclePosition.rotate(2 * 3.14159f * relativePos);
     }
 
     public boolean isAlive() {
