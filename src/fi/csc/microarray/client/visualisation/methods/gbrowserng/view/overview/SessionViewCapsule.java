@@ -29,22 +29,22 @@ public class SessionViewCapsule extends GenosideComponent {
 
     private final LinkGFX link;
 
-    public SessionViewCapsule(SessionView sessionView) {
+    public SessionViewCapsule(SessionView sessionView, float relativePos) {
         super(null); // should be ok
         this.sessionView = sessionView;
         this.getAnimatedValues().setAnimatedValue("ALPHA", 1.0f);
-
+        setGeneCirclePosition(0.485f, relativePos);
         link = new LinkGFX(sessionView, this);
     }
 
-    public Vector2 getGeneCirclePosition(float circleSize) {
-        Session mySession = this.sessionView.getSession();
-        int chromosomeID = mySession.referenceSequence.chromosome;
-        float relativePos = geneCircle.getChromosomeBoundaries()[chromosomeID] + (geneCircle.getChromosomeBoundaries()[chromosomeID+1] - geneCircle.getChromosomeBoundaries()[chromosomeID])*(mySession.position/AbstractGenome.getChromosome(chromosomeID).length());
+    public Vector2 getGeneCirclePosition() {
+        return genecirclePosition;
+    }
+    
+    private void setGeneCirclePosition(float circleSize, float relativePos) {
         genecirclePosition.x = circleSize;
         genecirclePosition.y = 0;
-        genecirclePosition.rotate(2 * 3.14159f * relativePos);
-        return genecirclePosition;
+        genecirclePosition.rotate(2 * 3.14159f * relativePos);   
     }
 
     public boolean isAlive() {
@@ -129,7 +129,7 @@ public class SessionViewCapsule extends GenosideComponent {
             this.getSession().modifyPosition(this.positionAdjustment.x*4, this.positionAdjustment.y*4);
         }
         // TODO: This is not necessary on every tick.
-        Vector2 pos = this.getGeneCirclePosition(0.485f);
+        Vector2 pos = this.getGeneCirclePosition();
         this.setPosition(pos.x, pos.y);
 
         link.tick(dt);

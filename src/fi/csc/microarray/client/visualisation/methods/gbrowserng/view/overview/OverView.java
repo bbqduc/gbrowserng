@@ -155,7 +155,7 @@ public class OverView extends GenosideComponent {
 
             // respond to mouse click
             System.out.println("Adding capsule with " + x + " " + y);
-            SessionViewCapsule capsule = new SessionViewCapsule(new SessionView(new Session(geneCircle.getChromosome().getReferenceSequence(), geneCircle.getChromosomePosition()), this));
+            SessionViewCapsule capsule = new SessionViewCapsule(new SessionView(new Session(geneCircle.getChromosome().getReferenceSequence(), geneCircle.getChromosomePosition()), this), pointerGenePosition);
             capsule.getSession().setDimensions(0.4f, 0.2f);
             capsule.getSession().setPosition(x, y);
             sessions.add(capsule);
