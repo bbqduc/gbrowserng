@@ -12,6 +12,9 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.Geno
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GeneCircle;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GenoFPSCounter;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.SessionView;
+
+import java.util.Iterator;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
@@ -25,7 +28,7 @@ public class OverView extends GenosideComponent {
 
     ConcurrentLinkedQueue<SessionViewCapsule> sessions = new ConcurrentLinkedQueue<SessionViewCapsule>();
     ConcurrentLinkedQueue<SessionViewCapsule> activeSessions = new ConcurrentLinkedQueue<SessionViewCapsule>();
-    ConcurrentLinkedQueue<SessionViewRecentCapsule> recentSessions = new ConcurrentLinkedQueue<SessionViewRecentCapsule>();
+    ConcurrentLinkedDeque<SessionViewRecentCapsule> recentSessions = new ConcurrentLinkedDeque<SessionViewRecentCapsule>();
 
     OverViewState state = OverViewState.OVERVIEW_ACTIVE;
 
@@ -79,7 +82,18 @@ public class OverView extends GenosideComponent {
             if(capsule.isActive()) {
                 capsule.die();
                 capsule.getSession().setPosition(-1.4f, 0.0f);
-                recentSessions.add(new SessionViewRecentCapsule(recentSessions.size(), capsule.getPosition(), capsule.getGeneCirclePosition(), capsule.getSession(), capsule.getSession().getSession()));
+                if(recentSessions.size()>=4)
+                {
+                	for(SessionViewRecentCapsule recentcapsule : recentSessions)
+                	{
+                		recentcapsule.setId(recentcapsule.getId()-1);
+                	}
+                	recentSessions.remove(recentSessions.getFirst());
+                }
+                int id;
+                if(recentSessions.size()>0) id=recentSessions.getLast().getId()+1;
+                else id=0;
+                recentSessions.add(new SessionViewRecentCapsule(id, capsule.getPosition(), capsule.getGeneCirclePosition(), capsule.getSession(), capsule.getSession().getSession()));
             }
         }
     }
@@ -161,6 +175,19 @@ public class OverView extends GenosideComponent {
             		Vector2 oldpos=capsule.getOldPosition();
             		restorecapsule.getSession().setPosition(oldpos.x, oldpos.y);
             		sessions.add(restorecapsule);
+            		recentSessions.remove(capsule);
+            		
+            		if(recentSessions.size()>0)
+            		{
+	            		// This could be better, but as there won't be more than few recent capsules saved anyway, it will do.
+	            		recentSessions.getFirst().setId(0);
+	            		int id=0;
+	                	for(SessionViewRecentCapsule recentcapsule : recentSessions)
+	                	{
+	                		recentcapsule.setId(id);
+	                		++id;
+	                	}
+            		}
             		return true;
             	}
             }

@@ -14,21 +14,28 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.
 
 public class SessionViewRecentCapsule extends GenosideComponent {
 	
-	private int			Position;
+	private int			id;
 	private Session		session;
 	private SessionView sessionView;
 	private Vector2		oldPosition;
 	private Vector2		oldGeneCirclePosition;
 
-	public SessionViewRecentCapsule(int position, Vector2 oldposition, Vector2 oldgenecirclepos, SessionView sessionview, Session session) {
+	public SessionViewRecentCapsule(int id, Vector2 oldposition, Vector2 oldgenecirclepos, SessionView sessionview, Session session) {
         super(null);
-        this.Position=position;
+        this.id=id;
         this.session=session;
         this.sessionView = sessionview;
         this.oldPosition=oldposition;
         this.oldGeneCirclePosition=oldgenecirclepos;
 	}
-
+	public int getId()
+	{
+		return id;
+	}
+	public void setId(int id)
+	{
+		this.id=id;
+	}
 	public Vector2 getOldPosition()
 	{
 		return this.oldPosition;
@@ -80,7 +87,7 @@ public class SessionViewRecentCapsule extends GenosideComponent {
 	@Override
 	public void userTick(float dt) {
 		Vector2 dimensions=this.sessionView.getDimensions();
-		this.sessionView.setPosition(-1.0f+(dimensions.x * 0.5f)+(Position*0.125f), 1.0f-0.05f);
+		this.sessionView.setPosition(-1.0f+(dimensions.x * 0.5f)+(this.id*0.125f), 1.0f-0.05f);
 		sessionView.tick(dt);
 	}
 
