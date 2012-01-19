@@ -1,9 +1,11 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview;
 
+import managers.TextureManager;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.CascadingComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.VisualComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.ids.GenoTexID;
 import gles.Color;
 import gles.SoulGL2;
 import gles.renderer.PrimitiveRenderer;
@@ -40,6 +42,7 @@ public class ReferenceRenderer extends CascadingComponent implements VisualCompo
                     glxSize(this.session.halfSizeX * session.payloadSize),
                     glySize(mySizeY * session.payloadSize), gl, GlobalVariables.genomeColor(c));
 			if (this.session.halfSizeX >= mySizeY) {
+				TextureManager.bindTexture(gl, GenoTexID.FONT);
 				TextRenderer.getInstance().drawText(gl, Character.toString(c),
 						glx(x), gly(y), glySize(20 * this.session.halfSizeY));
 			}
@@ -58,6 +61,7 @@ public class ReferenceRenderer extends CascadingComponent implements VisualCompo
 						glxSize(this.session.halfSizeX * session.payloadSize),
 						glySize(mySizeY * session.payloadSize), gl, genomeColor);
 				if (this.session.halfSizeX >= mySizeY) {
+					TextureManager.bindTexture(gl, GenoTexID.FONT);
 					TextRenderer.getInstance().drawText(gl,
 							Character.toString(c), glx(x), gly(y),
 							glySize(20 * mySizeY));

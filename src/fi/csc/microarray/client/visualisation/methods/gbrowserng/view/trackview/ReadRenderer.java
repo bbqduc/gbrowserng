@@ -5,12 +5,15 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Read;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.CascadingComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.VisualComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.ids.GenoTexID;
 import gles.Color;
 import gles.SoulGL2;
 import gles.renderer.PrimitiveRenderer;
 import gles.renderer.TextRenderer;
 
 import java.util.ArrayList;
+
+import managers.TextureManager;
 
 public class ReadRenderer extends CascadingComponent implements VisualComponent {
 
@@ -46,6 +49,7 @@ public class ReadRenderer extends CascadingComponent implements VisualComponent 
                     glxSize(this.session.halfSizeX * session.payloadSize),
                     glySize(this.session.halfSizeY * session.payloadSize), gl, GlobalVariables.genomeColor(c));
 			if (this.session.halfSizeX >= this.session.halfSizeY) {
+				TextureManager.bindTexture(gl, GenoTexID.FONT);
 				TextRenderer.getInstance().drawText(gl, Character.toString(c),
 						glx(x), gly(y), glySize(20 * this.session.halfSizeY));
 			}
@@ -70,6 +74,7 @@ public class ReadRenderer extends CascadingComponent implements VisualComponent 
 					glxSize(this.session.halfSizeX * session.payloadSize),
 					glySize(this.session.halfSizeY * session.payloadSize), gl, GlobalVariables.genomeColor(c));
 			if (this.session.halfSizeX >= this.session.halfSizeY) {
+				TextureManager.bindTexture(gl, GenoTexID.FONT);
 				TextRenderer.getInstance().drawText(gl, Character.toString(c),
 						glx(x), gly(y), glySize(20 * this.session.halfSizeY));
 			}

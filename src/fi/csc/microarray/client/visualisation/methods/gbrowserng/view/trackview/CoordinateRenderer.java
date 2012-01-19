@@ -1,8 +1,12 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview;
 
+import managers.TextureManager;
+
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
+
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.ids.GenoTexID;
 import gles.Color;
 import gles.SoulGL2;
 import gles.renderer.PrimitiveRenderer;
@@ -35,6 +39,7 @@ public class CoordinateRenderer extends GenosideComponent {
 			if (p % delta == 0) {
 				PrimitiveRenderer.drawRectangle(glx(x), gly(0.9f),
                         glxSize(0.002f), glySize(0.1f), gl, Color.WHITE);
+				TextureManager.bindTexture(gl, GenoTexID.FONT);
 				TextRenderer.getInstance().drawText(gl, Integer.toString((int)p),
 						glx(x), gly(0), glySize(10.0f));
 			} else {
