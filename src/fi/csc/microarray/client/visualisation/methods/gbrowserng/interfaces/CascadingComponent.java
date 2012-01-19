@@ -37,8 +37,8 @@ public abstract class CascadingComponent {
     }
 
     public final void cascadingTick(float dt) {
-        currentPosition.approach(targetPosition, dt, 0.06f);
-        currentDimensions.approach(targetDimensions, dt, 0.06f);
+        currentPosition.approach(targetPosition, dt, 0.005f);
+        currentDimensions.approach(targetDimensions, dt, 0.005f);
         updateDimensions();
         updatePosition();
     }

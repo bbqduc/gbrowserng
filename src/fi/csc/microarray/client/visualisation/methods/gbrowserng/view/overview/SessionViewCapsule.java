@@ -131,9 +131,8 @@ public class SessionViewCapsule extends GenosideComponent {
         sessionView.tick(dt);
 
         if(this.positionAdjustment.lengthSquared() > 0.00001f) {
-            this.getSession().modifyPosition(this.positionAdjustment.x, this.positionAdjustment.y);
+            this.getSession().modifyPosition(this.positionAdjustment.x*4, this.positionAdjustment.y*4);
         }
-
         // TODO: This is not necessary on every tick.
         Vector2 pos = this.getGeneCirclePosition(0.485f);
         this.setPosition(pos.x, pos.y);
