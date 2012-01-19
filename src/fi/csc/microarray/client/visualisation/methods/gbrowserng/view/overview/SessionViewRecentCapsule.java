@@ -29,6 +29,7 @@ public class SessionViewRecentCapsule extends GenosideComponent {
 
 	@Override
 	public boolean handle(MouseEvent event, float screen_x, float screen_y) {
+		/*
         Vector2 dimensions = sessionView.getDimensions();
         Vector2 position = sessionView.getPosition();
 
@@ -39,6 +40,7 @@ public class SessionViewRecentCapsule extends GenosideComponent {
             }
 
         this.getAnimatedValues().setAnimatedValue("MOUSEHOVER", 0);
+        */
         return false;
 	}
 
