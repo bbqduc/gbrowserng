@@ -218,6 +218,11 @@ public class OverView extends GenosideComponent {
             capsule.tick(dt);
             capsule.clearPositionAdjustment();
         }
+        
+        for(SessionViewRecentCapsule capsule : recentSessions)
+        {
+        	capsule.tick(dt);
+        }
 
         // if no active session, try to place session views in a good way.
         if(activeSessions.isEmpty()) {

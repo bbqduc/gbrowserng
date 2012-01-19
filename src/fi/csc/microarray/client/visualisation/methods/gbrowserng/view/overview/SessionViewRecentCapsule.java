@@ -51,11 +51,13 @@ public class SessionViewRecentCapsule extends GenosideComponent {
 
 	@Override
 	public void draw(SoulGL2 gl) {
-		PrimitiveRenderer.drawRectangle(-1.0f+0.05f+(Position*0.125f), 1.0f-0.05f, 0.05f, 0.05f, gl, new Color(255,0,255));
+		PrimitiveRenderer.drawRectangle(this.sessionView.getPosition().x, this.sessionView.getPosition().y, 0.05f, 0.05f, gl, new Color(255,0,255));
 	}
 
 	@Override
 	public void userTick(float dt) {
+		this.sessionView.setPosition(-1.0f+0.05f+(Position*0.125f), 1.0f-0.05f);
+		sessionView.tick(dt);
 	}
 
 }
