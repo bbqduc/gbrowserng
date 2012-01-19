@@ -1,5 +1,7 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.model;
 
+import com.soulaim.tech.math.Vector2;
+
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractChromosome;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractGenome;
 
@@ -10,15 +12,19 @@ public class GeneCircle {
     private AbstractChromosome chromosome = AbstractGenome.getChromosome(0);
     private long chromosomePosition = 0;
     private float[] chromosomeBoundaries;
+    private Vector2[] chromosomeBoundariesPositions;
     
     public GeneCircle(){
         chromosomeBoundaries = new float[AbstractGenome.getNumChromosomes()+1];
+        chromosomeBoundariesPositions = new Vector2[AbstractGenome.getNumChromosomes()];
         float sliceSizeLeft = 1.0f - AbstractGenome.getNumChromosomes() * minimumChromosomeSlice;
         assert(sliceSizeLeft >= 0);
         
         chromosomeBoundaries[0] = 0;
-        for(int i = 1; i <= AbstractGenome.getNumChromosomes(); ++i)
+        for(int i = 1; i <= AbstractGenome.getNumChromosomes(); ++i) {
             chromosomeBoundaries[i] = chromosomeBoundaries[i-1] + minimumChromosomeSlice + sliceSizeLeft * AbstractGenome.getChromosome(i-1).length()/AbstractGenome.getTotalLength();
+        	chromosomeBoundariesPositions[i-1] = new Vector2((float)Math.cos(2*Math.PI*chromosomeBoundaries[i-1]), (float)Math.sin(2*Math.PI*chromosomeBoundaries[i-1]));
+        }
         }
         
     public void updatePosition(float pointerGenePosition) {
@@ -43,4 +49,7 @@ public class GeneCircle {
         return chromosomeBoundaries;
     }
     
+    public Vector2[] getChromosomeBoundariesPositions() {
+        return chromosomeBoundariesPositions;
+    }
  }

@@ -116,7 +116,8 @@ public class SessionViewCapsule extends GenosideComponent {
             PrimitiveRenderer.drawRectangle(sessionView.glx(0), sessionView.gly(0), sessionView.getDimensions().x * 0.5f, sessionView.getDimensions().y * 0.5f / GlobalVariables.aspectRatio, gl, backGroundColor);
             gl.glDisable(SoulGL2.GL_BLEND);
         }
-
+        
+        sessionView.setActive(isActive);
         sessionView.draw(gl);
     }
 

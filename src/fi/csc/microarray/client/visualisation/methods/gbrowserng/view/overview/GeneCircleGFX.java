@@ -50,9 +50,8 @@ public class GeneCircleGFX {
         gl.glDisableVertexAttribArray(vertexPositionHandle);
         shader.stop(gl);
         
-        for(float i : geneCircle.getChromosomeBoundaries()) {
-            float x = (float)Math.cos(2*Math.PI*i), y = (float)Math.sin(2*Math.PI*i);
-            PrimitiveRenderer.drawLine(0.40f*x, 0.40f*y, 0.55f*x, 0.55f*y, gl, Color.GREEN);
+        for(Vector2 vec : geneCircle.getChromosomeBoundariesPositions()) {
+            PrimitiveRenderer.drawLine(0.40f*vec.x, 0.40f*vec.y, 0.55f*vec.x, 0.55f*vec.y, gl, Color.GREEN);
         }
     }
 

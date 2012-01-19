@@ -16,6 +16,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SessionView extends GenosideComponent {
 
+	private boolean active = false;
     private final GenoVisualBorder border = new GenoVisualBorder(this);
 	private final GenoButton quitButton = new GenoButton(this, "QUIT_BUTTON", 1.0f, 1.0f, -0.04f, -0.04f, TextureID.QUIT_BUTTON);
 	private final GenoButton shrinkButton = new GenoButton(this, "SHRINK_BUTTON", 1.0f, 1.0f, -0.08f, -0.04f, TextureID.SHRINK_BUTTON);
@@ -239,18 +240,21 @@ public class SessionView extends GenosideComponent {
         if(!inScreen())
             return;
 
+        if(active)
 		// first draw all the internal views
 		for (TrackView t : trackViews) {
             t.draw(gl);
 		}
 
 		// then draw whatever this session view wants to draw.
+        if(active) {
 		quitButton.draw(gl);
 		shrinkButton.draw(gl);
 		openReadFileButton.draw(gl);
         openAnotherSessionButton.draw(gl);
-		border.draw(gl);
 		coordinateView.draw(gl);
+        }
+        border.draw(gl);
 	}
 
 	@Override
@@ -270,5 +274,9 @@ public class SessionView extends GenosideComponent {
 
     public Session getSession() {
         return session;
+    }
+    
+    public void setActive(boolean active) {
+    	this.active = active;
     }
 }
