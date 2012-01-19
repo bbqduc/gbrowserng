@@ -1,19 +1,21 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.view;
 
-import com.soulaim.desktop.DesktopAssetManager;
-import com.soulaim.desktop.DesktopGL2;
-import com.soulaim.desktop.DesktopTextureManager;
-import com.soulaim.tech.gles.SoulGL2;
-import com.soulaim.tech.gles.primitives.PrimitiveBuffers;
-import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
-import com.soulaim.tech.gles.renderer.TextRenderer;
-import com.soulaim.tech.managers.AssetManager;
-import com.soulaim.tech.managers.ShaderManager;
-import com.soulaim.tech.managers.TextureManager;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GenoSideTimer;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.ids.GenoShaders;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.ids.GenoTexID;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview.OverView;
+import gles.SoulGL2;
+import gles.primitives.PrimitiveBuffers;
+import gles.renderer.PrimitiveRenderer;
+import gles.renderer.TextRenderer;
+import managers.AssetManager;
+import managers.ShaderManager;
+import managers.TextureManager;
+import soulaim.DesktopAssetManager;
+import soulaim.DesktopGL2;
+import soulaim.DesktopTextureManager;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -49,11 +51,12 @@ public class GenoGLListener implements GLEventListener {
         AssetManager.setInstance(new DesktopAssetManager());
 
         DesktopTextureManager textureManager = new DesktopTextureManager();
-        textureManager.setGLContext(drawable.getGL());
+        textureManager.setGL2(drawable.getGL().getGL2());
         TextureManager.setInstance(textureManager);
         TextureManager.init(new DesktopGL2(gl));
 
-        ShaderManager.createPrograms(new DesktopGL2(gl));
+        GenoShaders.createShaders(new DesktopGL2(gl));
+        GenoTexID.createTextures(new DesktopGL2(gl));
 
         gl.glDisable(GL2.GL_DEPTH_TEST);
 		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);

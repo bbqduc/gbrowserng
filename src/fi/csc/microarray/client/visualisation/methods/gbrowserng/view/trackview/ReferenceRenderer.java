@@ -1,13 +1,13 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview;
 
-import com.soulaim.tech.gles.Color;
-import com.soulaim.tech.gles.SoulGL2;
-import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
-import com.soulaim.tech.gles.renderer.TextRenderer;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.CascadingComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.VisualComponent;
+import gles.Color;
+import gles.SoulGL2;
+import gles.renderer.PrimitiveRenderer;
+import gles.renderer.TextRenderer;
 
 public class ReferenceRenderer extends CascadingComponent implements VisualComponent {
 

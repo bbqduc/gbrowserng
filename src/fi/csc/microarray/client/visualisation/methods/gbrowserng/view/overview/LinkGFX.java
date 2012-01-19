@@ -1,18 +1,21 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview;
 
-import com.soulaim.tech.gles.SoulGL2;
-import com.soulaim.tech.gles.primitives.PrimitiveBuffers;
-import com.soulaim.tech.gles.shaders.Shader;
-import com.soulaim.tech.gles.shaders.ShaderMemory;
-import com.soulaim.tech.managers.ShaderManager;
-import com.soulaim.tech.math.Matrix4;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.ids.GenoShaders;
+import gles.SoulGL2;
+import gles.primitives.PrimitiveBuffers;
+import gles.shaders.Shader;
+import gles.shaders.ShaderMemory;
+import managers.ShaderManager;
+import math.Matrix4;
+import math.MatrixUtils;
 
 public class LinkGFX {
 
     GenosideComponent component1;
     GenosideComponent component2;
     Matrix4 modelMatrix = new Matrix4();
+    Matrix4 identityMatrix = new Matrix4();
 
     float time = 0.0f;
     private float velocity = 5.0f;
@@ -33,13 +36,13 @@ public class LinkGFX {
 
         gl.glEnable(SoulGL2.GL_BLEND);
 
-        Shader shader = ShaderManager.getProgram(ShaderManager.ShaderID.TORRENT);
+        Shader shader = ShaderManager.getProgram(GenoShaders.GenoShaderID.TORRENT);
         shader.start(gl);
 
         ShaderMemory.setUniformVec1(gl, shader, "uniAlpha", alpha);
         ShaderMemory.setUniformVec1(gl, shader, "lifetime", time * velocity);
-        ShaderMemory.setUniformMat4(gl, shader, "viewMatrix", Matrix4.IDENTITY);
-        ShaderMemory.setUniformMat4(gl, shader, "projectionMatrix", Matrix4.IDENTITY);
+        ShaderMemory.setUniformMat4(gl, shader, "viewMatrix", identityMatrix);
+        ShaderMemory.setUniformMat4(gl, shader, "projectionMatrix", identityMatrix);
 
         float x = (component1.getPosition().x + component2.getPosition().x) / 2.0f;
         float y = (component1.getPosition().y + component2.getPosition().y) / 2.0f;

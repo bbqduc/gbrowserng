@@ -2,10 +2,10 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview;
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
-import com.soulaim.tech.gles.Color;
-import com.soulaim.tech.gles.SoulGL2;
-import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
-import com.soulaim.tech.math.Vector2;
+import gles.Color;
+import gles.SoulGL2;
+import gles.renderer.PrimitiveRenderer;
+import math.Vector2;
 
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;

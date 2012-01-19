@@ -1,6 +1,6 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng;
 
-import com.soulaim.tech.gles.Color;
+import gles.Color;
 
 public class GlobalVariables {
     public static float aspectRatio = 1.0f;
@@ -14,7 +14,6 @@ public class GlobalVariables {
 		else if (c == 'C')
 			return Color.ORANGE;
 		else
-			// (c == 'T')
 			return Color.MAGENTA;
     }
 }

@@ -1,14 +1,14 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview;
 
-import com.soulaim.tech.gles.Color;
-import com.soulaim.tech.gles.SoulGL2;
-import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
-import com.soulaim.tech.gles.renderer.TextRenderer;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Read;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.CascadingComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.VisualComponent;
+import gles.Color;
+import gles.SoulGL2;
+import gles.renderer.PrimitiveRenderer;
+import gles.renderer.TextRenderer;
 
 import java.util.ArrayList;
 
@@ -43,8 +43,8 @@ public class ReadRenderer extends CascadingComponent implements VisualComponent 
 			}
 
 			PrimitiveRenderer.drawRectangle(glx(x), gly(y),
-					glxSize(this.session.halfSizeX * session.payloadSize),
-					glySize(this.session.halfSizeY * session.payloadSize), gl, GlobalVariables.genomeColor(c));
+                    glxSize(this.session.halfSizeX * session.payloadSize),
+                    glySize(this.session.halfSizeY * session.payloadSize), gl, GlobalVariables.genomeColor(c));
 			if (this.session.halfSizeX >= this.session.halfSizeY) {
 				TextRenderer.getInstance().drawText(gl, Character.toString(c),
 						glx(x), gly(y), glySize(20 * this.session.halfSizeY));

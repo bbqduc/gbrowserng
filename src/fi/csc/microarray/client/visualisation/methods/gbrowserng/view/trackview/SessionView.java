@@ -2,14 +2,13 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
-import com.soulaim.tech.gles.SoulGL2;
-import com.soulaim.tech.gles.TextureID;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.SpaceDivider;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.MouseTracker;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoButton;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoVisualBorder;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.ids.GenoTexID;
+import gles.SoulGL2;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -18,10 +17,10 @@ public class SessionView extends GenosideComponent {
 
 	private boolean active = false;
     private final GenoVisualBorder border = new GenoVisualBorder(this);
-	private final GenoButton quitButton = new GenoButton(this, "QUIT_BUTTON", 1.0f, 1.0f, -0.04f, -0.04f, TextureID.QUIT_BUTTON);
-	private final GenoButton shrinkButton = new GenoButton(this, "SHRINK_BUTTON", 1.0f, 1.0f, -0.08f, -0.04f, TextureID.SHRINK_BUTTON);
-	private final GenoButton openReadFileButton = new GenoButton(this, "OPENREADFILE_BUTTON", 1.0f, 1.0f, -0.12f, -0.04f, TextureID.OPENFILE_BUTTON);
-    private final GenoButton openAnotherSessionButton = new GenoButton(this, "ANOTHERSESSION_BUTTON", 1.0f, 1.0f, -0.16f, -0.04f, TextureID.OPENFILE_BUTTON);
+	private final GenoButton quitButton = new GenoButton(this, "QUIT_BUTTON", 1.0f, 1.0f, -0.04f, -0.04f, GenoTexID.QUIT_BUTTON);
+	private final GenoButton shrinkButton = new GenoButton(this, "SHRINK_BUTTON", 1.0f, 1.0f, -0.08f, -0.04f, GenoTexID.SHRINK_BUTTON);
+	private final GenoButton openReadFileButton = new GenoButton(this, "OPENREADFILE_BUTTON", 1.0f, 1.0f, -0.12f, -0.04f, GenoTexID.OPENFILE_BUTTON);
+    private final GenoButton openAnotherSessionButton = new GenoButton(this, "ANOTHERSESSION_BUTTON", 1.0f, 1.0f, -0.16f, -0.04f, GenoTexID.OPENFILE_BUTTON);
 
 	private final ConcurrentLinkedQueue<TrackView> trackViews = new ConcurrentLinkedQueue<TrackView>();
 	private CoordinateRenderer coordinateView;

@@ -2,11 +2,11 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
-import com.soulaim.tech.gles.Color;
-import com.soulaim.tech.gles.SoulGL2;
-import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
-import com.soulaim.tech.gles.renderer.TextRenderer;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
+import gles.Color;
+import gles.SoulGL2;
+import gles.renderer.PrimitiveRenderer;
+import gles.renderer.TextRenderer;
 
 public class CoordinateRenderer extends GenosideComponent {
 
@@ -34,7 +34,7 @@ public class CoordinateRenderer extends GenosideComponent {
 		for (float x = -1.0f + halfWidth - offset; x < 1.0f; x += delta_x, ++p) {
 			if (p % delta == 0) {
 				PrimitiveRenderer.drawRectangle(glx(x), gly(0.9f),
-						glxSize(0.002f), glySize(0.1f), gl, Color.WHITE);
+                        glxSize(0.002f), glySize(0.1f), gl, Color.WHITE);
 				TextRenderer.getInstance().drawText(gl, Integer.toString((int)p),
 						glx(x), gly(0), glySize(10.0f));
 			} else {

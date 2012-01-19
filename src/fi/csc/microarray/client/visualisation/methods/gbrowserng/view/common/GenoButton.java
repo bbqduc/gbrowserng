@@ -2,11 +2,11 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common;
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
-import com.soulaim.tech.gles.Color;
-import com.soulaim.tech.gles.SoulGL2;
-import com.soulaim.tech.gles.TextureID;
-import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
+import gles.Color;
+import gles.SoulGL2;
+import gles.TextureID;
+import gles.renderer.PrimitiveRenderer;
 
 public class GenoButton extends GenosideComponent {
 
@@ -74,7 +74,7 @@ public class GenoButton extends GenosideComponent {
         myColor.g = 1f-this.getAnimatedValues().getAnimatedValue("MOUSEHOVER");
         myColor.b = 1f-this.getAnimatedValues().getAnimatedValue("MOUSEHOVER");
         float myScale = 0.02f + this.getAnimatedValues().getAnimatedValue("MOUSEHOVER") * 0.01f;
-        PrimitiveRenderer.drawTexturedSquare(this.getParent().glx(xpos) - myScale * 0.5f + x_offset, this.getParent().gly(ypos) - myScale*0.5f + y_offset, myScale, gl, myColor, myTexture);
+        PrimitiveRenderer.drawTexturedSquare(this.getParent().glx(xpos) - myScale * 0.5f + x_offset, this.getParent().gly(ypos) - myScale * 0.5f + y_offset, myScale, gl, myColor, myTexture);
         gl.glDisable(SoulGL2.GL_BLEND);
     }
 

@@ -2,13 +2,13 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
-import com.soulaim.tech.gles.SoulGL2;
-import com.soulaim.tech.gles.TextureID;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.TrackSession;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoButton;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.common.GenoVisualBorder;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.ids.GenoTexID;
+import gles.SoulGL2;
 
 public class TrackView extends GenosideComponent {
 
@@ -45,11 +45,11 @@ public class TrackView extends GenosideComponent {
         this.heatMapRenderer.setDimensions(2, 2);
 
 		this.minimizeButton = new GenoButton(this, "MIN_BUTTON", -0.95f, 1.0f,
-				+0.04f, -0.04f, TextureID.SHRINK_BUTTON);
+				+0.04f, -0.04f, GenoTexID.SHRINK_BUTTON);
 		this.deleteButton = new GenoButton(this, "DEL_BUTTON", -1.0f, 1.0f,
-				+0.04f, -0.04f, TextureID.QUIT_BUTTON);
+				+0.04f, -0.04f, GenoTexID.QUIT_BUTTON);
 		this.maximizeButton = new GenoButton(this, "MAX_BUTTON", -1.0f, 1.0f,
-				+0.04f, -0.09f, TextureID.MAXIMIZE_BUTTON);
+				+0.04f, -0.09f, GenoTexID.MAXIMIZE_BUTTON);
 		
 		setTrackViewMode(TrackView.READ);
 	}

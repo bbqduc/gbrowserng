@@ -2,16 +2,16 @@ package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview;
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
-import com.soulaim.tech.gles.SoulGL2;
-import com.soulaim.tech.gles.renderer.TextRenderer;
-import com.soulaim.tech.math.Matrix4;
-import com.soulaim.tech.math.Vector2;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.SpaceDivider;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GeneCircle;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GenoFPSCounter;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.SessionView;
+import gles.SoulGL2;
+import gles.renderer.TextRenderer;
+import math.Matrix4;
+import math.Vector2;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedDeque;

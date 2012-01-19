@@ -1,15 +1,16 @@
 package fi.csc.microarray.client.visualisation.methods.gbrowserng.view.overview;
 
-import com.soulaim.tech.gles.Color;
-import com.soulaim.tech.gles.SoulGL2;
-import com.soulaim.tech.gles.primitives.PrimitiveBuffers;
-import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
-import com.soulaim.tech.gles.shaders.Shader;
-import com.soulaim.tech.gles.shaders.ShaderMemory;
-import com.soulaim.tech.managers.ShaderManager;
-import com.soulaim.tech.math.Matrix4;
-import com.soulaim.tech.math.Vector2;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GeneCircle;
+import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.ids.GenoShaders;
+import gles.Color;
+import gles.SoulGL2;
+import gles.primitives.PrimitiveBuffers;
+import gles.renderer.PrimitiveRenderer;
+import gles.shaders.Shader;
+import gles.shaders.ShaderMemory;
+import managers.ShaderManager;
+import math.Matrix4;
+import math.Vector2;
 
 public class GeneCircleGFX {
 
@@ -24,7 +25,7 @@ public class GeneCircleGFX {
     }
 
     public void draw(SoulGL2 gl, Matrix4 modelMatrix, Vector2 mousePosition) {
-        Shader shader = ShaderManager.getProgram(ShaderManager.ShaderID.GENE_CIRCLE);
+        Shader shader = ShaderManager.getProgram(GenoShaders.GenoShaderID.GENE_CIRCLE);
         shader.start(gl);
 
         mousePos.copyFrom(mousePosition);

@@ -13,7 +13,7 @@ public class GenoWindow {
 	
 	public GenoWindow(int width, int height)
 	{
-        GLProfile.initSingleton(true);
+        GLProfile.initSingleton();
         this.window = GLWindow.create(new GLCapabilities(GLProfile.getDefault()));
         this.window.setSize(width, height);
         this.window.setTitle("GenomeBrowserNG");
