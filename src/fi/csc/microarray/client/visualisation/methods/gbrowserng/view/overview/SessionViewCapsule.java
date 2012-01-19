@@ -7,8 +7,6 @@ import com.soulaim.tech.gles.SoulGL2;
 import com.soulaim.tech.gles.renderer.PrimitiveRenderer;
 import com.soulaim.tech.math.Vector2;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.GlobalVariables;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.AbstractGenome;
-import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GeneCircle;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.SessionView;
@@ -16,7 +14,6 @@ import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.
 public class SessionViewCapsule extends GenosideComponent {
 
     private final SessionView sessionView;
-    public static GeneCircle geneCircle;
 
     // TODO: SessionViewCapsuleData class could contain this.
     private boolean isActive = false;

@@ -6,14 +6,12 @@ import com.soulaim.tech.gles.SoulGL2;
 import com.soulaim.tech.gles.renderer.TextRenderer;
 import com.soulaim.tech.math.Matrix4;
 import com.soulaim.tech.math.Vector2;
-
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.SpaceDivider;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.data.Session;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.interfaces.GenosideComponent;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GeneCircle;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.model.GenoFPSCounter;
 import fi.csc.microarray.client.visualisation.methods.gbrowserng.view.trackview.SessionView;
-
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
@@ -29,13 +27,10 @@ public class OverView extends GenosideComponent {
     ConcurrentLinkedQueue<SessionViewCapsule> activeSessions = new ConcurrentLinkedQueue<SessionViewCapsule>();
     ConcurrentLinkedQueue<SessionViewRecentCapsule> recentSessions = new ConcurrentLinkedQueue<SessionViewRecentCapsule>();
 
-    // TODO: Wrap these up in a class
-
     OverViewState state = OverViewState.OVERVIEW_ACTIVE;
 
     public OverView() {
         super(null);
-        SessionViewCapsule.geneCircle = geneCircle;
     }
 
     @Override
