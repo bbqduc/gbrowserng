@@ -118,6 +118,11 @@ public class OverView extends GenosideComponent {
         // allow capsules to update their states
         for(SessionViewCapsule capsule : sessions)
             capsule.handle(event, x, y);
+        
+        for(SessionViewRecentCapsule capsule : recentSessions)
+        {
+        	capsule.handle(event, x, y);
+        }
 
         // then see if they actually want the event
         if(MouseEvent.EVENT_MOUSE_CLICKED == event.getEventType() && event.getButton() == 1) {

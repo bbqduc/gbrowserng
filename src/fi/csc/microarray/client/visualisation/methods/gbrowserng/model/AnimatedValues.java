@@ -25,7 +25,7 @@ public class AnimatedValues {
 
     public void tick(float dt) {
         for(Vector2 v : animatedValues.values()) {
-            v.x += (1.0f - Math.pow(0.1f, dt)) * (v.y - v.x);
+            v.x += (1.0f - Math.pow(0.001f, dt)) * (v.y - v.x);
         }
     }
 }

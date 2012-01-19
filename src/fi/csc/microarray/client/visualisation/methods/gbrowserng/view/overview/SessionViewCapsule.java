@@ -64,10 +64,17 @@ public class SessionViewCapsule extends GenosideComponent {
     public void deactivate() {
         System.out.println("deactivating capsule");
         isActive = false;
-        if(!dying) link.show();
-        sessionView.setDimensions(0.4f, 0.2f);
-
-        if(!dying) this.show();
+        if(!dying)
+        {
+        	link.show();
+        	sessionView.setDimensions(0.4f, 0.2f);
+        	this.show();
+        }
+        else
+        {
+        	link.hide();
+        	sessionView.setDimensions(0.1f, 0.1f);
+        }
         this.getAnimatedValues().setAnimatedValue("ALPHA", 1.0f);
     }
 
