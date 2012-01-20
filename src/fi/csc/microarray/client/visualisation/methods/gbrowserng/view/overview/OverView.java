@@ -13,8 +13,6 @@ import gles.renderer.TextRenderer;
 import math.Matrix4;
 import math.Vector2;
 
-import java.util.Iterator;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
