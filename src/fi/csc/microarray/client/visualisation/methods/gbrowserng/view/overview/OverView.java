@@ -28,7 +28,7 @@ public class OverView extends GenosideComponent {
 
     ConcurrentLinkedQueue<SessionViewCapsule> sessions = new ConcurrentLinkedQueue<SessionViewCapsule>();
     ConcurrentLinkedQueue<SessionViewCapsule> activeSessions = new ConcurrentLinkedQueue<SessionViewCapsule>();
-    ConcurrentLinkedDeque<SessionViewRecentCapsule> recentSessions = new ConcurrentLinkedDeque<SessionViewRecentCapsule>();
+    RecentSessionManager recentSessionManager = new RecentSessionManager();
 
     OverViewState state = OverViewState.OVERVIEW_ACTIVE;
 
@@ -81,22 +81,7 @@ public class OverView extends GenosideComponent {
         for(SessionViewCapsule capsule : activeSessions) {
             if(capsule.isActive()) {
                 capsule.die();
-                capsule.getSession().setPosition(-1.4f, 0.0f);
-                if(recentSessions.size()>=4)
-                {
-                	for(SessionViewRecentCapsule recentcapsule : recentSessions)
-                	{
-                		recentcapsule.setId(recentcapsule.getId()-1);
-                	}
-                	recentSessions.remove(recentSessions.getFirst());
-                }
-                for(SessionViewRecentCapsule recentcapsule : recentSessions) recentcapsule.show();
-                int id;
-                if(recentSessions.size()>0) id=recentSessions.getLast().getId()+1;
-                else id=0;
-                SessionViewRecentCapsule recent=new SessionViewRecentCapsule(id, capsule.getPosition(), capsule.getGeneCirclePosition(), capsule.getSession(), capsule.getSession().getSession());
-                recentSessions.add(recent);
-                recent.show();
+                recentSessionManager.Add(capsule);
             }
         }
     }
@@ -136,73 +121,82 @@ public class OverView extends GenosideComponent {
         for(SessionViewCapsule capsule : sessions)
             capsule.handle(event, x, y);
         
-        for(SessionViewRecentCapsule capsule : recentSessions)
+        for(SessionViewRecentCapsule capsule : recentSessionManager.getRecentSessions())
         {
-        	capsule.handle(event, x, y);
+        	if(capsule!=null) capsule.handle(event, x, y);
         }
 
         // then see if they actually want the event
-        if(MouseEvent.EVENT_MOUSE_CLICKED == event.getEventType() && event.getButton() == 1) {
-            for(SessionViewCapsule capsule : sessions) {
-                if(capsule.isDying()) {
-                    continue;
-                }
-                if(capsule.handle(event, x, y)) {
-                    capsule.activate();
-                    activeSessions.add(capsule);
-
-                    showActiveSessions();
-                    state = OverViewState.SESSIONVIEW_ACTIVE;
-
-                    for(SessionViewCapsule otherCapsule : sessions) {
-                        boolean found = false;
-                        for(SessionViewCapsule activeCapsule : activeSessions) {
-                            if(otherCapsule.getId() == activeCapsule.getId()) {
-                                found = true;
-                            }
-                        }
-
-                        if(!found)
-                            otherCapsule.hide();
-                    }
-                    for(SessionViewRecentCapsule recentCapsule : recentSessions)
-                    	recentCapsule.hide();
-
-                    return true;
-                }
-            }
-            for(SessionViewRecentCapsule capsule : recentSessions)
-            {
-            	if(capsule.handle(event, x,y))
-            	{
-            		SessionViewCapsule restorecapsule = new SessionViewCapsule(new SessionView(capsule.getSession(), this), capsule.getOldGeneCirclePosition());
-            		restorecapsule.getSession().setDimensions(0.4f, 0.2f);
-            		Vector2 oldpos=capsule.getOldPosition();
-            		restorecapsule.getSession().setPosition(oldpos.x, oldpos.y);
-            		sessions.add(restorecapsule);
-            		recentSessions.remove(capsule);
-            		
-            		if(recentSessions.size()>0)
-            		{
-	            		// This could be better, but as there won't be more than few recent capsules saved anyway, it will do.
-	            		recentSessions.getFirst().setId(0);
-	            		int id=0;
-	                	for(SessionViewRecentCapsule recentcapsule : recentSessions)
-	                	{
-	                		recentcapsule.setId(id);
-	                		++id;
-	                	}
-            		}
-            		return true;
-            	}
-            }
-
-            // respond to mouse click
-            System.out.println("Adding capsule with " + x + " " + y);
-            SessionViewCapsule capsule = new SessionViewCapsule(new SessionView(new Session(geneCircle.getChromosome().getReferenceSequence(), geneCircle.getChromosomePosition()), this), pointerGenePosition);
-            capsule.getSession().setDimensions(0.4f, 0.2f);
-            capsule.getSession().setPosition(x, y);
-            sessions.add(capsule);
+        if(MouseEvent.EVENT_MOUSE_CLICKED == event.getEventType()) {
+        	if(event.getButton()==1)
+        	{
+	            for(SessionViewCapsule capsule : sessions) {
+	                if(capsule.isDying()) {
+	                    continue;
+	                }
+	                if(capsule.handle(event, x, y)) {
+	                    capsule.activate();
+	                    activeSessions.add(capsule);
+	
+	                    showActiveSessions();
+	                    state = OverViewState.SESSIONVIEW_ACTIVE;
+	
+	                    for(SessionViewCapsule otherCapsule : sessions) {
+	                        boolean found = false;
+	                        for(SessionViewCapsule activeCapsule : activeSessions) {
+	                            if(otherCapsule.getId() == activeCapsule.getId()) {
+	                                found = true;
+	                            }
+	                        }
+	
+	                        if(!found)
+	                            otherCapsule.hide();
+	                    }
+	                    for(SessionViewRecentCapsule recentCapsule : recentSessionManager.getRecentSessions())
+	                    {
+	                    	if(recentCapsule!=null) recentCapsule.hide();
+	                    }
+	
+	                    return true;
+	                }
+	            }
+	            for(SessionViewRecentCapsule capsule : recentSessionManager.getRecentSessions())
+	            {
+	            	if(capsule != null)
+	            	{
+	            		if(capsule.handle(event, x,y))
+		            	{
+		            		SessionViewCapsule restorecapsule = new SessionViewCapsule(new SessionView(capsule.getSession(), this), capsule.getOldGeneCirclePosition());
+		            		restorecapsule.getSession().setDimensions(0.4f, 0.2f);
+		            		Vector2 oldpos=capsule.getOldPosition();
+		            		restorecapsule.getSession().setPosition(oldpos.x, oldpos.y);
+		            		sessions.add(restorecapsule);
+		            		recentSessionManager.Remove(capsule);
+		            		return true;
+		            	}
+	            	}
+	            }
+	            // respond to mouse click
+	            System.out.println("Adding capsule with " + x + " " + y);
+	            SessionViewCapsule capsule = new SessionViewCapsule(new SessionView(new Session(geneCircle.getChromosome().getReferenceSequence(), geneCircle.getChromosomePosition()), this), pointerGenePosition);
+	            capsule.getSession().setDimensions(0.4f, 0.2f);
+	            capsule.getSession().setPosition(x, y);
+	            sessions.add(capsule);
+        	}
+        	else if(event.getButton()==3)
+        	{
+	            for(SessionViewCapsule capsule : sessions) {
+	                if(capsule.isDying()) {
+	                    continue;
+	                }
+	                if(capsule.handle(event, x, y)) {
+	                    capsule.die();
+	                    capsule.deactivate();
+	                    recentSessionManager.Add(capsule);
+	                }
+	            }
+	            return true;
+        	}
         }
 
         mousePosition.x = x;
@@ -231,9 +225,9 @@ public class OverView extends GenosideComponent {
             capsule.draw(gl);
         }
         
-        for(SessionViewRecentCapsule capsule : recentSessions)
+        for(SessionViewRecentCapsule capsule : recentSessionManager.getRecentSessions())
         {
-        	capsule.draw(gl);
+        	if(capsule!=null) capsule.draw(gl);
         }
 
         TextRenderer.getInstance().drawText(gl, "FPS: " + fpsCounter.getFps(), 0, 0.92f, 0.9f);
@@ -259,9 +253,9 @@ public class OverView extends GenosideComponent {
             capsule.clearPositionAdjustment();
         }
         
-        for(SessionViewRecentCapsule capsule : recentSessions)
+        for(SessionViewRecentCapsule capsule : recentSessionManager.getRecentSessions())
         {
-        	capsule.tick(dt);
+        	if(capsule!=null) capsule.tick(dt);
         }
 
         // if no active session, try to place session views in a good way.
